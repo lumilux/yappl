@@ -1,5 +1,11 @@
 ideas for a language
 
+stochastic language (a la Church)
+tree-based language
+new data query language (better SQL, K-like)
+	string safety
+	printing
+
 music
 drawing
 physics
@@ -8,9 +14,4 @@ math
 	linear algebra
 CAD
 
-tree-based language
-new data query language 
-	string safety
-	printing
 
-???
