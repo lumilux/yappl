@@ -75,6 +75,34 @@ This is identical to the previous \texttt{oneOrTwo} except we now condition that
 
 (Harley)
 
+
+\subsubsection{\textit{expression * expression}}
+The binary * operator indicates multiplication and groups left-to-right.
+\\
+\subsubsection{\textit{expression / expression}}
+The binary / operator indicates division and groups left-to-right 
+\\
+\subsubsection{\textit{expression \% expression}}
+The binary \% results in the remainder from the division of the first expression by the second and groups left-to-right. Both operands must be type \texttt{int} and the result is \texttt{int}. The remainder has the same sign as the dividend.
+\\
+\subsubsection{\textit{expression + expression}}
+The binary additive operator + indicates the sum of the expressions, and groups left-to-right.
+\\
+\subsection{\textit{expression - expression}}
+The binary additive operator - indicates the difference of the operands, and groups left-to-right.
+
+\subsection{\textit{expression < expression}}
+\subsection{\textit{expression > expression}}
+\subsection{\textit{expression <= expression}}
+\subsection{\textit{expression >= expression}}
+The relational operators < (less than), > (greater than), <= (less than or equal to) and >= (greater than or equal to) all yield 0 if the specified relation is false, and 1 if it is true. These operators group left-to-right, however: note, in the case of a<b<c, a<b will first be evaluated to 1 or 0. Therefore a<b<c does not mean the same thing as a<b and b<c.
+
+\subsection{\textit{expression = expression}}
+\subsection{\textit{expression != expression}}
+The \texttt{=} (equal to) and the \texttt{!=} (not equal to) operators function as the relational operators above, but have a lower precedence. Therefore, "a<b =c<d" is 1 when a<b and c<d have the same truth value. 
+
+\subsection{\textit{expression or expression}}
+
 \subsection{Functions}
 
 (Jonathan)
