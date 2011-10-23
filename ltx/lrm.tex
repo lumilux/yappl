@@ -18,11 +18,12 @@ An identifier is a series of alphabetical letters and digits; the first characte
 
 The following identifiers are reserved as keywords and may not be used otherwise:
 \begin{table}[htdp]
+\center
 \begin{tabular}{c c c}
 \texttt{fun} & \texttt{if} &\texttt{match} \\
 \texttt{int} & \texttt{then} & \texttt{with} \\
 \texttt{bool} & \texttt{else} &\texttt{case} \\
-\texttt{float} & \texttt{in} \\
+\texttt{float} & \texttt{in} & \texttt{string} \\
 \texttt{true} & \texttt{false} \\
 \end{tabular}
 \label{default}
@@ -81,4 +82,50 @@ This is identical to the previous \texttt{oneOrTwo} except we now condition that
 \subsection{Grammar}
 
 (Everyone)
+
+\begin{alltt}\normalfont\emph{
+Identifier:
+\quad IdentifierChars \textnormal{but not a reserved word}
+
+IdentifierChars:
+\quad Letter
+\quad IndentifierChars AlphaNum
+
+Literal:
+\quad IntegerLiteral
+\quad FloatingPointLiteral
+\quad BooleanLiteral
+
+BooleanLiteral: one of
+\quad \textnormal{true false}
+
+Type: one of
+\quad \textnormal{int float boolean}
+
+Statement:
+
+Expression:
+
+AssignmentOperator: \textnormal {
+\quad = 
+\quad := 
+\quad \(\sim\)= }
+
+InfixOp:
+
+FunctionDecl:
+
+Declarator:
+
+Letter: one of
+\quad \textnormal{a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z}
+
+Digit: one of
+\quad \textnormal{0 1 2 3 4 5 6 7 8 9}
+
+AlphaNum:
+\quad Letter
+\quad Digit
+}\end{alltt}
+
 
