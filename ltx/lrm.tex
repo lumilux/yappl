@@ -2,16 +2,37 @@ This is our language reference manual.
 
 \subsection{Lexical conventions}
 
-(David)
+As our syntax is inspired by OCaml, many of our lexical conventions follow those of that language. YAPPL has four kinds of tokens: identifiers, keywords, constants, and expression operators. Whitespace such as blanks, tabs, and newlines are ignored and serve to separate tokens. Comments are also ignored.
 
 \subsubsection{Comments}
 
+A single \texttt{\#} indicates that all succeeding characters shall be considered part of a comment and ignored until a newline is encountered. \\
+\\
+Immediately following a newline, a series of three \texttt{\#\#\#} indicates that all succeeding characters shall be considered part of a comment until another series of three \texttt{\#\#\#} is encountered. Note that newlines are ignored following the \texttt{\#\#\#}, which essentially delimits multi-line comments.
+
 \subsubsection{Identifiers}
+
+An identifier is a series of alphabetical letters and digits; the first character must be alphabetic. 
 
 \subsubsection{Keywords}
 
+The following identifiers are reserved as keywords and may not be used otherwise:
+\begin{table}[htdp]
+\begin{tabular}{c c c}
+\texttt{fun} & \texttt{if} &\texttt{match} \\
+\texttt{int} & \texttt{then} & \texttt{with} \\
+\texttt{bool} & \texttt{else} &\texttt{case} \\
+\texttt{float} & \texttt{in} \\
+\texttt{true} & \texttt{false} \\
+\end{tabular}
+\label{default}
+\end{table}%
+
+
+
 \subsubsection{Constants}
-Integer constants
+
+YAPPL only supports numeric constants (integers and floats).
 
 \subsection{Types}
 
@@ -19,7 +40,35 @@ Integer constants
 
 \subsection{Operations}
 
-(David)
+\subsubsection{Value definitions (\texttt{=})}
+\texttt{float:q = .9;}\\
+\\
+This assigns a value to a variable. 
+
+\subsubsection{Sampling (\texttt{\textasciitilde})}
+\texttt{\textasciitilde bin;}\\
+\\
+This samples \texttt{bin} and returns the value.
+
+\subsubsection{Binding (\texttt{= \textasciitilde })}
+\texttt{int:x = \textasciitilde geom q;}\\
+\\
+This binds a variable to a function's return value. In this case, \texttt{x} is bound to the return value of the function \texttt{geom} evaluated with parameter \texttt{q}.
+
+\subsubsection{Function definition (\texttt{=})}
+\texttt{fun int:oneOrTwo float:q = geom q;}\\
+\\
+This defines a function \texttt{oneOrTwo} that samples from \texttt{geom q}. It has a return type of \texttt{int} and takes a single parameter \texttt{q} of type \texttt{float}. 
+
+\subsubsection{Conditioning (\texttt{|})}
+\texttt{fun int:oneOrTwo float:q = geom q | @ = 1 or @ = 2;}\\
+\\
+This is identical to the previous \texttt{oneOrTwo} except we now condition that the sample be 1 or 2.
+
+\subsubsection{Memoized function definition (\texttt{:=})}
+\texttt{fun int:f int:n := ~geom .9;}\\
+\\
+\texttt{f} is a memoized function that returns the same value for each sample.
 
 \subsection{Expressions}
 
