@@ -37,22 +37,44 @@ YAPPL only supports numeric constants (integers and floats).
 
 \subsection{Types}
 
-(Hans)
+The following are the data types in YAPPL:\\
+\begin{tabular}{l l}
+\texttt{int} & an integer.\\
+\texttt{float} & double-precision floating point.\\
+\texttt{bool} & a boolean value (either \texttt{true} or \texttt{false}).\\
+\texttt{int[]} & a list of integers.\\
+\texttt{float[]} & a list of floating points.\\
+\texttt{bool[]} & a list of booleans.
+\end{tabular}\\\\
+YAPPL does not support conversion between types. All types are immutable.
+
+\subsubsection{Constants}
+Integer constants, e.g. \texttt{1337}, are of type \texttt{int}.\\\\
+Floating-point constants, e.g. \texttt{9000.1} or \texttt{2e-5} or \texttt{1.4e9}, are of type \texttt{float}.\\\\
+The reserved boolean constants are \texttt{true} and \texttt{false}.
+
+\subsubsection{Declarations}
+All variables must either be declared in a function header or declared when initialized. A declaration specifies a type and a name. The format is \texttt{type:name}.\\\\
+\texttt{fun int:add2(int:a) = a + 2;}\\
+\texttt{int:temp = 2;}\\
+\texttt{float[]:data = [1.0 2e-2 -0.75];}\\
+\texttt{bool:flag = false;}
+
 
 \subsection{Operations}
 
 \subsubsection{Value definitions (\texttt{=})}
 \texttt{float:q = .9;}\\
 \\
-This assigns a value to a variable. 
+This assigns a value to a variable. Once assigned, the value is constant and cannot be reassigned.
 
-\subsubsection{Sampling (\texttt{\textasciitilde})}
-\texttt{\textasciitilde bin;}\\
+\subsubsection{Sampling (\texttt{\midtilde})}
+\texttt{\midtilde bin;}\\
 \\
 This samples \texttt{bin} and returns the value.
 
-\subsubsection{Binding (\texttt{= \textasciitilde })}
-\texttt{int:x = \textasciitilde geom q;}\\
+\subsubsection{Binding (\texttt{= \midtilde })}
+\texttt{int:x = \midtilde geom q;}\\
 \\
 This binds a variable to a function's return value. In this case, \texttt{x} is bound to the return value of the function \texttt{geom} evaluated with parameter \texttt{q}.
 
