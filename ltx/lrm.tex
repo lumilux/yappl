@@ -85,8 +85,13 @@ An identifier is a primary expression, provided it has been suitably bound. Its 
 \paragraph{\textit{constant}}
 A decimal or floating constant is a primary expression. Its type is \texttt{int} in the first case, \texttt{float} in the last. 
 
+\paragraph{\textit{list-identifier}[\textit{integer-expression}]}
+An identifier followed by an expression in square brackets is a primary expression that yields the value at the \texttt{int}  index of a list.
+
 \paragraph{(\textit{expression})}
 A parenthesized expression is a primary expression whose type and value are identical to those of the unadorned expression. 
+
+
 
 \subsubsection{Unary operators}
 Expressions with unary operators group right-to-left.
