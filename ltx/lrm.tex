@@ -72,37 +72,80 @@ This is identical to the previous \texttt{oneOrTwo} except we now condition that
 \texttt{f} is a memoized function that returns the same value for each sample.
 
 \subsection{Expressions}
-
 (Harley)
 
+The precedence of expression operators is the same order as they are presented below. Operators in the same grouping (multiplicative, additive, relational etc.) are given the same precedence. Expressions on either side of binary operations must have the same type. 
 
-\subsubsection{\textit{expression * expression}}
+\subsubsection{Primary expressions}
+Primary expressions such as ~ involving function calls group left to right
+
+\paragraph{\textit{identifier}}
+An identifier is a primary expression, provided it has been suitably bound. Its type is specified when bound. 
+
+\paragraph{\textit{constant}}
+A decimal or floating constant is a primary expression. Its type is \texttt{int} in the first case, \texttt{float} in the last. 
+
+\paragraph{(\textit{expression})}
+A parenthesized expression is a primary expression whose type and value are identical to those of the unadorned expression. 
+
+\subsubsection{Unary operators}
+Expressions with unary operators group right-to-left.
+
+\paragraph{! \textit{expression}}
+The logical negation ! operator yields 1 if the value of the expression is 0, and 0 if the value of the expression is non-zero. The type of the result is  
+
+\subsubsection{Multiplicative operators}
+The multiplicative operators *, /, and \% group left-to-right.
+
+\paragraph{\textit{expression} * \textit{expression}}
 The binary * operator indicates multiplication and groups left-to-right.
-\\
-\subsubsection{\textit{expression / expression}}
+
+\paragraph{\textit{expression} / \textit{expression}}
 The binary / operator indicates division and groups left-to-right 
+
+\paragraph{\textit{expression} \% \textit{expression}}
+The  binary \% operator results in the remainder from the division of the first expression by the second and groups left-to-right. Both operands must be type \texttt{int} and the result is \texttt{int}. The remainder has the same sign as the dividend.
 \\
-\subsubsection{\textit{expression \% expression}}
-The binary \% results in the remainder from the division of the first expression by the second and groups left-to-right. Both operands must be type \texttt{int} and the result is \texttt{int}. The remainder has the same sign as the dividend.
+\subsubsection{Additive operators}
+The additive operators + and - group left-to-right.
+
+\paragraph{\textit{expression} + \textit{expression}}
+The binary  operator + indicates the sum of the expressions, and groups left-to-right.
+
+\paragraph{\textit{expression} - \textit{expression}}
+The binary  operator - indicates the difference of the operands, and groups left-to-right.
 \\
-\subsubsection{\textit{expression + expression}}
-The binary additive operator + indicates the sum of the expressions, and groups left-to-right.
+\subsubsection{Relational operators}
+The  relational operators < (less than), > (greater than), <= (less than or equal to) and >= (greater than or equal to) all yield false if the specified relation is false, and true if it is true. These operators group left-to-right. However, this is not particularly meaningful. For example, in a<b<c, a<b will evaluate to either true or false, and then the resulting expression is type mismatched or meaningless.
+
+\paragraph{\textit{expression} < \textit{expression}}
+\paragraph{\textit{expression} > \textit{expression}}
+\paragraph{\textit{expression} <= \textit{expression}}
+\paragraph{\textit{expression} >= \textit{expression}}
+
+
+\subsubsection{Equality operators}
+The \texttt{=} (equal to) and the \texttt{!=} (not equal to) operators function as the relational operators above, but have a lower precedence. Therefore, "a<b =c<d" is true when a<b and c<d have the same truth value.
 \\
-\subsection{\textit{expression - expression}}
-The binary additive operator - indicates the difference of the operands, and groups left-to-right.
+\paragraph{\textit{expression} = \textit{expression}}
+\paragraph{\textit{expression} != \textit{expression}}
 
-\subsection{\textit{expression < expression}}
-\subsection{\textit{expression > expression}}
-\subsection{\textit{expression <= expression}}
-\subsection{\textit{expression >= expression}}
-The relational operators < (less than), > (greater than), <= (less than or equal to) and >= (greater than or equal to) all yield 0 if the specified relation is false, and 1 if it is true. These operators group left-to-right, however: note, in the case of a<b<c, a<b will first be evaluated to 1 or 0. Therefore a<b<c does not mean the same thing as a<b and b<c.
+\subsubsection{Assignment operators}
+\paragraph{\textit{identifier} = \textit{expression}}
+The value of the expression is bound to the identifier.
 
-\subsection{\textit{expression = expression}}
-\subsection{\textit{expression != expression}}
-The \texttt{=} (equal to) and the \texttt{!=} (not equal to) operators function as the relational operators above, but have a lower precedence. Therefore, "a<b =c<d" is 1 when a<b and c<d have the same truth value. 
+\subsubsection{\textit{expression} or \textit{expression}}
+The \texttt{or} operator returns true if either of its operands are false and false otherwise; \texttt{or} groups left-to-right, and the second operand may not be evaluated if the value of the first is false.
 
-\subsection{\textit{expression or expression}}
+\subsubsection{\textit{expression} | \textit{expression}}
+The predicate operator \texttt{|} requires the re-evaluation of the expression on the left until the conditional expression on the right evaluates to true. This will loop forever if the expression on the left can never satisfy the conditional.
 
+\subsubsection{\textit{expression} @ \textit{expression}} 
+The concatenation operator yields an list that is the concatenation of the left list at the head of the right list. Both sides must be lists of matching type (i.e. \texttt{fun[], int[], bool[], float[]}.) 
+
+\subsubsection{\textit{expression} ; \textit{expression}}
+A pair of expressions separated by a semicolon is evaluated left-to-right and the value of the left expression is discarded. The type and value of the result are the type and value of the right operand. This operator groups left to right. 
+ 
 \subsection{Functions}
 
 (Jonathan)
