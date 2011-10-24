@@ -24,7 +24,7 @@ The following identifiers are reserved as keywords and may not be used otherwise
 \texttt{int} & \texttt{then} & \texttt{with} \\
 \texttt{bool} & \texttt{else} &\texttt{case} \\
 \texttt{float} & \texttt{in} & \texttt{string} \\
-\texttt{true} & \texttt{false} \\
+\texttt{true} & \texttt{false} & \texttt{print} \\
 \end{tabular}
 \label{default}
 \end{table}%
@@ -99,7 +99,7 @@ This is identical to the previous \texttt{oneOrTwo} except we now condition that
 The precedence of expression operators is the same order as they are presented below. Operators in the same grouping (multiplicative, additive, relational etc.) are given the same precedence. Expressions on either side of binary operations must have the same type. 
 
 \subsubsection{Primary expressions}
-Primary expressions such as ~ involving function calls group left to right
+Primary expressions such as $\sim$ involving function calls group left to right
 
 \paragraph{\textit{identifier}}
 An identifier is a primary expression, provided it has been suitably bound. Its type is specified when bound. 
@@ -134,13 +134,13 @@ The binary / operator indicates division and groups left-to-right
 The  binary \% operator results in the remainder from the division of the first expression by the second and groups left-to-right. Both operands must be type \texttt{int} and the result is \texttt{int}. The remainder has the same sign as the dividend.
 \\
 \subsubsection{Additive operators}
-The additive operators + and - group left-to-right.
+The additive operators $+$ and $-$ group left-to-right.
 
 \paragraph{\textit{expression} + \textit{expression}}
 The binary  operator + indicates the sum of the expressions, and groups left-to-right.
 
-\paragraph{\textit{expression} - \textit{expression}}
-The binary  operator - indicates the difference of the operands, and groups left-to-right.
+\paragraph{\textit{expression} $-$ \textit{expression}}
+The binary  operator $-$ indicates the difference of the operands, and groups left-to-right.
 \\
 \subsubsection{Relational operators}
 The  relational operators < (less than), > (greater than), <= (less than or equal to) and >= (greater than or equal to) all yield false if the specified relation is false, and true if it is true. These operators group left-to-right. However, this is not particularly meaningful. For example, in a<b<c, a<b will evaluate to either true or false, and then the resulting expression is type mismatched or meaningless.
@@ -182,49 +182,74 @@ A pair of expressions separated by a semicolon is evaluated left-to-right and th
 (Everyone)
 
 \begin{alltt}\normalfont\emph{
-Identifier:
-\quad IdentifierChars \textnormal{but not a reserved word}
+identifier:
+\quad identifier-chars \tn{but not a reserved word}
 
-IdentifierChars:
-\quad Letter
-\quad IndentifierChars AlphaNum
+identifier-chars:
+\quad letter
+\quad identifier-chars alpha-num
 
-Literal:
-\quad IntegerLiteral
-\quad FloatingPointLiteral
-\quad BooleanLiteral
+constant: 
+\quad literal
+\quad \tn{[]}
 
-BooleanLiteral: one of
-\quad \textnormal{true false}
+literal:
+\quad integer-literal
+\quad float-literal
+\quad bool-literal
 
-Type: one of
-\quad \textnormal{int float boolean}
+int-literal:
 
-Statement:
+float-literal:
 
-Expression:
-	AssignmentExpression
-	
+bool-literal: one of
+\quad \tn{true false}
 
-AssignmentOperator: \textnormal {
+type:
+\quad basic-type
+\quad array-type
+
+array-type:
+\quad basic-type\tn{[]}
+
+basic-type: one of
+\quad \tn{int float bool}
+
+pattern:
+
+statement:
+
+expression:
+\quad constant
+\quad \tn( expression \textnormal)
+\quad expression \textnormal{;} expression
+\quad expression \textnormal{::} expression
+\quad \tn[ expression \textnormal{,} expression \tn]
+\quad \tn{if} expression \tn{then} expression \tn{else} expression
+\quad \tn{if} expression \tn{then} expression 
+
+assignment-op: \tn{
 \quad = 
 \quad :=  }
 
-InfixOp:
+infix-op:
 
-FunctionDecl:
+function-decl:
 
-Declarator:
+var-decl:
+\quad type \tn{:} identifier
 
-Letter: one of
-\quad \textnormal{a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z}
+declarator:
 
-Digit: one of
-\quad \textnormal{0 1 2 3 4 5 6 7 8 9}
+letter: one of
+\quad \tn{a ... z A ... Z}
 
-AlphaNum:
-\quad Letter
-\quad Digit
+digit: one of
+\quad \tn{0 ... 9}
+
+alpha-num:
+\quad letter
+\quad digit
 }\end{alltt}
 
 
