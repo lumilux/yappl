@@ -25,6 +25,7 @@ The following identifiers are reserved as keywords and may not be used otherwise
 \texttt{bool} & \texttt{else} &\texttt{case} \\
 \texttt{float} & \texttt{in} & \texttt{string} \\
 \texttt{true} & \texttt{false} & \texttt{print} \\
+ \texttt{rand}
 \end{tabular}
 \label{default}
 \end{table}%
@@ -42,16 +43,20 @@ The following are the data types in YAPPL:\\
 \texttt{int} & an integer.\\
 \texttt{float} & double-precision floating point.\\
 \texttt{bool} & a boolean value (either \texttt{true} or \texttt{false}).\\
+\texttt{fun} & a function.\\
 \texttt{int[]} & a list of integers.\\
 \texttt{float[]} & a list of floating points.\\
-\texttt{bool[]} & a list of booleans.
+\texttt{bool[]} & a list of booleans. \\
+\texttt{fun[]} & a list of functions.
 \end{tabular}\\\\
 YAPPL does not support conversion between types. All types are immutable.
 
 \subsubsection{Constants}
 Integer constants, e.g. \texttt{1337}, are of type \texttt{int}.\\\\
 Floating-point constants, e.g. \texttt{9000.1} or \texttt{2e-5} or \texttt{1.4e9}, are of type \texttt{float}.\\\\
-The reserved boolean constants are \texttt{true} and \texttt{false}.
+The reserved boolean constants are \texttt{true} and \texttt{false}. \\\\
+An empty list constant is []. 
+
 
 \subsubsection{Declarations}
 All variables must either be declared in a function header or declared when initialized. A declaration specifies a type and a name. The format is \texttt{type:name}.\\\\
@@ -89,7 +94,7 @@ This defines a function \texttt{oneOrTwo} that samples from \texttt{geom q}. It 
 This is identical to the previous \texttt{oneOrTwo} except we now condition that the sample be 1 or 2.
 
 \subsubsection{Memoized function definition (\texttt{:=})}
-\texttt{fun int:f int:n := ~geom .9;}\\
+\texttt{fun int:f int:n := \midtilde geom .9;}\\
 \\
 \texttt{f} is a memoized function that returns the same value for each sample.
 
@@ -99,7 +104,7 @@ This is identical to the previous \texttt{oneOrTwo} except we now condition that
 The precedence of expression operators is the same order as they are presented below. Operators in the same grouping (multiplicative, additive, relational etc.) are given the same precedence. Expressions on either side of binary operations must have the same type. 
 
 \subsubsection{Primary expressions}
-Primary expressions such as $\sim$ involving function calls group left to right
+Primary expressions such as $\midtilde$ involving function calls group left to right
 
 \paragraph{\textit{identifier}}
 An identifier is a primary expression, provided it has been suitably bound. Its type is specified when bound. 
