@@ -1,4 +1,12 @@
-This is our language reference manual. 
+
+Outstanding issues:
+\begin{itemize}
+\item pattern matching (Harley)
+\item function declaration (David)
+\item if/then (Harley)
+\item binding (Hans)
+\item tilde/conditioning/memoizing syntax details (Jonathan)
+\end{itemize}
 
 \subsection{Lexical conventions}
 
@@ -30,11 +38,24 @@ The following identifiers are reserved as keywords and may not be used otherwise
 \label{default}
 \end{table}%
 
-
+The keyword \texttt{string}  is not currently used, but is reserved for future use.
 
 \subsubsection{Constants}
 
-YAPPL only supports numeric constants (integers and floats).
+The reserved boolean constants are \texttt{true} and \texttt{false}. The empty list constant is [] (for all types). 
+
+\subsubsection{Integer Literals}
+
+An integer literal is a sequence of one or more digits, optionally preceded by a minus sign.
+
+Examples of integer literals are \texttt{1337} and \texttt{-42}. 
+
+\subsubsection{Floating-point Literals}
+
+Floating-point decimals consist in an integer part, a decimal part and an exponent part. The integer part is a sequence of one or more digits, optionally preceded by a minus sign. The decimal part is a decimal point followed by zero, one or more digits. The exponent part is the character e or E followed by an optional + or - sign, followed by one or more digits. The decimal part or the exponent part can be omitted, but not both to avoid ambiguity with integer literals. 
+
+Examples of floating-point constants are \texttt{9000.1}, \texttt{2e-5}, and \texttt{1.4e9}.
+
 
 \subsection{Types}
 
@@ -51,20 +72,19 @@ The following are the data types in YAPPL:\\
 \end{tabular}\\\\
 YAPPL does not support conversion between types. All types are immutable.
 
-\subsubsection{Constants}
-Integer constants, e.g. \texttt{1337}, are of type \texttt{int}.\\\\
-Floating-point constants, e.g. \texttt{9000.1} or \texttt{2e-5} or \texttt{1.4e9}, are of type \texttt{float}.\\\\
-The reserved boolean constants are \texttt{true} and \texttt{false}. \\\\
-An empty list constant is []. 
+\subsubsection{Non-function Type Declarations}
+All bindings must either be declared within a function declaration or declared when bound. A non-function declaration specifies a type and an identifier in the format \texttt{type:identifier}. Whitespace is not permitted before or after the colon.  Examples of non-function type declarations:
 
+\texttt{int:temp}\\
+\texttt{float[]:data}\\
+\texttt{bool:flag}
 
-\subsubsection{Declarations}
-All variables must either be declared in a function header or declared when initialized. A declaration specifies a type and a name. The format is \texttt{type:name}.\\\\
-\texttt{fun int:add2(int:a) = a + 2;}\\
-\texttt{int:temp = 2;}\\
-\texttt{float[]:data = [1.0 2e-2 -0.75];}\\
-\texttt{bool:flag = false;}
+\subsubsection{Function Type Declarations}
 
+Function declarations consists of \texttt{fun} followed by a type declaration for the return type, followed by zero or more type declarations for arguments of function. Optionally, parentheses may surround the type declarations. Examples of function type declarations: 
+
+\texttt{fun int:add int:a int:b}\\
+\texttt{fun bool:contains (float:a float[]:list)}
 
 \subsection{Operations}
 
@@ -99,7 +119,6 @@ This is identical to the previous \texttt{oneOrTwo} except we now condition that
 \texttt{f} is a memoized function that returns the same value for each sample.
 
 \subsection{Expressions}
-(Harley)
 
 The precedence of expression operators is the same order as they are presented below. Operators in the same grouping (multiplicative, additive, relational etc.) are given the same precedence. Expressions on either side of binary operations must have the same type. 
 
@@ -117,8 +136,6 @@ An identifier followed by an expression in square brackets is a primary expressi
 
 \paragraph{(\textit{expression})}
 A parenthesized expression is a primary expression whose type and value are identical to those of the unadorned expression. 
-
-
 
 \subsubsection{Unary operators}
 Expressions with unary operators group right-to-left.
@@ -180,11 +197,7 @@ A pair of expressions separated by a semicolon is evaluated left-to-right and th
  
 \subsection{Functions}
 
-(Jonathan)
-
 \subsection{Grammar}
-
-(Everyone)
 
 \begin{alltt}\normalfont\emph{
 identifier:
