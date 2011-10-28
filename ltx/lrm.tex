@@ -73,7 +73,7 @@ The following are the data types in YAPPL:\\
 YAPPL does not support conversion between types. All types are immutable.
 
 \subsubsection{Non-function Type Declarations}
-All bindings must either be declared within a function declaration or declared when bound. A non-function declaration specifies a type and an identifier in the format \texttt{type:identifier}. Whitespace is not permitted before or after the colon.  Examples of non-function type declarations:
+All bindings must either be declared within a function declaration or declared when bound. A non-function declaration specifies a type and an identifier in the format \texttt{type:identifier}.  Examples of non-function type declarations:
 
 \texttt{int:temp}\\
 \texttt{float[]:data}\\
@@ -88,35 +88,20 @@ Function declarations consists of \texttt{fun} followed by a type declaration fo
 
 \subsection{Operations}
 
-\subsubsection{Value definitions (\texttt{=})}
+\subsubsection{Value binding}
 \texttt{float:q = .9;}\\
+\texttt{int:x = \midtilde geom q;}\\
 \\
 This assigns a value to a variable. Once assigned, the value is constant and cannot be reassigned.
 
-\subsubsection{Sampling (\texttt{\midtilde})}
+\subsubsection{Function binding}
+
+\subsubsection{Function evaluation (\texttt{\midtilde})}
 \texttt{\midtilde bin;}\\
 \\
-This samples \texttt{bin} and returns the value.
-
-\subsubsection{Binding (\texttt{= \midtilde })}
-\texttt{int:x = \midtilde geom q;}\\
-\\
-This binds a variable to a function's return value. In this case, \texttt{x} is bound to the return value of the function \texttt{geom} evaluated with parameter \texttt{q}.
-
-\subsubsection{Function definition (\texttt{=})}
-\texttt{fun int:oneOrTwo float:q = geom q;}\\
-\\
-This defines a function \texttt{oneOrTwo} that samples from \texttt{geom q}. It has a return type of \texttt{int} and takes a single parameter \texttt{q} of type \texttt{float}. 
-
-\subsubsection{Conditioning (\texttt{|})}
 \texttt{fun int:oneOrTwo float:q = geom q | @ = 1 or @ = 2;}\\
-\\
-This is identical to the previous \texttt{oneOrTwo} except we now condition that the sample be 1 or 2.
 
-\subsubsection{Memoized function definition (\texttt{:=})}
-\texttt{fun int:f int:n := \midtilde geom .9;}\\
-\\
-\texttt{f} is a memoized function that returns the same value for each sample.
+This samples \texttt{bin} and returns the value.
 
 \subsection{Expressions}
 
@@ -131,7 +116,7 @@ An identifier is a primary expression, provided it has been suitably bound. Its 
 \paragraph{\textit{constant}}
 A decimal or floating constant is a primary expression. Its type is \texttt{int} in the first case, \texttt{float} in the last. 
 
-\paragraph{\textit{list-identifier}[\textit{integer-expression}]}
+\paragraph{\textit{identifier}[\textit{expression}]}
 An identifier followed by an expression in square brackets is a primary expression that yields the value at the \texttt{int}  index of a list.
 
 \paragraph{(\textit{expression})}
@@ -179,8 +164,8 @@ The \texttt{=} (equal to) and the \texttt{!=} (not equal to) operators function 
 \paragraph{\textit{expression} = \textit{expression}}
 \paragraph{\textit{expression} != \textit{expression}}
 
-\subsubsection{Assignment operators}
-\paragraph{\textit{identifier} = \textit{expression}}
+\subsubsection{Binding operators}
+\paragraph{\textit{declaration} = \textit{expression}}
 The value of the expression is bound to the identifier.
 
 \subsubsection{\textit{expression} or \textit{expression}}
@@ -197,79 +182,94 @@ A pair of expressions separated by a semicolon is evaluated left-to-right and th
  
 \subsection{Functions}
 
+\newpage
+
 \subsection{Grammar}
 
-\begin{alltt}\normalfont\emph{
-identifier:
-\quad identifier-chars \tn{but not a reserved word}
+%identifier:
+%\quad identifier-chars \term{but not a reserved word}
+%
+%identifier-chars:
+%\quad letter
+%\quad identifier-chars alpha-num
+%
+%constant: 
+%\quad literal
+%\quad \term{[]}
+%
+%literal:
+%\quad integer-literal
+%\quad float-literal
+%\quad bool-literal
+%
+%int-literal:
+%
+%float-literal:
+%
+%bool-literal: one of
+%\quad \term{true false}
+%
+%type:
+%\quad basic-type
+%\quad array-type
+%
+%array-type:
+%\quad basic-type\term{[]}
+%
+%basic-type: one of
+%\quad \term{int float bool}
 
-identifier-chars:
-\quad letter
-\quad identifier-chars alpha-num
+\begin{alltt}
+\nterm{expr} = 
+\quad \nterm{constant}
+\quad \nterm{identifier}
+\quad \term{(} \nterm{expr} \term{)}
+\quad \nterm{expr \term{;} expr}
+\quad \nterm{expr \term{::} expr}
+\quad \term{\midtilde} \nterm{identifier} \{ \nterm{expr} \} ( \term{|} \nterm{expr} ) 
+\quad \nterm{prefix-op expr}
+\quad \nterm{expr infix-op expr}
+\quad \term{[} \nterm{expr} \{ \term{,} \nterm{expr} \} \term{]}
+\quad \term{if} \nterm{expr \term{then} expr} [ \term{else} \nterm{expression} ]
+\quad \term{match} \nterm{expression} \term{with} \nterm{pattern-matching}
+\quad \nterm{value-binding} \{ \term{and} \nterm{value-binding} \} \term{in} \nterm{expr}
+\quad \nterm{function-binding} \{ \term{and} \nterm{function-binding} \} \term{in} \nterm{expr}
 
-constant: 
-\quad literal
-\quad \tn{[]}
+\nterm{value-binding} =
+\quad \nterm{value-decl} \term{=} \nterm{expr} 
 
-literal:
-\quad integer-literal
-\quad float-literal
-\quad bool-literal
+\nterm{function-binding} =
+\quad \nterm{function-decl} \nterm{assignment-op} \nterm{expr} 
 
-int-literal:
+\nterm{type-decl} = 
+\quad \nterm{var-decl}
+\quad \nterm{function-decl}
 
-float-literal:
+\nterm{function-decl} =
+\quad \term{fun} \nterm{type-decl}  \{ \nterm{type-decl} \}
 
-bool-literal: one of
-\quad \tn{true false}
+\nterm{var-decl} = 
+\quad \nterm{type} \term{:} \nterm{identifier}
 
-type:
-\quad basic-type
-\quad array-type
+\nterm{type} =
+\quad \nterm{type} \term{[ ]}
+\quad \nterm{base-type}
+\quad \term{fun} \nterm{type} \{ \nterm{type} \}
 
-array-type:
-\quad basic-type\tn{[]}
+\nterm{pattern-matching} =
 
-basic-type: one of
-\quad \tn{int float bool}
+\end{alltt}
 
-pattern:
-
-statement:
-
-expression:
-\quad constant
-\quad \tn( expression \textnormal)
-\quad expression \textnormal{;} expression
-\quad expression \textnormal{::} expression
-\quad \tn[ expression \textnormal{,} expression \tn]
-\quad \tn{if} expression \tn{then} expression \tn{else} expression
-\quad \tn{if} expression \tn{then} expression 
-\quad \tn{match} expression \tn{with} pattern-matching
-\quad identifier
-
-assignment-op: \tn{
-\quad = 
-\quad :=  }
-
-infix-op:
-
-function-decl:
-
-var-decl:
-\quad type \tn{:} identifier
-
-declarator:
-
-letter: one of
-\quad \tn{a ... z A ... Z}
-
-digit: one of
-\quad \tn{0 ... 9}
-
-alpha-num:
-\quad letter
-\quad digit
-}\end{alltt}
-
+%\nterm{assignment-op} =
+%\quad \term{= }
+%\quad \term{:=  }
+%letter: one of
+%\quad \term{a ... z A ... Z}
+%
+%digit: one of
+%\quad \term{0 ... 9}
+%
+%alpha-num:
+%\quad letter
+%\quad digit
 

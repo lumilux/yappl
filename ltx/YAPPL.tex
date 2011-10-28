@@ -7,10 +7,12 @@
 \usepackage{amssymb}
 \usepackage{fancyhdr}
 \usepackage{alltt}
+\usepackage[usenames,dvipsnames]{color}
 \usepackage[T1]{fontenc}
 
 \newcommand\midtilde{{\lower.50ex\hbox{\texttt{\char`\~}}}}
-\newcommand\tn{\textnormal}
+\newcommand{\term}[1]{\texttt{\color{Cyan}#1}}
+\newcommand{\nterm}[1]{\textnormal{\em\color{Brown}#1}}
 
 \pagestyle{fancy}
 
