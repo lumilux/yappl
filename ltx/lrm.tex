@@ -89,19 +89,23 @@ Function declarations consists of \texttt{fun} followed by a type declaration fo
 \subsection{Operations}
 
 \subsubsection{Value binding}
-\texttt{float:q = .9;}\\
-\texttt{int:x = \midtilde geom q;}\\
-\\
-This assigns a value to a variable. Once assigned, the value is constant and cannot be reassigned.
+
+A values are bound to names through the construct 
+
+\quad \nterm{value-decl}\textsuperscript{1} \term{=} \nterm{expr}\textsuperscript{1}  \term{and} \dots \term{and} \nterm{value-decl}\textsuperscript{n} \term{=} \nterm{expr}\textsuperscript{n}  \term{in} \nterm{expr}
+
+which evaluates  \nterm{expr}\textsuperscript{1} \dots  \nterm{expr}\textsuperscript{n} in an unspecified order and binds the values of those expressions to the names specified in \nterm{value-decl}\textsuperscript{1} \dots \nterm{value-decl}\textsuperscript{n}.
 
 \subsubsection{Function binding}
 
-\subsubsection{Function evaluation (\texttt{\midtilde})}
-\texttt{\midtilde bin;}\\
-\\
-\texttt{fun int:oneOrTwo float:q = geom q | @ = 1 or @ = 2;}\\
+The syntax for function binding is identical to that for value binding, except \nterm{value-decl} is replaced by \nterm{function-decl} and any number of \term{=} symbols may be replaced by \term{:=} symbols. The \term{:=} symbol defines a special memoization function. A memoized function is only evaluated once for a set of input values. Once function is evaluated on those values, it will always return the same value without being reevaluated. 
 
-This samples \texttt{bin} and returns the value.
+\subsubsection{Function evaluation}
+Functions are evaluated with the following construct:
+
+\quad \term{\midtilde} \nterm{identifier} ( \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n} ) ( \term{|} \nterm{expr} ) 
+
+where  \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n}  are optional arguments passed to the function and \term{|} \nterm{expr} specifies an optional condition that the return value of the function must fulfill. The return value of the function may be referenced within the condition by the special variable \term{\$}.
 
 \subsection{Expressions}
 
