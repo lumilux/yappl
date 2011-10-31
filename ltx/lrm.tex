@@ -181,6 +181,12 @@ The predicate operator \texttt{|} requires the re-evaluation of the expression o
 \subsubsection{\textit{expression} @ \textit{expression}} 
 The concatenation operator yields an list that is the concatenation of the left list at the head of the right list. Both sides must be lists of matching type (i.e. \texttt{fun[], int[], bool[], float[]}.) 
 
+\subsubsection{if \textit{expression} then \textit{expression} else \textit{expression}}
+The conditional statement evaluates to the second expression if the first is true, otherwise it evaluates to the third expression. If nesting another conditional, parenthesis are strongly recommended to prevent ambiguity.
+
+\\subsubsection{match \textit{expression} with \textit{pattern} $->$ \textit{expression} | ... | \textit{pattern} $->$ \textit{expression}}
+The case expression notation yields the expression paired with the first pattern matching the expression to be matched. 
+
 \subsubsection{\textit{expression} ; \textit{expression}}
 A pair of expressions separated by a semicolon is evaluated left-to-right and the value of the left expression is discarded. The type and value of the result are the type and value of the right operand. This operator groups left to right. 
  
