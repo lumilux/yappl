@@ -1,19 +1,11 @@
-Outstanding issues:
-\begin{itemize}
-\item pattern matching (Harley)
-\item consistent formatting (Hans)
-\item consistency between document and grammar (David)
-\item built-in functions -- print and rand (David)
-\item final check (Jonathan)
-\end{itemize}
 
 \subsection{Notation}
 
-Through the document, \nterm{nonterminals} are in brown italics and \term{terminals} are in light blue monospace. Regular expression-like constructs are used to simplify grammar presentation and are in black. Brackets \texttt{[]} are used to indicate optional parts of productions, curly braces \texttt{\{\}} indicate portions of productions that can appear zero or more times, and parentheses \texttt{()} indicate grouping. 
+Through the document, \nterm{nonterminals} are in brown italics and \term{terminals} are in light blue monospace. Regular expression-like constructs are used to simplify grammar presentation and are in black. Brackets \texttt{[]} are used to indicate optional parts of productions, curly braces \texttt{\{\}} indicate portions of productions that can appear zero or more times, and parentheses \texttt{()} indicate grouping, with a vertical bar \texttt{|} separating options. 
 
 \subsection{Lexical conventions}
 
-As our syntax is inspired by OCaml, many of our lexical conventions follow those of that language. YAPPL has four kinds of tokens: identifiers, keywords, constants, and expression operators. Whitespace such as blanks, tabs, and newlines are ignored and serve to separate tokens. Comments are also ignored.
+As syntax of YAPPL is inspired by OCaml, many of the lexical conventions follow those of that language. YAPPL has four kinds of tokens: identifiers, keywords, constants, and expression operators. Whitespace such as blanks, tabs, and newlines are ignored and serve to separate tokens. Comments are also ignored.
 
 \subsubsection{Comments}
 
@@ -27,7 +19,7 @@ An identifier is a series of alphabetical letters and digits; the first characte
 
 \subsubsection{Keywords}
 
-The following identifiers are reserved as keywords and may not be used otherwise:
+The following identifiers are reserved as keywords/special function and may not be used otherwise:
 \begin{table}[htdp]
 \center
 \begin{tabular}{c c c}
@@ -55,7 +47,7 @@ Examples of integer literals are \texttt{1337} and \texttt{-42}.
 
 \subsubsection{Floating-point Literals}
 
-Floating-point decimals consist in an integer part, a decimal part and an exponent part. The integer part is a sequence of one or more digits, optionally preceded by a minus sign. The decimal part is a decimal point followed by zero, one or more digits. The exponent part is the character e or E followed by an optional + or - sign, followed by one or more digits. The decimal part or the exponent part can be omitted, but not both to avoid ambiguity with integer literals. 
+Floating-point decimals consist in an integer part, a decimal part and an exponent part. The integer part is a sequence of one or more digits, optionally preceded by a minus sign. The decimal part is a decimal point followed by zero, one or more digits. The exponent part is the character \texttt e or \texttt E followed by an optional \texttt + or \texttt - sign, followed by one or more digits. The decimal part or the exponent part can be omitted, but not both to avoid ambiguity with integer literals. 
 
 Examples of floating-point constants are \texttt{9000.1}, \texttt{2e-5}, and \texttt{1.4e9}.
 
@@ -73,21 +65,35 @@ In addition there are derived array types denoted
 
 \quad \nterm{type} \term{[ ]}
 
-YAPPL does not support conversion between types. All types are immutable.
 
 \subsubsection{Non-function Type Declarations}
 All bindings must either be declared within a function declaration or declared when bound. A non-function declaration specifies a type and an identifier in the format \nterm{type} \term{:} \nterm{identifier}. Spaces around the colon are optional.  Examples of non-function type declarations:
 
-\texttt{int:temp}\\
-\texttt{float[]:data}\\
-\texttt{bool : flag}
+\begin{alltt}
+\quad int:temp
+\quad float[]:data
+\quad bool : flag
+\end{alltt}
 
 \subsubsection{Function Type Declarations}
 
-Function declarations consists of \term{fun} followed by a type declaration for the return type, followed by zero or more type declarations for arguments of function. Optionally, parentheses may surround the type declarations. Examples of function type declarations: 
+Function declarations consists of \term{fun} followed by a type declaration for the return type, followed by zero or more type declarations for arguments of function. Optionally, parentheses may surround the type declarations:
+\begin{alltt}
+\quad \term{fun} \nterm{type-decls} \dots \nterm{type-decls} 
+\end{alltt}
+where
+\begin{alltt}
+\nterm{fun-type-decls} =
+\quad \nterm{fun-type-decls} \nterm{type-decl}  
+\quad \term{(} \nterm{fun-type-decls} \term{)}
+\end{alltt}
 
-\texttt{fun int:add int:a int:b}\\
-\texttt{fun bool:contains (float:a float[]:list)}
+Examples of function type declarations: 
+
+\begin{alltt}
+\quad fun int:add int:a int:b
+\quad fun bool:contains (float:a float[]:list)
+\end{alltt}
 
 \subsection{Operations}
 
@@ -109,10 +115,18 @@ The syntax for function binding is identical to that for value binding, except \
 Functions are evaluated with the following construct:
 
 \begin{alltt}
-\quad \term{\midtilde} \nterm{identifier} [ \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n} [ \term{|} \nterm{expr} ] ]
+\quad \term{\midtilde} \nterm{identifier} [ \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n} ] [ \term{|} \nterm{expr} ] 
 \end{alltt}
 
 where  \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n}  are optional arguments passed to the function and \term{|} \nterm{expr} specifies an optional condition that the return value of the function must fulfill. The return value of the function may be referenced within the condition by the special variable \term{\$}.
+
+\subsubsection{List construction}
+
+Lists can be constructed using the syntax
+\begin{alltt}
+\quad \term{[} \nterm{expr}\textsuperscript{1} \term{,} \dots \term{,} \nterm{expr}\textsuperscript{n}  \term{]}
+\end{alltt}
+Each expression must have the same type. 
 
 \subsubsection{Patterns} 
 Patterns are templates that allow selecting values of a given shape and binding identifier names to values. Patterns are used in pattern matching. 
@@ -131,7 +145,6 @@ The pattern \nterm{pattern} \term{::} \nterm{pattern} matches non-empty lists wh
 The precedence of expression operators is the same order as they are presented below. Operators in the same grouping (multiplicative, additive, relational etc.) are given the same precedence. Expressions on either side of binary operations must have the same type. 
 
 \subsubsection{Primary expressions}
-Primary expressions such as \term{\midtilde} involving function calls group left to right.
 
 \paragraph{\nterm{identifier}}
 An identifier is a primary expression, provided it has been suitably bound. Its type is specified when bound. 
@@ -162,8 +175,7 @@ The additive operators \texttt{+} (sum) and \texttt{-} (difference) are binary a
 \end{alltt}
 
 \subsubsection{Relational operators}
-The  relational operators < (less than), > (greater than), <= (less than or equal to) and >= (greater than or equal to) all yield false if the specified relation is false, and true if it is true. These operators group left-to-right. However, this is not particularly meaningful. For example, in a<b<c, a<b will evaluate to either true or false, and then the resulting expression is type mismatched or meaningless.
-
+The  relational operators \texttt< (less than), \texttt> (greater than), \texttt{<=} (less than or equal to) and \texttt{>=} (greater than or equal to) all yield false if the specified relation is false, and true if it is true.
 \begin{alltt}
 \quad \nterm{expr} \term{<} \nterm{expr}
 \quad \nterm{expr} \term{>} \nterm{expr}
@@ -172,7 +184,7 @@ The  relational operators < (less than), > (greater than), <= (less than or equa
 \end{alltt}
 
 \subsubsection{Equality operators}
-The \texttt{=} (equal to) and the \texttt{!=} (not equal to) operators function as the relational operators above, but have a lower precedence. Therefore, "a<b = c<d" is true when a<b and c<d have the same truth value.
+The \texttt{=} (equal to) and the \texttt{!=} (not equal to) operators function as the relational operators above, but have a lower precedence. Therefore, ``\texttt{a<b = c<d}'' is true when \texttt{a<b} and \texttt{c<d} have the same truth value.
 \begin{alltt}
 \quad \nterm{expr} \term{=} \nterm{expr}
 \quad \nterm{expr} \term{!=} \nterm{expr}
@@ -188,13 +200,20 @@ The second operand or \texttt{or} may not be evaluated if the value of the first
 \end{alltt}
 
 \subsubsection{Concatenation operator} 
-The concatenation operator yields an list that is the concatenation of the left list at the head of the right list. Both sides must be lists of matching type (i.e. \term{fun[]}, \term{int[]}, \term{bool[]}, \term{float[]}.)
+The concatenation operator yields an list that is the concatenation of the left list at the head of the right list. Both sides must be lists of matching type (e.g.~\term{int[]} or \term{bool[]}). 
 \begin{alltt}
 \quad \nterm{expr} \term{@} \nterm{expr}
 \end{alltt}
 
+\subsubsection{List building operator}
+The building operation
+\begin{alltt}
+\quad \nterm{expr}\textsuperscript{1} \term{::} \nterm{expr}\textsuperscript{2}
+\end{alltt}
+ yields a list with \nterm{expr}\textsuperscript{1} as the head and \nterm{expr}\textsuperscript{2} as the tail. Thus, if \nterm{expr}\textsuperscript{1} is of type \nterm{type}, then \nterm{expr}\textsuperscript{2} must have type \nterm{type}\term{[]}. 
+
 \subsubsection{Conditional expression}
-The conditional expression evaluates to the second expression if the first is true, otherwise it evaluates to the third expression. If nesting another conditional, parentheses are strongly recommended to prevent ambiguity.
+The conditional expression evaluates to the second expression if the first is true, otherwise it evaluates to the third expression. The else binds to the closest if.
 \begin{alltt}
 \quad \term{if} \nterm{expr} \term{then} \nterm{expr} [\term{else} \nterm{expr}]
 \end{alltt}
@@ -203,7 +222,7 @@ The conditional expression evaluates to the second expression if the first is tr
 The case expression notation yields the expression paired with the first pattern matching the expression to be matched.
 
 \begin{alltt}
-\quad \term{match} \nterm{expr} \term{with} \nterm{pattern} \term{->} \nterm{expr} \term{|} \dots \term{|} \nterm{pattern} \term{->} \nterm{expr}
+\quad \term{match} \nterm{expr} \term{with} \nterm{pattern}\textsuperscript{1} \term{->} \nterm{expr}\textsuperscript{1} \term{|} \dots \term{|} \nterm{pattern}\textsuperscript{n} \term{->} \nterm{expr}\textsuperscript{n}
 \end{alltt}
 
 \subsubsection{Expression sequencing}
@@ -218,15 +237,75 @@ There are two built-in functions in YAPPL: \term{rand} and \term{print}. These a
 The function \term{rand} takes no arguments and returns a random or pseudo-random number between 0 and 1. 
 
 \subsubsection{print}
-Since YAPPL does not use the \term{string} type nor include string literals, printing must be achieved through other means. The \term{print} function takes a single argument that is a list of integers. For each number encountered in the list, \term{print} interprets this as the decimal representation of an ASCII character and prints to standard out the corresponding letter character in the ASCII table. It always returns \term{true}. \\
-\begin{verbatim}
-# prints "Hello World\n" to stdout
-print [72, 101, 108, 108, 111, 32, 87, 111, 114, 100, 10]
-\end{verbatim}
+Since YAPPL does no currently support the \term{string} type or string literals, or allow for side-effects, printing must be achieved explicitly within the language. The \term{print} function takes a single expression of one of the three basic types as an argument and prints a string representation of that argument to standard output. 
+
+%that is a list of integers. For each number encountered in the list, \term{print} interprets this as the decimal representation of an ASCII character and prints to standard out the corresponding letter character in the ASCII table. It always returns \term{true}. \\
+%\begin{verbatim}
+%# prints "Hello World\n" to stdout
+%print [72, 101, 108, 108, 111, 32, 87, 111, 114, 100, 10]
+%\end{verbatim}
 
 \newpage
 
 \subsection{Grammar}
+
+A summary of the grammar for YAPPL. 
+
+\begin{alltt}
+\nterm{expr} = 
+\quad \nterm{constant}
+\quad \nterm{identifier}
+\quad \term{(} \nterm{expr} \term{)}
+\quad \nterm{expr \term{;} expr}
+\quad \nterm{expr \term{::} expr}
+\quad \term{\midtilde} \nterm{identifier} \{ \nterm{expr} \} [ \term{|} \nterm{expr} ]
+\quad \nterm{prefix-op expr}
+\quad \nterm{expr infix-op expr}
+\quad \term{[} \nterm{expr} \{ \term{,} \nterm{expr} \} \term{]}
+\quad \term{if} \nterm{expr \term{then} expr} [ \term{else} \nterm{expression} ]
+\quad \term{match} \nterm{expression} \term{with} \nterm{pattern-matching}
+\quad \nterm{value-binding} \{ \term{and} \nterm{value-binding} \} \term{in} \nterm{expr}
+\quad \nterm{function-binding} \{ \term{and} \nterm{function-binding} \} \term{in} \nterm{expr}
+\quad \term{rand}
+\quad \term{print} \nterm{expr}
+
+\nterm{value-binding} =
+\quad \nterm{value-decl} \term{=} \nterm{expr} 
+
+\nterm{function-binding} =
+\quad \nterm{function-decl} \nterm{assignment-op} \nterm{expr} 
+
+\nterm{type-decl} = 
+\quad \nterm{var-decl}
+\quad \nterm{function-decl}
+
+\nterm{function-decl} =
+\quad \term{fun} \nterm{fun-type-decls} \{ \nterm{fun-type-decls} \}
+
+\nterm{fun-type-decls} =
+\quad \nterm{fun-type-decls} \nterm{type-decl}  
+\quad \term{(} \nterm{fun-type-decls} \term{)}
+
+\nterm{var-decl} = 
+\quad \nterm{type} \term{:} \nterm{identifier}
+
+\nterm{type} =
+\quad \nterm{type} \term{[ ]}
+\quad \nterm{base-type}
+\quad \term{fun} \nterm{type} \{ \nterm{type} \}
+\newpage
+\nterm{pattern-matching} =  
+\quad [\term{|}]  \nterm{pattern} \term{->} \nterm{expression}  \{ \term{|} \nterm{pattern} \term{->} \nterm{expression}  \}
+
+\nterm{pattern} = 
+\quad \term{\_}
+\quad \nterm{identifier}
+\quad \nterm{constant}
+\quad \term{(} \nterm{pattern} \term{)}
+\quad \nterm{pattern} \term{::} \nterm{pattern}
+
+\end{alltt}
+
 
 %identifier:
 %\quad identifier-chars \term{but not a reserved word}
@@ -260,55 +339,6 @@ print [72, 101, 108, 108, 111, 32, 87, 111, 114, 100, 10]
 %
 %basic-type: one of
 %\quad \term{int float bool}
-
-\begin{alltt}
-\nterm{expr} = 
-\quad \nterm{constant}
-\quad \nterm{identifier}
-\quad \term{(} \nterm{expr} \term{)}
-\quad \nterm{expr \term{;} expr}
-\quad \nterm{expr \term{::} expr}
-\quad \term{\midtilde} \nterm{identifier} \{ \nterm{expr} \} [ \term{|} \nterm{expr} ]
-\quad \nterm{prefix-op expr}
-\quad \nterm{expr infix-op expr}
-\quad \term{[} \nterm{expr} \{ \term{,} \nterm{expr} \} \term{]}
-\quad \term{if} \nterm{expr \term{then} expr} [ \term{else} \nterm{expression} ]
-\quad \term{match} \nterm{expression} \term{with} \nterm{pattern-matching}
-\quad \nterm{value-binding} \{ \term{and} \nterm{value-binding} \} \term{in} \nterm{expr}
-\quad \nterm{function-binding} \{ \term{and} \nterm{function-binding} \} \term{in} \nterm{expr}
-
-\nterm{value-binding} =
-\quad \nterm{value-decl} \term{=} \nterm{expr} 
-
-\nterm{function-binding} =
-\quad \nterm{function-decl} \nterm{assignment-op} \nterm{expr} 
-
-\nterm{type-decl} = 
-\quad \nterm{var-decl}
-\quad \nterm{function-decl}
-
-\nterm{function-decl} =
-\quad \term{fun} \nterm{type-decl}  \{ \nterm{type-decl} \}
-
-\nterm{var-decl} = 
-\quad \nterm{type} \term{:} \nterm{identifier}
-
-\nterm{type} =
-\quad \nterm{type} \term{[ ]}
-\quad \nterm{base-type}
-\quad \term{fun} \nterm{type} \{ \nterm{type} \}
-
-\nterm{pattern-matching} =  
-\quad [\term{|}]  \nterm{pattern} \term{->} \nterm{expression}  \{ \term{|} \nterm{pattern} \term{->} \nterm{expression}  \}
-
-\nterm{pattern} = 
-\quad \term{\_}
-\quad \nterm{identifier}
-\quad \nterm{constant}
-\quad \term{(} \nterm{pattern} \term{)}
-\quad \nterm{pattern} \term{::} \nterm{pattern}
-
-\end{alltt}
 
 %\nterm{assignment-op} =
 %\quad \term{= }
