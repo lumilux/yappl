@@ -280,7 +280,14 @@ A pair of expressions separated by a semicolon is evaluated left-to-right and th
 \quad \nterm{base-type}
 \quad \term{fun} \nterm{type} \{ \nterm{type} \}
 
-\nterm{pattern-matching} =
+\nterm{pattern-matching} =  
+\quad [\term{|}]  \nterm{pattern} \term{->} \nterm{expression}  \{ \term{|} \nterm{pattern} \term{->} \nterm{expression}  \}
+
+\nterm{pattern} = 
+\quad \term{\_}
+\quad \nterm{identifier}
+\quad \nterm{constant}
+\quad \nterm{pattern} \term{::} \nterm{pattern}
 
 \end{alltt}
 
