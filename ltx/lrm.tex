@@ -8,15 +8,19 @@ Outstanding issues:
 \item tilde/conditioning/memoizing syntax details (Jonathan)
 \end{itemize}
 
+\subsection{Notation}
+
+Through the document, \nterm{nonterminals} are in brown italics and \term{terminals} are in light blue. Regular expression-like constructs are used to simplify grammar presentation an are in black. Brackets \texttt{[]} are used to indicate optional parts of productions, curly braces \texttt{\{\}} indicate portions of productions that can appear zero or more times, and parentheses \texttt{()} indicate grouping. 
+
 \subsection{Lexical conventions}
 
 As our syntax is inspired by OCaml, many of our lexical conventions follow those of that language. YAPPL has four kinds of tokens: identifiers, keywords, constants, and expression operators. Whitespace such as blanks, tabs, and newlines are ignored and serve to separate tokens. Comments are also ignored.
 
 \subsubsection{Comments}
 
-A single \texttt{\#} indicates that all succeeding characters shall be considered part of a comment and ignored until a newline is encountered. \\
+A single \term{\#} indicates that all succeeding characters shall be considered part of a comment and ignored until a newline is encountered. \\
 \\
-Immediately following a newline, a series of three \texttt{\#\#\#} indicates that all succeeding characters shall be considered part of a comment until another series of three \texttt{\#\#\#} is encountered. Note that newlines are ignored following the \texttt{\#\#\#}, which essentially delimits multi-line comments.
+Immediately following a newline, a series of three \term{\#\#\#} indicates that all succeeding characters shall be considered part of a comment until another series of three \term{\#\#\#} is encountered. Note that newlines are ignored following the \term{\#\#\#}, which essentially delimits multi-line comments.
 
 \subsubsection{Identifiers}
 
@@ -28,21 +32,21 @@ The following identifiers are reserved as keywords and may not be used otherwise
 \begin{table}[htdp]
 \center
 \begin{tabular}{c c c}
-\texttt{fun} & \texttt{if} &\texttt{match} \\
-\texttt{int} & \texttt{then} & \texttt{with} \\
-\texttt{bool} & \texttt{else} &\texttt{case} \\
-\texttt{float} & \texttt{in} & \texttt{string} \\
-\texttt{true} & \texttt{false} & \texttt{print} \\
- \texttt{rand}
+\term{fun} & \term{if} &\term{match} \\
+\term{int} & \term{then} & \term{with} \\
+\term{bool} & \term{else} &\term{case} \\
+\term{float} & \term{in} & \term{string} \\
+\term{true} & \term{false} & \term{print} \\
+ \term{rand}
 \end{tabular}
 \label{default}
 \end{table}%
 
-The keyword \texttt{string}  is not currently used, but is reserved for future use.
+The keyword \term{string}  is not currently used, but is reserved for future use.
 
 \subsubsection{Constants}
 
-The reserved boolean constants are \texttt{true} and \texttt{false}. The empty list constant is [] (for all types). 
+The reserved boolean constants are \term{true} and \term{false}. The empty list constant is \term{[]} (for all types). 
 
 \subsubsection{Integer Literals}
 
@@ -59,17 +63,17 @@ Examples of floating-point constants are \texttt{9000.1}, \texttt{2e-5}, and \te
 
 \subsection{Types}
 
-The following are the data types in YAPPL:\\
+The following are the basis data types in YAPPL:\\
 \begin{tabular}{l l}
-\texttt{int} & an integer.\\
-\texttt{float} & double-precision floating point.\\
-\texttt{bool} & a boolean value (either \texttt{true} or \texttt{false}).\\
-\texttt{fun} & a function.\\
-\texttt{int[]} & a list of integers.\\
-\texttt{float[]} & a list of floating points.\\
-\texttt{bool[]} & a list of booleans. \\
-\texttt{fun[]} & a list of functions.
+\term{int} & an integer.\\
+\term{float} & double-precision floating point.\\
+\term{bool} & a boolean value (either \texttt{true} or \texttt{false}).\\
+\term{fun} & a function.\\
 \end{tabular}\\\\
+In addition there are derived array types denoted
+
+\quad \nterm{type} \term{[ ]}
+
 YAPPL does not support conversion between types. All types are immutable.
 
 \subsubsection{Non-function Type Declarations}
@@ -111,7 +115,7 @@ where  \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n}  ar
 Patterns are templates that allow selecting values of a given shape and binding identifier names to values. Patterns are used in pattern matching. 
 
 \paragraph{Variable Patterns}
-A variable pattern consists of a value identifier. The pattern will match any value, and the value will be bound to the identifier. The pattern \texttt{_} will also match any value, but will not result in a binding. A value identifier can only appear once in a pattern.
+A variable pattern consists of a value identifier. The pattern will match any value, and the value will be bound to the identifier. The pattern \texttt{\_} will also match any value, but will not result in a binding. A value identifier can only appear once in a pattern.
 
 \paragraph{Constant Patterns}
 A pattern consisting of a constant matches the values equal to that constant.
@@ -132,63 +136,60 @@ An identifier is a primary expression, provided it has been suitably bound. Its 
 \paragraph{\textit{constant}}
 A decimal or floating constant is a primary expression. Its type is \texttt{int} in the first case, \texttt{float} in the last. 
 
-\paragraph{\textit{identifier}[\textit{expression}]}
+\paragraph{\textit{identifier}[\textit{expr}]}
 An identifier followed by an expression in square brackets is a primary expression that yields the value at the \texttt{int}  index of a list.
 
-\paragraph{(\textit{expression})}
+\paragraph{(\textit{expr})}
 A parenthesized expression is a primary expression whose type and value are identical to those of the unadorned expression. 
 
 \subsubsection{Unary operators}
 Expressions with unary operators group right-to-left.
 
-\paragraph{! \textit{expression}}
+\paragraph{! \textit{expr}}
 The logical negation ! operator yields true if the value of the expression is false, and false if the value of the expression is true. 
 
 \subsubsection{Multiplicative operators}
 The multiplicative operators *, /, and \% group left-to-right.
 
-\paragraph{\textit{expression} * \textit{expression}}
+\paragraph{\textit{expr} * \textit{expr}}
 The binary * operator indicates multiplication.
 
-\paragraph{\textit{expression} / \textit{expression}}
+\paragraph{\textit{expr} / \textit{expr}}
 The binary / operator indicates division.
 
-\paragraph{\textit{expression} \% \textit{expression}}
+\paragraph{\textit{expr} \% \textit{expr}}
 The  binary \% operator results in the remainder from the division of the first expression by the second. Both operands must be type \texttt{int} and the result is \texttt{int}. The remainder has the same sign as the dividend.
 \\
 \subsubsection{Additive operators}
 The additive operators $+$ and $-$ group left-to-right.
 
-\paragraph{\textit{expression} + \textit{expression}}
+\paragraph{\textit{expr} + \textit{expr}}
 The binary  operator + indicates the sum of the expressions.
 
-\paragraph{\textit{expression} $-$ \textit{expression}}
+\paragraph{\textit{expr} $-$ \textit{expr}}
 The binary operator $-$ indicates the difference of the operands.
 \\
 \subsubsection{Relational operators}
 The  relational operators < (less than), > (greater than), <= (less than or equal to) and >= (greater than or equal to) all yield false if the specified relation is false, and true if it is true. These operators group left-to-right. However, this is not particularly meaningful. For example, in a<b<c, a<b will evaluate to either true or false, and then the resulting expression is type mismatched or meaningless.
 
-\paragraph{\textit{expression} < \textit{expression}}
-\paragraph{\textit{expression} > \textit{expression}}
-\paragraph{\textit{expression} <= \textit{expression}}
-\paragraph{\textit{expression} >= \textit{expression}}
-
+\begin{alltt}
+\quad \nterm{expr} \term{<} \nterm{expr}
+\quad \nterm{expr} \term{>} \nterm{expr}
+\quad \nterm{expr} \term{<=} \nterm{expr}
+\quad \nterm{expr} \term{>=} \nterm{expr}
+\end{alltt}
 
 \subsubsection{Equality operators}
 The \texttt{=} (equal to) and the \texttt{!=} (not equal to) operators function as the relational operators above, but have a lower precedence. Therefore, "a<b = c<d" is true when a<b and c<d have the same truth value.
 \\
-\paragraph{\textit{expression} = \textit{expression}}
-\paragraph{\textit{expression} != \textit{expression}}
-
-\subsubsection{Binding operators}
-\paragraph{{\textit{declaration} = \textit{expression}}
-The value of the expression is bound to the identifier.
+\begin{alltt}
+\quad \nterm{expr} \term{=} \nterm{expr}
+\quad \nterm{expr} \term{!=} \nterm{expr}
+\end{alltt}
 
 \subsubsection{\textit{expression} or \textit{expression}}
 The \texttt{or} operator returns true if either of its operands are false and false otherwise; \texttt{or} groups left-to-right, and the second operand may not be evaluated if the value of the first is false.
 
-\subsubsection{\textit{expression} | \textit{expression}}
-The predicate operator \texttt{|} requires the re-evaluation of the expression on the left until the conditional expression on the right evaluates to true. This will loop forever if the expression on the left can never satisfy the conditional.
 
 \subsubsection{\textit{expression} @ \textit{expression}} 
 The concatenation operator yields an list that is the concatenation of the left list at the head of the right list. Both sides must be lists of matching type (i.e. \texttt{fun[], int[], bool[], float[]}.) 
@@ -201,8 +202,6 @@ The case expression notation yields the expression paired with the first pattern
 
 \subsubsection{\textit{expression} ; \textit{expression}}
 A pair of expressions separated by a semicolon is evaluated left-to-right and the value of the left expression is discarded. The type and value of the result are the type and value of the right operand. This operator groups left to right. 
- 
-\subsection{Functions}
 
 \newpage
 
@@ -248,7 +247,7 @@ A pair of expressions separated by a semicolon is evaluated left-to-right and th
 \quad \term{(} \nterm{expr} \term{)}
 \quad \nterm{expr \term{;} expr}
 \quad \nterm{expr \term{::} expr}
-\quad \term{\midtilde} \nterm{identifier} \{ \nterm{expr} \} ( \term{|} \nterm{expr} ) 
+\quad \term{\midtilde} \nterm{identifier} \{ \nterm{expr} \} [ \term{|} \nterm{expr} ]
 \quad \nterm{prefix-op expr}
 \quad \nterm{expr infix-op expr}
 \quad \term{[} \nterm{expr} \{ \term{,} \nterm{expr} \} \term{]}
