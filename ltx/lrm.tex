@@ -107,6 +107,18 @@ Functions are evaluated with the following construct:
 
 where  \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n}  are optional arguments passed to the function and \term{|} \nterm{expr} specifies an optional condition that the return value of the function must fulfill. The return value of the function may be referenced within the condition by the special variable \term{\$}.
 
+\subsubsection{Patterns} 
+Patterns are templates that allow selecting values of a given shape and binding identifier names to values. Patterns are used in pattern matching. 
+
+\paragraph{Variable Patterns}
+A variable pattern consists of a value identifier. The pattern will match any value, and the value will be bound to the identifier. The pattern \texttt{_} will also match any value, but will not result in a binding. A value identifier can only appear once in a pattern.
+
+\paragraph{Constant Patterns}
+A pattern consisting of a constant matches the values equal to that constant.
+
+\paragraph{Variant Patterns}
+The pattern \textit{pattern} :: \textit{pattern} matches non-empty lists whose heads match the first pattern and whose tails match the second pattern. The :: operator is right associative.
+
 \subsection{Expressions}
 
 The precedence of expression operators is the same order as they are presented below. Operators in the same grouping (multiplicative, additive, relational etc.) are given the same precedence. Expressions on either side of binary operations must have the same type. 
@@ -169,7 +181,7 @@ The \texttt{=} (equal to) and the \texttt{!=} (not equal to) operators function 
 \paragraph{\textit{expression} != \textit{expression}}
 
 \subsubsection{Binding operators}
-\paragraph{\textit{declaration} = \textit{expression}}
+\paragraph{{\textit{declaration} = \textit{expression}}
 The value of the expression is bound to the identifier.
 
 \subsubsection{\textit{expression} or \textit{expression}}
@@ -184,7 +196,7 @@ The concatenation operator yields an list that is the concatenation of the left 
 \subsubsection{if \textit{expression} then \textit{expression} else \textit{expression}}
 The conditional statement evaluates to the second expression if the first is true, otherwise it evaluates to the third expression. If nesting another conditional, parenthesis are strongly recommended to prevent ambiguity.
 
-\subsubsection{match \textit{expression} with \textit{pattern} \texttt{->} \textit{expression} | ... | \textit{pattern} \texttt{->} \textit{expression}}
+\subsubsection{match \textit{expression} with \textit{pattern} $->$ \textit{expression} | ... | \textit{pattern} $->$ \textit{expression}}
 The case expression notation yields the expression paired with the first pattern matching the expression to be matched. 
 
 \subsubsection{\textit{expression} ; \textit{expression}}
