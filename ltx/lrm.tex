@@ -9,7 +9,7 @@ Outstanding issues:
 
 \subsection{Notation}
 
-Through the document, \nterm{nonterminals} are in brown italics and \term{terminals} are in light blue. Regular expression-like constructs are used to simplify grammar presentation an are in black. Brackets \texttt{[]} are used to indicate optional parts of productions, curly braces \texttt{\{\}} indicate portions of productions that can appear zero or more times, and parentheses \texttt{()} indicate grouping. 
+Through the document, \nterm{nonterminals} are in brown italics and \term{terminals} are in light blue monospace. Regular expression-like constructs are used to simplify grammar presentation and are in black. Brackets \texttt{[]} are used to indicate optional parts of productions, curly braces \texttt{\{\}} indicate portions of productions that can appear zero or more times, and parentheses \texttt{()} indicate grouping. 
 
 \subsection{Lexical conventions}
 
@@ -76,15 +76,15 @@ In addition there are derived array types denoted
 YAPPL does not support conversion between types. All types are immutable.
 
 \subsubsection{Non-function Type Declarations}
-All bindings must either be declared within a function declaration or declared when bound. A non-function declaration specifies a type and an identifier in the format \texttt{type : identifier}. Spaces around the colon are optional.  Examples of non-function type declarations:
+All bindings must either be declared within a function declaration or declared when bound. A non-function declaration specifies a type and an identifier in the format \nterm{type} \term{:} \nterm{identifier}. Spaces around the colon are optional.  Examples of non-function type declarations:
 
 \texttt{int:temp}\\
 \texttt{float[]:data}\\
-\texttt{bool:flag}
+\texttt{bool : flag}
 
 \subsubsection{Function Type Declarations}
 
-Function declarations consists of \texttt{fun} followed by a type declaration for the return type, followed by zero or more type declarations for arguments of function. Optionally, parentheses may surround the type declarations. Examples of function type declarations: 
+Function declarations consists of \term{fun} followed by a type declaration for the return type, followed by zero or more type declarations for arguments of function. Optionally, parentheses may surround the type declarations. Examples of function type declarations: 
 
 \texttt{fun int:add int:a int:b}\\
 \texttt{fun bool:contains (float:a float[]:list)}
@@ -93,7 +93,7 @@ Function declarations consists of \texttt{fun} followed by a type declaration fo
 
 \subsubsection{Value binding}
 
-A values are bound to names through the construct 
+Values are bound to names through the construct 
 
 \begin{alltt}
 \quad \nterm{value-decl}\textsuperscript{1} \term{=} \nterm{expr}\textsuperscript{1}  \term{and} \dots \term{and} \nterm{value-decl}\textsuperscript{n} \term{=} \nterm{expr}\textsuperscript{n}  \term{in} \nterm{expr}
@@ -109,7 +109,7 @@ The syntax for function binding is identical to that for value binding, except \
 Functions are evaluated with the following construct:
 
 \begin{alltt}
-\quad \term{\midtilde} \nterm{identifier} [ \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n} ] [ \term{|} \nterm{expr} ]
+\quad \term{\midtilde} \nterm{identifier} [ \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n} [ \term{|} \nterm{expr} ] ]
 \end{alltt}
 
 where  \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n}  are optional arguments passed to the function and \term{|} \nterm{expr} specifies an optional condition that the return value of the function must fulfill. The return value of the function may be referenced within the condition by the special variable \term{\$}.
@@ -118,60 +118,49 @@ where  \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n}  ar
 Patterns are templates that allow selecting values of a given shape and binding identifier names to values. Patterns are used in pattern matching. 
 
 \paragraph{Variable Patterns}
-A variable pattern consists of a value identifier. The pattern will match any value, and the value will be bound to the identifier. The pattern \texttt{\_} will also match any value, but will not result in a binding. A value identifier can only appear once in a pattern.
+A variable pattern consists of a value identifier. The pattern will match any value, and the value will be bound to the identifier. The pattern \term{\_} will also match any value, but will not result in a binding. A value identifier can only appear once in a pattern.
 
 \paragraph{Constant Patterns}
 A pattern consisting of a constant matches the values equal to that constant.
 
 \paragraph{Variant Patterns}
-The pattern \textit{pattern} :: \textit{pattern} matches non-empty lists whose heads match the first pattern and whose tails match the second pattern. The :: operator is right associative.
+The pattern \nterm{pattern} \term{::} \nterm{pattern} matches non-empty lists whose heads match the first pattern and whose tails match the second pattern. The \term{::} operator is right associative.
 
 \subsection{Expressions}
 
 The precedence of expression operators is the same order as they are presented below. Operators in the same grouping (multiplicative, additive, relational etc.) are given the same precedence. Expressions on either side of binary operations must have the same type. 
 
 \subsubsection{Primary expressions}
-Primary expressions such as $\midtilde$ involving function calls group left to right
+Primary expressions such as \term{\midtilde} involving function calls group left to right.
 
-\paragraph{\textit{identifier}}
+\paragraph{\nterm{identifier}}
 An identifier is a primary expression, provided it has been suitably bound. Its type is specified when bound. 
 
-\paragraph{\textit{constant}}
+\paragraph{\nterm{constant}}
 A decimal or floating constant is a primary expression. Its type is \texttt{int} in the first case, \texttt{float} in the last. 
 
-\paragraph{\textit{identifier}[\textit{expr}]}
+\paragraph{\nterm{identifier}\term{[}\nterm{expr}\term{]}}
 An identifier followed by an expression in square brackets is a primary expression that yields the value at the \texttt{int}  index of a list.
 
-\paragraph{(\textit{expr})}
+\paragraph{\term{(} \nterm{expr} \term{)}}
 A parenthesized expression is a primary expression whose type and value are identical to those of the unadorned expression. 
 
-\subsubsection{Unary operators}
-Expressions with unary operators group right-to-left.
-
-\paragraph{! \textit{expr}}
-The logical negation ! operator yields true if the value of the expression is false, and false if the value of the expression is true. 
-
 \subsubsection{Multiplicative operators}
-The multiplicative operators *, /, and \% group left-to-right.
+The multiplicative operators \texttt{*} (multiplication), \texttt{/} (division), and \texttt{\%} (modulus) are binary and group left-to-right. The  binary \% operator results in the remainder from the division of the first expression by the second. Both operands must be type \texttt{int} and the result is \texttt{int}. The remainder has the same sign as the dividend.
 
-\paragraph{\textit{expr} * \textit{expr}}
-The binary * operator indicates multiplication.
+\begin{alltt}
+\quad \nterm{expr} \term{*} \nterm{expr}
+\quad \nterm{expr} \term{/} \nterm{expr}
+\quad \nterm{expr} \term{\%} \nterm{expr}
+\end{alltt}
 
-\paragraph{\textit{expr} / \textit{expr}}
-The binary / operator indicates division.
-
-\paragraph{\textit{expr} \% \textit{expr}}
-The  binary \% operator results in the remainder from the division of the first expression by the second. Both operands must be type \texttt{int} and the result is \texttt{int}. The remainder has the same sign as the dividend.
-\\
 \subsubsection{Additive operators}
-The additive operators $+$ and $-$ group left-to-right.
+The additive operators \texttt{+} (sum) and \texttt{-} (difference) are binary and group left-to-right.
+\begin{alltt}
+\quad \nterm{expr} \term{+} \nterm{expr}
+\quad \nterm{expr} \term{-} \nterm{expr}
+\end{alltt}
 
-\paragraph{\textit{expr} + \textit{expr}}
-The binary  operator + indicates the sum of the expressions.
-
-\paragraph{\textit{expr} $-$ \textit{expr}}
-The binary operator $-$ indicates the difference of the operands.
-\\
 \subsubsection{Relational operators}
 The  relational operators < (less than), > (greater than), <= (less than or equal to) and >= (greater than or equal to) all yield false if the specified relation is false, and true if it is true. These operators group left-to-right. However, this is not particularly meaningful. For example, in a<b<c, a<b will evaluate to either true or false, and then the resulting expression is type mismatched or meaningless.
 
@@ -189,32 +178,50 @@ The \texttt{=} (equal to) and the \texttt{!=} (not equal to) operators function 
 \quad \nterm{expr} \term{!=} \nterm{expr}
 \end{alltt}
 
-\subsubsection{\textit{expression} or \textit{expression}}
-The \texttt{or} operator returns true if either of its operands are false and false otherwise; \texttt{or} groups left-to-right, and the second operand may not be evaluated if the value of the first is false.
+\subsubsection{Boolean operators}
+The boolean operators \texttt{and} (conjunction) and \texttt{or} (disjunction) are binary and group left-to-right. The boolean operator \texttt{!} (negation) is unary and groups right-to-left.
+The second operand or \texttt{or} may not be evaluated if the value of the first is false.
+\begin{alltt}
+\quad \nterm{expr} \term{and} \nterm{expr}
+\quad \nterm{expr} \term{or} \nterm{expr}
+\quad \term{!} \nterm{expr}
+\end{alltt}
 
+\subsubsection{Concatenation operator} 
+The concatenation operator yields an list that is the concatenation of the left list at the head of the right list. Both sides must be lists of matching type (i.e. \term{fun[]}, \term{int[]}, \term{bool[]}, \term{float[]}.)
+\begin{alltt}
+\quad \nterm{expr} \term{@} \nterm{expr}
+\end{alltt}
 
-\subsubsection{\textit{expression} @ \textit{expression}} 
-The concatenation operator yields an list that is the concatenation of the left list at the head of the right list. Both sides must be lists of matching type (i.e. \texttt{fun[], int[], bool[], float[]}.) 
+\subsubsection{Conditional expression}
+The conditional expression evaluates to the second expression if the first is true, otherwise it evaluates to the third expression. If nesting another conditional, parentheses are strongly recommended to prevent ambiguity.
+\begin{alltt}
+\quad \term{if} \nterm{expr} \term{then} \nterm{expr} [\term{else} \nterm{expr}]
+\end{alltt}
 
-\subsubsection{if \textit{expression} then \textit{expression} else \textit{expression}}
-The conditional statement evaluates to the second expression if the first is true, otherwise it evaluates to the third expression. If nesting another conditional, parenthesis are strongly recommended to prevent ambiguity.
+\subsubsection{Pattern match expression}
+The case expression notation yields the expression paired with the first pattern matching the expression to be matched.
 
-\subsubsection{match \textit{expression} with \textit{pattern} $->$ \textit{expression} | ... | \textit{pattern} $->$ \textit{expression}}
-The case expression notation yields the expression paired with the first pattern matching the expression to be matched. 
+\begin{alltt}
+\quad \term{match} \nterm{expr} \term{with} \nterm{pattern} \term{->} \nterm{expr} \term{|} \dots \term{|} \nterm{pattern} \term{->} \nterm{expr}
+\end{alltt}
 
-\subsubsection{\textit{expression} ; \textit{expression}}
-A pair of expressions separated by a semicolon is evaluated left-to-right and the value of the left expression is discarded. The type and value of the result are the type and value of the right operand. This operator groups left to right. 
+\subsubsection{Expression sequencing}
+A pair of expressions separated by a semicolon is evaluated left-to-right and the value of the left expression is discarded. The type and value of the result are the type and value of the right operand. This operator groups left to right.
+\begin{alltt}
+\quad \nterm{expr} \term{;} \nterm{expr}
+\end{alltt}
 
 \subsection{Built-in Functions}
-There are two built-in functions in YAPPL: \texttt{rand} and \texttt{print}. These are both reserved keywords. 
+There are two built-in functions in YAPPL: \term{rand} and \term{print}. These are both reserved keywords. 
 \subsubsection{rand}
-\texttt{rand} takes no arguments and returns a sufficiently random number. We implement the function using [some implementation to be decided.]
+\term{rand} takes no arguments and returns a sufficiently random number. We implement the function using [some implementation to be decided.]
 
 \subsubsection{print}
-Since YAPPL does not use the \texttt{string} type nor include string literals, printing must be achieved through other means. \texttt{print} takes a single argument that is a list of integers. For each number encountered in the list, \texttt{print} interprets this as the decimal representation of an ASCII character and prints to standard out the corresponding letter character in the ASCII table. Since \texttt{print} has no return value, it is called by itself without the \texttt{\midtilde} function evaluator. \\
+Since YAPPL does not use the \term{string} type nor include string literals, printing must be achieved through other means. \term{print} takes a single argument that is a list of integers. For each number encountered in the list, \term{print} interprets this as the decimal representation of an ASCII character and prints to standard out the corresponding letter character in the ASCII table. Since \term{print} has no return value, it is called by itself without the \term{\midtilde} function evaluator. \\
 \begin{verbatim}
-# prints "Hello World" to stdout
-print [72, 101, 108, 108, 111, 32, 87, 111, 114, 100]
+# prints "Hello World\n" to stdout
+print [72, 101, 108, 108, 111, 32, 87, 111, 114, 100, 10]
 \end{verbatim}
 
 \newpage
