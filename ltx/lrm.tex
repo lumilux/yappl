@@ -1,4 +1,3 @@
-
 Outstanding issues:
 \begin{itemize}
 \item pattern matching (Harley)
@@ -206,6 +205,18 @@ The case expression notation yields the expression paired with the first pattern
 \subsubsection{\textit{expression} ; \textit{expression}}
 A pair of expressions separated by a semicolon is evaluated left-to-right and the value of the left expression is discarded. The type and value of the result are the type and value of the right operand. This operator groups left to right. 
 
+\subsection{Built-in Functions}
+There are two built-in functions in YAPPL: \texttt{rand} and \texttt{print}. These are both reserved keywords. 
+\subsubsection{rand}
+\texttt{rand} takes no arguments and returns a sufficiently random number. We implement the function using [some implementation to be decided.]
+
+\subsubsection{print}
+Since YAPPL does not use the \texttt{string} type nor include string literals, printing must be achieved through other means. \texttt{print} takes a single argument that is a list of integers. For each number encountered in the list, \texttt{print} interprets this as the decimal representation of an ASCII character and prints to standard out the corresponding letter character in the ASCII table. Since \texttt{print} has no return value, it is called by itself without the \texttt{\midtilde} function evaluator. \\
+\begin{verbatim}
+# prints "Hello World" to stdout
+print [72, 101, 108, 108, 111, 32, 87, 111, 114, 100]
+\end{verbatim}
+
 \newpage
 
 \subsection{Grammar}
@@ -279,6 +290,10 @@ A pair of expressions separated by a semicolon is evaluated left-to-right and th
 \quad \nterm{type} \term{[ ]}
 \quad \nterm{base-type}
 \quad \term{fun} \nterm{type} \{ \nterm{type} \}
+
+\nterm{assignment-op} =
+\quad \term{=}
+\quad \term{:=}
 
 \nterm{pattern-matching} =  
 \quad [\term{|}]  \nterm{pattern} \term{->} \nterm{expression}  \{ \term{|} \nterm{pattern} \term{->} \nterm{expression}  \}
