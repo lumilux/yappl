@@ -215,10 +215,10 @@ A pair of expressions separated by a semicolon is evaluated left-to-right and th
 \subsection{Built-in Functions}
 There are two built-in functions in YAPPL: \term{rand} and \term{print}. These are both reserved keywords. 
 \subsubsection{rand}
-\term{rand} takes no arguments and returns a sufficiently random number. We implement the function using [some implementation to be decided.]
+The function \term{rand} takes no arguments and returns a random or pseudo-random number between 0 and 1. 
 
 \subsubsection{print}
-Since YAPPL does not use the \term{string} type nor include string literals, printing must be achieved through other means. \term{print} takes a single argument that is a list of integers. For each number encountered in the list, \term{print} interprets this as the decimal representation of an ASCII character and prints to standard out the corresponding letter character in the ASCII table. Since \term{print} has no return value, it is called by itself without the \term{\midtilde} function evaluator. \\
+Since YAPPL does not use the \term{string} type nor include string literals, printing must be achieved through other means. The \term{print} function takes a single argument that is a list of integers. For each number encountered in the list, \term{print} interprets this as the decimal representation of an ASCII character and prints to standard out the corresponding letter character in the ASCII table. It always returns \term{true}. \\
 \begin{verbatim}
 # prints "Hello World\n" to stdout
 print [72, 101, 108, 108, 111, 32, 87, 111, 114, 100, 10]
@@ -277,26 +277,6 @@ print [72, 101, 108, 108, 111, 32, 87, 111, 114, 100, 10]
 \quad \nterm{value-binding} \{ \term{and} \nterm{value-binding} \} \term{in} \nterm{expr}
 \quad \nterm{function-binding} \{ \term{and} \nterm{function-binding} \} \term{in} \nterm{expr}
 
-\nterm{prefix-op} =
-\quad \term{!}
-\quad \term{-}
-
-\nterm{infix-op} =
-\quad \term{and}
-\quad \term{or}
-\quad \term{+}
-\quad \term{-}
-\quad \term{*}
-\quad \term{/}
-\quad \term{\%}
-\quad \term{@}
-\quad \term{=}
-\quad \term{!=}
-\quad \term{<}
-\quad \term{>}
-\quad \term{>=}
-\quad \term{<=}
-
 \nterm{value-binding} =
 \quad \nterm{value-decl} \term{=} \nterm{expr} 
 
@@ -318,10 +298,6 @@ print [72, 101, 108, 108, 111, 32, 87, 111, 114, 100, 10]
 \quad \nterm{base-type}
 \quad \term{fun} \nterm{type} \{ \nterm{type} \}
 
-\nterm{assignment-op} =
-\quad \term{=}
-\quad \term{:=}
-
 \nterm{pattern-matching} =  
 \quad [\term{|}]  \nterm{pattern} \term{->} \nterm{expression}  \{ \term{|} \nterm{pattern} \term{->} \nterm{expression}  \}
 
@@ -329,6 +305,7 @@ print [72, 101, 108, 108, 111, 32, 87, 111, 114, 100, 10]
 \quad \term{\_}
 \quad \nterm{identifier}
 \quad \nterm{constant}
+\quad \term{(} \nterm{pattern} \term{)}
 \quad \nterm{pattern} \term{::} \nterm{pattern}
 
 \end{alltt}
@@ -345,4 +322,29 @@ print [72, 101, 108, 108, 111, 32, 87, 111, 114, 100, 10]
 %alpha-num:
 %\quad letter
 %\quad digit
+
+%\nterm{prefix-op} =
+%\quad \term{!}
+%\quad \term{-}
+%
+%\nterm{infix-op} =
+%\quad \term{and}
+%\quad \term{or}
+%\quad \term{+}
+%\quad \term{-}
+%\quad \term{*}
+%\quad \term{/}
+%\quad \term{\%}
+%\quad \term{@}
+%\quad \term{=}
+%\quad \term{!=}
+%\quad \term{<}
+%\quad \term{>}
+%\quad \term{>=}
+%\quad \term{<=}
+
+
+%\nterm{assignment-op} =
+%\quad \term{=}
+%\quad \term{:=}
 
