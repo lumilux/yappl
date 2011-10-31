@@ -96,7 +96,9 @@ Function declarations consists of \texttt{fun} followed by a type declaration fo
 
 A values are bound to names through the construct 
 
+\begin{alltt}
 \quad \nterm{value-decl}\textsuperscript{1} \term{=} \nterm{expr}\textsuperscript{1}  \term{and} \dots \term{and} \nterm{value-decl}\textsuperscript{n} \term{=} \nterm{expr}\textsuperscript{n}  \term{in} \nterm{expr}
+\end{alltt}
 
 which evaluates  \nterm{expr}\textsuperscript{1} \dots  \nterm{expr}\textsuperscript{n} in an unspecified order and binds the values of those expressions to the names specified in \nterm{value-decl}\textsuperscript{1} \dots \nterm{value-decl}\textsuperscript{n}.
 
@@ -107,7 +109,9 @@ The syntax for function binding is identical to that for value binding, except \
 \subsubsection{Function evaluation}
 Functions are evaluated with the following construct:
 
-\quad \term{\midtilde} \nterm{identifier} ( \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n} ) ( \term{|} \nterm{expr} ) 
+\begin{alltt}
+\quad \term{\midtilde} \nterm{identifier} [ \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n} ] [ \term{|} \nterm{expr} ]
+\end{alltt}
 
 where  \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n}  are optional arguments passed to the function and \term{|} \nterm{expr} specifies an optional condition that the return value of the function must fulfill. The return value of the function may be referenced within the condition by the special variable \term{\$}.
 
@@ -169,7 +173,6 @@ The  relational operators < (less than), > (greater than), <= (less than or equa
 
 \subsubsection{Equality operators}
 The \texttt{=} (equal to) and the \texttt{!=} (not equal to) operators function as the relational operators above, but have a lower precedence. Therefore, "a<b = c<d" is true when a<b and c<d have the same truth value.
-\\
 \begin{alltt}
 \quad \nterm{expr} \term{=} \nterm{expr}
 \quad \nterm{expr} \term{!=} \nterm{expr}
