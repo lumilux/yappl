@@ -1,21 +1,40 @@
-type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq
+type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | Mod | ListConcat | ListBuild
+type assign_op = Assign | MemoAssign
 
-type expr =
+type type_decl =
     IntLiteral of int
   | BoolLiteral of bool
   | FloatLiteral of float 
+
+type expr =
+    Literal of lit
   | Id of string
   | Binop of expr * op * expr
-  | Assign of string * expr
+  | Assign of string * assign_op * expr
   | If of expr * expr * expr
   | Noexpr
 
+type var_decl = {
+  vtype : type_decl;
+  vid : string;
+}
+
 type func_decl = {
+  fname : string;
+  formals : var_decl list;
+  return : var_decl list;
+  body : expr list;
+}
+
+(*type func_decl = {
     fname : string;
     formals : string list;
     locals : string list;
-    body : stmt list;
-  }
+    body : expr list;
+  }*)
+
+(* should 'expr' be replaced with 'func_decl'?
+ everything is a function, not an expression *)
 
 type program = expr | None
 
