@@ -41,7 +41,10 @@ and func_bind = string * assignop * func_decl
 and func_decl = fv_type * string * (fv_type * string) list
 
 (* For the symbol table *)
-and sym_table = SymTable of fv_type StringMap.t * sym_table | NoTable
+and sym_table = { 
+    table : fv_type StringMap.t;
+    parent : sym_table option;
+  } 
 
 and fv_type = FTYPE of func_type | VTYPE of val_type
 and func_type = {
