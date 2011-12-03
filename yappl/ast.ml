@@ -32,16 +32,36 @@ and pattern_match =
     Pattern of pattern * expr * pattern_match
   | NoPattern
 
-and val_bind = val_decl * expr
+(* let <type> : <name> = <expr> *)
+and val_bind = {
+    vdecl : val_decl;
+    vexpr : expr;
+} 
 
-and val_decl = val_type * string
+(* <vtype> : <vname> *)
+and val_decl = {
+    vtype : val_type;
+    vname : string;
+} 
+   
+(* <fdecl> <assignop> <expr>*)   
+and func_bind = {
+    fdecl : func_decl;
+    op : assignop;
+    body : expr;
+} 
 
-and func_bind = string * assignop * func_decl
-
-and func_decl = fv_type * string * (fv_type * string) list
+(* <type> : <fname> { <type> : <arg> } *) 
+and func_decl = {
+    return : fv_type; 
+    fname : string
+      (fv_type * string) list
 
 (* For the symbol table *)
-and sym_table = SymTable of fv_type StringMap.t * sym_table | NoTable
+and sym_table = { 
+    table : fv_type StringMap.t;
+    parent : sym_table option;
+  } 
 
 and fv_type = FTYPE of func_type | VTYPE of val_type
 and func_type = {
@@ -69,9 +89,6 @@ type func_decl = {
     locals : string list;
     body : expr list;
   }*)
-
-(* should 'expr' be replaced with 'func_decl'?
- everything is a function, not an expression *)
 
 type program = expr 
 
