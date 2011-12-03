@@ -17,6 +17,6 @@ and let expr_to_string table = function
 
 let translate prog =
   let global_sym_table = { table = Some(StringMap.empty); parent = None } in
-  
+  (* todo: handle print and rand *)
   
   
