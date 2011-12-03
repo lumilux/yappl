@@ -3,8 +3,9 @@
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK 
 %token COMMA COLON CONCAT ATTACH
 %token PLUS MINUS TIMES DIVIDE ASSIGN
+%token NOT
 %token EQ NEQ LT LEQ GT GEQ
-%token IF ELSE INT FLOAT BOOL FUN
+%token IF ELSE INT FLOAT BOOL FUN USCORE COND_VAR
 %token <bool> BOOL_LITERAL
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
@@ -17,6 +18,7 @@
 %nonassoc NOELSE
 %nonassoc ELSE 
 %right EQSYM
+%right NOT
 %left EQ NEQ
 %left LT GT LEQ GEQ
 %left PLUS MINUS
@@ -37,6 +39,7 @@ expr:
   | FLOAT_LITERAL    { FloatLit($1) }
   | LPAREN expr RPAREN { $2 }
   | ID               { Id($1) }
+  | NOT expr         { Unop(Not, $2) }
   | expr SEMI expr   { Sequence($1, $3) }
   | expr PLUS   expr { Binop($1, Add,    $3) }
   | expr MINUS  expr { Binop($1, Sub,    $3) }

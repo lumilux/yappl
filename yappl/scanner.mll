@@ -16,6 +16,8 @@ rule token = parse
 | '}'      { RBRACE }
 | '['      { LBRACK }
 | ']'      { RBRACK }
+| '_'      { USCORE } 
+| '$'      { COND_VAR }
 | '|'      { COND }
 | '~'      { TILDE }
 | "@"      { CONCAT }
@@ -23,6 +25,7 @@ rule token = parse
 | ":"      { COLON }
 | ';'      { SEMI }
 | ','      { COMMA }
+| '!'	   { NOT }
 | '+'      { PLUS }
 | '-'      { MINUS }
 | '*'      { TIMES }
