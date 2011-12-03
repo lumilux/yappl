@@ -1,0 +1,5 @@
+fun int:t1 int:a =
+    a + 3
+in
+print_line t1 2;
+print_line t1 -2

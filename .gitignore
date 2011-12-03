@@ -1,4 +1,7 @@
 *
 !*.tex
 !*.ml
-!yappl
+!*.ypl
+!*.out
+!yappl/
+!yappl/tests/

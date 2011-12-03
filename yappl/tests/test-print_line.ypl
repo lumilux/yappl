@@ -1,0 +1,4 @@
+print_line 1;
+print_line -2.0;
+print_line false;
+print_line [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]
