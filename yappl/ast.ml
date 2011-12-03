@@ -19,10 +19,10 @@ type var_decl = {
   vid : string;
 }
 
-type func_decl = {
+type fdecl = {
   fname : string;
   formals : var_decl list;
-  return : var_decl list;
+  return : type_decl list;
   body : expr list;
 }
 

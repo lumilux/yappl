@@ -1,6 +1,6 @@
 %{ open Ast %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA
+%token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA COLON
 %token PLUS MINUS TIMES DIVIDE ASSIGN
 %token EQ NEQ LT LEQ GT GEQ
 %token IF ELSE INT FLOAT BOOL FUN
@@ -8,6 +8,7 @@
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
 %token <string> ID
+%token FUN_LITERAL
 %token EOF
 
 %nonassoc NOCOND
@@ -58,11 +59,11 @@ expr:
 
 
 fdecl:
-   ID LPAREN formals_opt RPAREN LBRACE vdecl_list stmt_list RBRACE
-     { { fname = $1;
-	 formals = $3;
-	 locals = List.rev $6;
-	 body = List.rev $7 } }
+   FUN_LITERAL type_decl COLON ID LPAREN formals_opt RPAREN EQ stmt_list 
+     { { fname = $4;
+	 formals = $6;
+	 return = $2;
+	 body = List.rev $9 } }
  
 
 expr_opt:

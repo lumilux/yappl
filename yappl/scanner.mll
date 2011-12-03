@@ -28,6 +28,7 @@ rule token = parse
 | '*'      { TIMES }
 | '/'      { DIVIDE }
 | '='      { EQSYM }
+| ":="     { MEMOEQ }
 | "!="     { NEQ }
 | '<'      { LT }
 | "<="     { LEQ }
