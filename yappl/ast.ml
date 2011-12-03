@@ -48,8 +48,8 @@ and func_type = {
     args : fv_type list;
     return : fv_type;
 } 
-and val_type = BTYPE of base_type | LIST of val_type
 and base_type = BOOL | INT | FLOAT 
+and val_type = BTYPE of base_type | LIST of val_type
 
 (*type var_decl = {
   vtype : type_decl;

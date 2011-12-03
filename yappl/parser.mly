@@ -53,6 +53,7 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,    $3) }
   | expr CONCAT expr { Binop($1, Concat, $3) }
   | expr ATTACH expr { Binop($1, Attach, $3) }
+  | func_binding
 /*  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
   | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
   | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) }
@@ -61,30 +62,21 @@ expr:
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
 */
 
-fdecl:
-   FUN_LITERAL fv_type COLON ID LPAREN formals_opt RPAREN EQ stmt_list 
-     { { fname = $4;
-	 formals = $6;
-	 return = $2;
-	 body = List.rev $9 } }
- 
+func_binding:
 
-expr_opt:
-    /* nothing */ { Noexpr }
-  | expr          { $1 }
+/*func_binding:
+   FUN_LITERAL val_decl LPAREN formals_list RPAREN EQ expr_list 
+     { { vdecl = $2;
+	 formals = $4;
+	 body = List.rev $7 } }
 
-expr_seq_opt:
-    expr expr_seq_opt { $1 :: $2 }
-  | expr_opt          { $1 }
+val_decl: val_decl { $1 }
 
-cond_opt:
-    /* nothing */ { Noexpr }
-  | COND expr     { Cond($2) }
+formals_list:
+               { Noexpr }
+  | val_decl formals_list   { $1 :: $2 }
 
-expr_list_opt:
-    /* nothing */ { [] }
-  | expr_list  { List.rev $1 }
-
-actuals_list:
-    expr                    { [$1] }
-  | expr_list COMMA expr { $3 :: $1 }
+expr_list:
+               { Noexpr }
+  | expr expr_list          { $1 :: $2 }
+*/
