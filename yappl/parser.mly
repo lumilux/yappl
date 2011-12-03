@@ -1,6 +1,7 @@
 %{ open Ast %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA COLON
+%token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK 
+%token COMMA COLON CONCAT ATTACH
 %token PLUS MINUS TIMES DIVIDE ASSIGN
 %token EQ NEQ LT LEQ GT GEQ
 %token IF ELSE INT FLOAT BOOL FUN
@@ -41,7 +42,7 @@ expr:
   | expr MINUS  expr { Binop($1, Sub,    $3) }
   | expr TIMES  expr { Binop($1, Mult,   $3) }
   | expr DIVIDE expr { Binop($1, Div,    $3) }
-  | expr %right EQSYM  expr { Binop($1, Equal, $3) }
+  | expr EQSYM  expr { Binop($1, Equal, $3) }
   | expr NEQ    expr { Binop($1, Neq,    $3) }
   | expr LT     expr { Binop($1, Less,   $3) }
   | expr LEQ    expr { Binop($1, Leq,    $3) }
@@ -49,17 +50,16 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,    $3) }
   | expr CONCAT expr { Binop($1, Concat, $3) }
   | expr ATTACH expr { Binop($1, Attach, $3) }
-  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
+/*  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
   | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
   | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) }
   | RBRACK expr_list_opt LBRACK 
-
-  | ID EQSYM expr   { Assign($1, $3) }
+  | ID EQSYM expr   { ValBind($1, $3) }
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
-
+*/
 
 fdecl:
-   FUN_LITERAL type_decl COLON ID LPAREN formals_opt RPAREN EQ stmt_list 
+   FUN_LITERAL fv_type COLON ID LPAREN formals_opt RPAREN EQ stmt_list 
      { { fname = $4;
 	 formals = $6;
 	 return = $2;
