@@ -105,11 +105,13 @@ Values are bound to names through the construct
 \quad \nterm{value-decl}\textsuperscript{1} \term{=} \nterm{expr}\textsuperscript{1}  \term{and} \dots \term{and} \nterm{value-decl}\textsuperscript{n} \term{=} \nterm{expr}\textsuperscript{n} \term{in} \nterm{expr}
 \end{alltt}
 
-which evaluates  \nterm{expr}\textsuperscript{1} \dots  \nterm{expr}\textsuperscript{n} in the order of declaration and binds the values of those expressions to the names specified in \nterm{value-decl}\textsuperscript{1} \dots \nterm{value-decl}\textsuperscript{n}. The scope of a value declaration begins directly to the right of the declaration. 
+which evaluates  \nterm{expr}\textsuperscript{1} \dots  \nterm{expr}\textsuperscript{n} in the order of declaration and binds the values of those expressions to the names specified in \nterm{value-decl}\textsuperscript{1} \dots \nterm{value-decl}\textsuperscript{n}. The scope of a value declaration begins directly to the right of the declaration.
 
 \subsubsection{Function binding}
 
 The syntax for function binding is identical to that for value binding, except \nterm{value-decl} is replaced by \nterm{function-decl} and any number of \term{=} symbols may be replaced by \term{:=} symbols. The \term{:=} symbol defines a special memoization function. A memoized function is only evaluated once for a set of input values. Once function is evaluated on those values, it will always return the same value without being reevaluated. 
+
+A literal can only be bound to a function or value once within a program.
 
 \subsubsection{Function evaluation}
 Functions are evaluated with the following construct:
@@ -275,20 +277,20 @@ A summary of the grammar for YAPPL.
 \quad \nterm{value-binding} \{ \term{and} \nterm{value-binding} \} \term{in} \nterm{expr}
 \quad \nterm{function-binding} \{ \term{and} \nterm{function-binding} \} \term{in} \nterm{expr}
 \quad \term{rand}
-\quad \term{print} \nterm{expr}
+\quad ( \term{print} | \term{println} ) \nterm{expr}
 
 \nterm{value-binding} =
-\quad \nterm{value-decl} \term{=} \nterm{expr} 
+\quad \nterm{val-decl} \term{=} \nterm{expr} 
 
 \nterm{function-binding} =
 \quad \nterm{function-decl} \nterm{assignment-op} \nterm{expr} 
 
 \nterm{type-decl} = 
-\quad \nterm{var-decl}
+\quad \nterm{val-decl}
 \quad \nterm{function-decl}
 
 \nterm{function-decl} =
-\quad \term{fun}  \nterm{fun-type-decls-paren} \{ \nterm{fun-type-decls-paren} \}
+\quad \term{fun} \nterm{fun-type-decls-paren} \{ \nterm{fun-type-decls-paren} \}
 
 \nterm{fun-type-decls-paren} =
 \quad  \nterm{fun-type-decls}
@@ -297,14 +299,14 @@ A summary of the grammar for YAPPL.
 \nterm{fun-type-decls} =
 \quad \nterm{fun-type-decls} \nterm{type-decl}  
 
-\nterm{var-decl} = 
+\nterm{val-decl} = 
 \quad \nterm{type} \term{:} \nterm{identifier}
 
 \nterm{type} =
 \quad \nterm{type} \term{[ ]}
 \quad \nterm{base-type}
 \quad \term{fun} \nterm{type} \{ \nterm{type} \}
-\newpage
+
 \nterm{pattern-matching} =  
 \quad [\term{|}]  \nterm{pattern} \term{->} \nterm{expression}  \{ \term{|} \nterm{pattern} \term{->} \nterm{expression}  \}
 

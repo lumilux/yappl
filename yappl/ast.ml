@@ -1,20 +1,57 @@
-type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | Mod | ListConcat | ListBuild
-type assign_op = Assign | MemoAssign
+module StringMap = Map.Make(String)
 
-type type_decl =
+type binop = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | Mod | ListConcat | ListBuild
+type unop = Neg | Not
+type assignop = Assign | MemoAssign
+
+type expr =
+    Literal of literal
+  | Id of string
+  | ExprConcat of expr * expr
+  | Eval of string * expr list * expr
+  | Binop of expr * binop * expr
+  | Unop of unop * expr
+  | If of expr * expr * expr
+  | Match of expr * pattern_match
+  | ValBind of val_bind list * expr
+  | FuncBind of func_bind list * expr
+  | List of expr list 
+  | Noexpr
+
+and literal =
     IntLiteral of int
   | BoolLiteral of bool
   | FloatLiteral of float 
 
-type expr =
-    Literal of lit
-  | Id of string
-  | Binop of expr * op * expr
-  | Assign of string * assign_op * expr
-  | If of expr * expr * expr
-  | Noexpr
+and pattern = 
+    Ident of string 
+  | Wildcard 
+  | Concat of pattern * pattern
 
-type var_decl = {
+and pattern_match =
+    Pattern of pattern * expr * pattern_match
+  | NoPattern
+
+and val_bind = val_decl * expr
+
+and val_decl = val_type * string
+
+and func_bind = string * assignop * func_decl
+
+and func_decl = fv_type * string * (fv_type * string) list
+
+(* For the symbol table *)
+and sym_table = SymTable of fv_type StringMap.t * sym_table | NoTable
+
+and fv_type = FTYPE of func_type | VTYPE of val_type
+and func_type = {
+    args : fv_type list;
+    return : fv_type;
+} 
+and val_type = BTYPE of base_type | LIST of val_type
+and base_type = BOOL | INT | FLOAT 
+
+(*type var_decl = {
   vtype : type_decl;
   vid : string;
 }
@@ -26,7 +63,7 @@ type fdecl = {
   body : expr list;
 }
 
-(*type func_decl = {
+type func_decl = {
     fname : string;
     formals : string list;
     locals : string list;
@@ -36,44 +73,5 @@ type fdecl = {
 (* should 'expr' be replaced with 'func_decl'?
  everything is a function, not an expression *)
 
-type program = expr | None
+type program = expr 
 
-let rec string_of_expr = function
-    Literal(l) -> string_of_int l
-  | Id(s) -> s
-  | Binop(e1, o, e2) ->
-      string_of_expr e1 ^ " " ^
-      (match o with
-	Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
-      | Equal -> "==" | Neq -> "!="
-      | Less -> "<" | Leq -> "<=" | Greater -> ">" | Geq -> ">=") ^ " " ^
-      string_of_expr e2
-  | Assign(v, e) -> v ^ " = " ^ string_of_expr e
-  | Call(f, el) ->
-      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
-  | Noexpr -> ""
-
-let rec string_of_stmt = function
-    Block(stmts) ->
-      "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
-  | Expr(expr) -> string_of_expr expr ^ ";\n";
-  | Return(expr) -> "return " ^ string_of_expr expr ^ ";\n";
-  | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s
-  | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
-      string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
-  | For(e1, e2, e3, s) ->
-      "for (" ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^
-      string_of_expr e3  ^ ") " ^ string_of_stmt s
-  | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
-
-let string_of_vdecl id = "int " ^ id ^ ";\n"
-
-let string_of_fdecl fdecl =
-  fdecl.fname ^ "(" ^ String.concat ", " fdecl.formals ^ ")\n{\n" ^
-  String.concat "" (List.map string_of_vdecl fdecl.locals) ^
-  String.concat "" (List.map string_of_stmt fdecl.body) ^
-  "}\n"
-
-let string_of_program (vars, funcs) =
-  String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^
-  String.concat "\n" (List.map string_of_fdecl funcs)
