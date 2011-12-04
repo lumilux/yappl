@@ -23,6 +23,8 @@
 %left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE
+%left CONCAT ATTACH
+%left SEMI
 
 %start program
 %type <Ast.program> program
@@ -30,13 +32,13 @@
 %%
 
 program:
-   /* nothing */ { None }
+   /* nothing  { None }*/
  | expr          { $1 }
 
 expr:
-    BOOL_LITERAL     { BoolLit($1) }
-  | INT_LITERAL      { IntLit($1) }
-  | FLOAT_LITERAL    { FloatLit($1) }
+    BOOL_LITERAL     { BoolLiteral($1) }
+  | INT_LITERAL      { IntLiteral($1) }
+  | FLOAT_LITERAL    { FloatLiteral($1) }
   | LPAREN expr RPAREN { $2 }
   | ID               { Id($1) }
   | NOT expr         { Unop(Not, $2) }
@@ -51,8 +53,8 @@ expr:
   | expr LEQ    expr { Binop($1, Leq,    $3) }
   | expr GT     expr { Binop($1, Greater,$3) }
   | expr GEQ    expr { Binop($1, Geq,    $3) }
-  | expr CONCAT expr { Binop($1, Concat, $3) }
-  | expr ATTACH expr { Binop($1, Attach, $3) }
+  | expr CONCAT expr { Binop($1, ListConcat, $3) }
+  | expr ATTACH expr { Binop($1, ListBuild, $3) }
 /*  | FUN func_bind expr  { FuncBind($2, $3) }
   | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
   | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
