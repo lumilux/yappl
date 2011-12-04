@@ -40,7 +40,7 @@ expr:
   | LPAREN expr RPAREN { $2 }
   | ID               { Id($1) }
   | NOT expr         { Unop(Not, $2) }
-  | expr SEMI expr   { Sequence($1, $3) }
+  | expr SEMI expr   { ExprSeq($1, $3) }
   | expr PLUS   expr { Binop($1, Add,    $3) }
   | expr MINUS  expr { Binop($1, Sub,    $3) }
   | expr TIMES  expr { Binop($1, Mult,   $3) }
@@ -53,8 +53,8 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,    $3) }
   | expr CONCAT expr { Binop($1, Concat, $3) }
   | expr ATTACH expr { Binop($1, Attach, $3) }
-  | func_binding
-/*  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
+/*  | FUN func_bind expr  { FuncBind($2, $3) }
+  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
   | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
   | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) }
   | RBRACK expr_list_opt LBRACK 
@@ -62,7 +62,7 @@ expr:
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
 */
 
-func_binding:
+//func_bind: func_bind { $1 }
 
 /*func_binding:
    FUN_LITERAL val_decl LPAREN formals_list RPAREN EQ expr_list 

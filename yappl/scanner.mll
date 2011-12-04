@@ -39,6 +39,8 @@ rule token = parse
 | ">="     { GEQ }
 | "if"     { IF }
 | "else"   { ELSE }
+| "and"    { AND }
+| "or"     { OR }
 | "fun"    { FUN }
 | "int"    { INT }
 | "float"  { FLOAT }
