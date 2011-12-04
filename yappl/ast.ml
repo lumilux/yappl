@@ -7,7 +7,7 @@ type assignop = Assign | MemoAssign
 type expr =
     Literal of literal
   | Id of string
-  | ExprConcat of expr * expr
+  | ExprSeq of expr * expr
   | Eval of string * expr list * expr
   | Binop of expr * binop * expr
   | Unop of unop * expr
@@ -34,14 +34,14 @@ and pattern_match =
 
 (* let <type> : <name> = <expr> *)
 and val_bind = {
-    vdecl : val_decl;
+    vdecl : decl;
     vexpr : expr;
 } 
 
-(* <vtype> : <vname> *)
-and val_decl = {
-    vtype : val_type;
-    vname : string;
+(* <type> : <name> *)
+and decl = {
+    dtype : fv_type;
+    dname : string;
 } 
    
 (* <fdecl> <assignop> <expr>*)   
@@ -53,42 +53,26 @@ and func_bind = {
 
 (* <type> : <fname> { <type> : <arg> } *) 
 and func_decl = {
-    return : fv_type; 
-    fname : string
-      (fv_type * string) list
+    freturn : fv_type; 
+    fname : string;
+    fargs : decl list
+} 
 
 (* For the symbol table *)
 and sym_table = { 
-    table : fv_type StringMap.t;
+    table : st_entry StringMap.t;
     parent : sym_table option;
-  } 
+} 
 
-and fv_type = FTYPE of func_type | VTYPE of val_type
+and st_entry = VarEntry of fv_type | FuncEntry of fv_type * sym_table
+
+and fv_type = FuncType of func_type | VarType of val_type
 and func_type = {
     args : fv_type list;
     return : fv_type;
 } 
-and val_type = BTYPE of base_type | LIST of val_type
-and base_type = BOOL | INT | FLOAT 
-
-(*type var_decl = {
-  vtype : type_decl;
-  vid : string;
-}
-
-type fdecl = {
-  fname : string;
-  formals : var_decl list;
-  return : type_decl list;
-  body : expr list;
-}
-
-type func_decl = {
-    fname : string;
-    formals : string list;
-    locals : string list;
-    body : expr list;
-  }*)
+and val_type = BaseType of base_type | ListType of val_type
+and base_type = Bool | Int | Float 
 
 type program = expr 
 
