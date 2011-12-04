@@ -71,8 +71,8 @@ and func_type = {
     args : fv_type list;
     return : fv_type;
 } 
-and val_type = BaseType of base_type | ListType of val_type
 and base_type = Bool | Int | Float 
+and val_type = BaseType of base_type | ListType of val_type
 
 type program = expr 
 
