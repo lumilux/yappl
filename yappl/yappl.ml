@@ -1,4 +1,4 @@
-type action = Ast | Interpret | Bytecode | Compile
+(*type action = Ast | Interpret | Bytecode | Compile
 
 let _ =
   let action = if Array.length Sys.argv > 1 then
@@ -17,4 +17,8 @@ let _ =
       Bytecode.string_of_prog (Compile.translate program)
     in print_endline listing
   | Compile -> Execute.execute_prog (Compile.translate program)
- 
+ *)
+
+let lexbuf = Lexing.from_channel stdin in 
+let program = Parser.program Scanner.token lexbuf in
+  Translate.translate program
