@@ -49,7 +49,7 @@ rule token = parse
 | "false"  { BOOL_LITERAL(false) }
 | (opt1 | opt2 | opt3) as lxm { FLOAT_LITERAL(float_of_string lxm) }
 | digit+ as lxm { INT_LITERAL(int_of_string lxm) }
-| '$' as lxm      { ID(lxm) }
+| "$" as lxm      { ID(String.make 1 lxm) }
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
 | eof { EOF }
 | _ as char { raise (Failure("illegal character " ^ Char.escaped char)) }

@@ -5,3 +5,4 @@
 !*.out
 !yappl/
 !yappl/tests/
+!yappl/Makefile

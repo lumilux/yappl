@@ -5,7 +5,10 @@ type unop = Neg | Not
 type assignop = Assign | MemoAssign
 
 type expr =
-    Literal of literal
+  (* Literal of literal*)
+    IntLiteral of int
+  | BoolLiteral of bool
+  | FloatLiteral of float 
   | Id of string
   | ExprSeq of expr * expr
   | Eval of string * expr list * expr
@@ -18,11 +21,11 @@ type expr =
   | List of expr list 
   | Noexpr
 
-and literal =
+(*and literal =
     IntLiteral of int
   | BoolLiteral of bool
   | FloatLiteral of float 
-
+*)
 and pattern = 
     Ident of string 
   | Wildcard 
