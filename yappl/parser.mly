@@ -33,7 +33,7 @@
 
 program:
    /* nothing  { None }*/
- | expr          { $1 }
+  expr          { $1 }
 
 expr:
     BOOL_LITERAL     { BoolLiteral($1) }

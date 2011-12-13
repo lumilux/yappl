@@ -11,14 +11,14 @@ type expr =
   | FloatLiteral of float 
   | Id of string
   | ExprSeq of expr * expr
-  | Eval of string * expr list * expr
+  | Eval of string * expr list * expr (* id args predicate *)
   | Binop of expr * binop * expr
   | Unop of unop * expr
   | If of expr * expr * expr
   | Match of expr * pattern_match
   | ValBind of val_bind list * expr
   | FuncBind of func_bind list * expr
-  | List of expr list 
+  | ListBuilder of expr list 
   | Noexpr
 
 (*and literal =
@@ -67,15 +67,15 @@ and sym_table = {
     parent : sym_table option;
 } 
 
-and st_entry = VarEntry of fv_type | FuncEntry of fv_type * sym_table
+and st_entry = ValEntry of fv_type | FuncEntry of fv_type * sym_table
 
-and fv_type = FuncType of func_type | VarType of val_type
+(* Types *)
+and fv_type = FuncType of func_type | ValType of t
 and func_type = {
-    args : fv_type list;
-    return : fv_type;
+    args_t : fv_type list;
+    return_t : fv_type;
 } 
-and base_type = Bool | Int | Float 
-and val_type = BaseType of base_type | ListType of val_type
+and t = Bool | Int | Float | List of t
 
 type program = expr 
 
