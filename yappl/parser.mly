@@ -25,6 +25,7 @@
 %left TIMES DIVIDE
 %left CONCAT ATTACH
 %left SEMI AND
+%left LBRACK RBRACK
 
 %start program
 %type <Ast.program> program
@@ -55,7 +56,7 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,    $3) }
   | expr CONCAT expr { Binop($1, ListConcat, $3) }
   | expr ATTACH expr { Binop($1, ListBuild, $3) }
-  | FUN func_bind IN expr { FuncBind($2, $4) }
+  | func_bind IN expr { FuncBind($1, $3) }
 /*  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
   | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
   | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) } */
@@ -71,21 +72,26 @@ expr:
   /* Question: Why is func_bind a list? */
 
 func_bind:    
-  function_dec assn_op expr 
-     { [{ fdecl = $1;
+  function_decl assn_op expr 
+      { [{ fdecl = $1;
 	 op = $2;
 	 body = $3}] }
 
-function_dec:
-  t COLON name args
-    { { freturn = $1;
-        fname = $3;
-        fargs = List.rev $4} }
+function_decl:
+  FUN t COLON ID args
+    { { freturn = ValType $2;
+        fname = $4;
+        fargs = List.rev $5} }
 
-assn_op: assn_op { $1 }
+assn_op: 
+    EQSYM { Assign } 
+  | MEMOEQ { MemoAssign }
 
 t: 
-   t { $1 }
+    INT { Int }
+  | FLOAT { Float }
+  | BOOL { Bool }
+  | t LBRACK RBRACK { List $1 }
 
 name: 
    ID { $1 }
@@ -96,7 +102,7 @@ args:
 
 decl: 
   t COLON name 
-    { { dtype = $1;
+    { { dtype = ValType $1;
       dname = $3 } }
 
 /*val_decl: val_decl { $1 }
