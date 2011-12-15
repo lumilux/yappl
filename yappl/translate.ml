@@ -63,7 +63,7 @@ and eval_to_string table id args p =
 	and oid = id_to_ocaml_id id in
 	let str = 
 	  match p with 
-	    Noexpr -> "( " ^ oid ^ " " ^  (String.concat " " (List.rev rev_args)) ^ " )"
+	    Noexpr -> oid ^ " " ^  (String.concat " " (List.rev rev_args))
 	  |  _ ->
 	      let temp_table = { table = StringMap.add "$" (ValEntry(ft.return_t)) table.table; 
 				 parent = table.parent } in (* add special predicate value *)
@@ -149,8 +149,51 @@ and binop_to_string table e1 e2 op =
   in
   "(" ^ s1 ^ ") " ^ ocaml_op ^  " (" ^ s2 ^ ")", return_t
 
-and val_bind_to_string table = function 
-    vd, e -> "" (* todo *)
+and unop_to_string table e op = 
+  let (s, et) = expr_to_string table e in
+  let opstr = 
+    match op, et with
+      Not, ValType(Bool) -> "not"
+    | Neg, ValType(Int)
+    | Neg, ValType(Float) -> "-"
+    | _ -> raise (Error("Type mismatch with unary operator"))
+  in
+  opstr ^ " (" ^ s ^ ")", et
+
+and if_to_string table pred e1 e2 =
+    let (pred_str, pt) = expr_to_string table pred in
+    if pt <> ValType(Bool) then
+      raise (Error("Predicate for if expression not a boolen"))
+    else 
+      let (s1, t1) = expr_to_string table e1 
+      and (s2, t2) = expr_to_string table e2 in
+      if t1 = t2 then
+	"if ( " ^ pred_str ^ " ) then ( " ^ s1 ^ " ) else ( " ^ s2 ^ " )", t1
+      else
+	raise (Error("Type mismatch of if expressions"))
+
+
+and val_bindings_to_string table bindings e =
+  let proc ts vb =
+    let (tabl, s) = ts in
+    let (new_tabl, new_s) = val_bind_to_string tabl vb in
+    new_tabl, s ^ "\n" ^ new_s 
+  in
+  let (new_table, bstr) = List.fold_left proc (table, "") (List.rev bindings) in
+  let (s, et) = expr_to_string new_table e in 
+  bstr ^ "\n ( " ^ s ^ " )", et
+
+and val_bind_to_string table vb =
+  try 
+    ignore (sym_table_lookup table vb.vdecl.dname);
+    let (s, et) = expr_to_string table vb.vexpr in
+    if et <> vb.vdecl.dtype then
+      raise (Error("Incomptible type for value binding"))
+    else
+      let new_table = { table with table = StringMap.add vb.vdecl.dname (ValEntry et) table.table } in
+      new_table, "let " ^ vb.vdecl.dname ^ " = " ^ s ^ " in "
+  with No_such_symbol_found -> 
+    raise (Error("Duplicate value identifier: " ^  vb.vdecl.dname))
 
 and val_decl_to_string table = function
     _ -> ()
@@ -164,9 +207,10 @@ and expr_to_string table = function
   | ExprSeq(e1, e2) -> seq_to_string table e1 e2
   | Eval(id, args, p) -> eval_to_string table id args p
   | Binop(e1, op, e2) -> binop_to_string table e1 e2 op
-(*  | ValBind(bindings, e) -> (* todo *)
-	let bstr = String.concat " "  (List.map (val_bind_to_string table) bindings) in
-	bstr ^ "\n" ^ (expr_to_string table e), ValType(Int) *)
+  | Unop(op, e) -> unop_to_string table e op
+  | If(pred, e1, e2) -> if_to_string table pred e1 e2
+  | ValBind(bindings, e) -> val_bindings_to_string table bindings e
+  | Noexpr -> "", ValType(Void)
   | _ -> raise (Error "unsupported expression type")
 
 let translate prog =

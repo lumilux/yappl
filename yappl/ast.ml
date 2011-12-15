@@ -75,7 +75,7 @@ and func_type = {
     args_t : fv_type list;
     return_t : fv_type;
 } 
-and t = Bool | Int | Float | List of t
+and t = Void | Bool | Int | Float | List of t 
 
 type program = expr 
 
