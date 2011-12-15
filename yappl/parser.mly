@@ -3,9 +3,9 @@
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK 
 %token COMMA COLON CONCAT ATTACH COND TILDE
 %token PLUS MINUS TIMES DIVIDE ASSIGN
-%token NOT AND OR
+%token NOT AND OR 
 %token EQSYM NEQ LT LEQ GT GEQ MEMOEQ
-%token IF ELSE INT FLOAT BOOL FUN USCORE COND_VAR
+%token IF ELSE INT FLOAT BOOL FUN USCORE COND_VAR IN
 %token <bool> BOOL_LITERAL
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
@@ -55,8 +55,8 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,    $3) }
   | expr CONCAT expr { Binop($1, ListConcat, $3) }
   | expr ATTACH expr { Binop($1, ListBuild, $3) }
-/*  | FUN func_bind expr  { FuncBind($2, $3) }
-  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
+  | FUN func_bind IN expr { FuncBind($2, $4) }
+/*  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
   | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
   | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) }
   | RBRACK expr_list_opt LBRACK 
@@ -66,13 +66,40 @@ expr:
 
 //func_bind: func_bind { $1 }
 
-/*func_binding:
-   FUN_LITERAL val_decl LPAREN formals_list RPAREN EQ expr_list 
-     { { vdecl = $2;
-	 formals = $4;
-	 body = List.rev $7 } }
+/* Function binding */
 
-val_decl: val_decl { $1 }
+  /* Question: Why is func_bind a list? */
+
+func_bind:    
+  function_dec assn_op expr 
+     { [{ fdecl = $1;
+	 op = $2;
+	 body = $3}] }
+
+function_dec:
+  t COLON name args
+    { { freturn = $1;
+        fname = $3;
+        fargs = List.rev $4} }
+
+assn_op: assn_op { $1 }
+
+t: 
+   t { $1 }
+
+name: 
+   ID { $1 }
+
+args:
+  /* nothing */ {[]}
+  | decl args { $1 :: $2 }
+
+decl: 
+  t COLON name 
+    { { dtype = $1;
+      dname = $3 } }
+
+/*val_decl: val_decl { $1 }
 
 formals_list:
                { Noexpr }
