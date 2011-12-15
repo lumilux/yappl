@@ -170,7 +170,7 @@ and unop_to_string table e op =
     | Neg, ValType(Float) -> "-"
     | _ -> raise (Error("Type mismatch with unary operator"))
   in
-  opstr ^ " (" ^ s ^ ")", et
+  opstr ^ "(" ^ s ^ ")", et
 
 and if_to_string table pred e1 e2 =
     let (pred_str, pt) = expr_to_string table pred in
