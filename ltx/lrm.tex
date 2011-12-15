@@ -109,7 +109,7 @@ which evaluates  \nterm{expr}\textsuperscript{1} \dots  \nterm{expr}\textsupersc
 
 \subsubsection{Function binding}
 
-The syntax for function binding is identical to that for value binding, except \nterm{value-decl} is replaced by \nterm{function-decl} and any number of \term{=} symbols may be replaced by \term{:=} symbols. The \term{:=} symbol defines a special memoization function. A memoized function is only evaluated once for a set of input values. Once function is evaluated on those values, it will always return the same value without being reevaluated. 
+The syntax for function binding is identical to that for value binding, except \nterm{value-decl} is replaced by \nterm{function-decl} and any number of \term{=} symbols may be replaced by \term{:=} symbols. The \term{:=} symbol defines a special memoization function. A memoized function is only evaluated once for a set of input values. Once a function is evaluated on those values, it will always return the same value without being reevaluated. 
 
 A literal can only be bound to a function or value once within a program.
 

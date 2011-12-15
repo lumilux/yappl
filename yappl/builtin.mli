@@ -1,5 +1,11 @@
+open Ast
+
 module Builtin :
     sig
       val pred_special_var : string
-      val cond_eval : ('a -> bool) -> ('b -> 'a) -> 'b -> 'a
+      val builtins : (string * fv_type) list
+
+      val cond_eval : ('a -> bool) -> (unit -> 'a) -> 'a
+      val rand : unit -> float
+      val seed : unit -> bool
     end
