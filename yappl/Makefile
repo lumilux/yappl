@@ -1,7 +1,7 @@
 OBJS = ast.cmo parser.cmo scanner.cmo builtin.cmo translate.cmo yappl.cmo
 
 yappl : $(OBJS)
-	ocamlc -o yappl $(OBJS)
+	ocamlc -o yappl unix.cma $(OBJS)
 
 scanner.ml : scanner.mll
 	ocamllex scanner.mll
