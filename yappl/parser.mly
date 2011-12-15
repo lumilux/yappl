@@ -24,7 +24,7 @@
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left CONCAT ATTACH
-%left SEMI
+%left SEMI AND
 
 %start program
 %type <Ast.program> program
@@ -55,12 +55,12 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,    $3) }
   | expr CONCAT expr { Binop($1, ListConcat, $3) }
   | expr ATTACH expr { Binop($1, ListBuild, $3) }
-/*  | FUN func_bind expr  { FuncBind($2, $3) }
+  /*| FUN func_bind expr  { FuncBind($2, $3) }
   | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
   | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
-  | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) }
-  | RBRACK expr_list_opt LBRACK 
-  | ID EQSYM expr   { ValBind($1, $3) }
+  | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) } */
+  | LBRACK expr_list_opt RBRACK { ListBuilder($2) } /* 
+  | ID EQSYM expr   { ValBind($1, $3) } 
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
 */
 
@@ -77,8 +77,12 @@ val_decl: val_decl { $1 }
 formals_list:
                { Noexpr }
   | val_decl formals_list   { $1 :: $2 }
+*/
+expr_list_opt:
+    /* nothing */ { [] }
+  |expr_list          {$1}
 
 expr_list:
-               { Noexpr }
-  | expr expr_list          { $1 :: $2 }
-*/
+    expr                          {[$1] }
+  | expr_list COMMA expr          { $3 :: $1 }
+
