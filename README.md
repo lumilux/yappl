@@ -1,0 +1,3 @@
+# YAPPL: Yet Another Probabilistic Programming Language
+
+Probabilistic programming languages have grown increasingly popular in recent years because they allow for the concise definition of complex statistical models. They also provide tools for sampling the (usually Bayesian) models. YAPPL is inspired by the probabilistic program- ming language Church, an implementation of a pure subset of Scheme (a dialect of Lisp) for generating models using probabilistic functions. Church relies on the standard Lisp syntax, which is unintuitive and difficult to read. The syntax of YAPPL is inspired by OCaml and contains special constructs for the probabilistic elements of the language, which makes it more approachable and human-readable than Church.
