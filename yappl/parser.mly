@@ -62,7 +62,7 @@ expr:
   | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
   | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) } */
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }  
-  | val_bind_list IN expr {ValBind($1,$3) } 
+  | LET val_bind_list IN expr {ValBind($2,$4) } 
   /*| ID EQSYM val_bind_list_opt   { ValBind($1, $3) } 
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
 */
@@ -125,8 +125,8 @@ expr_list:
   | expr_list COMMA expr          { $3 :: $1 }
 
 val_bind_list:
-  LET val_bind {[$2]}
+   val_bind {[$1]}
   | val_bind_list AND val_bind { $3 :: $1 } 
 
 val_bind: 
-  | LET val_decl EQSYM expr {{vdecl = $2; vexpr = $4}}
+  | val_decl EQSYM expr {{vdecl = $1; vexpr = $3}}
