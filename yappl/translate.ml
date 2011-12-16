@@ -207,29 +207,32 @@ and val_bind_to_string table vb =
 
 and func_bindings_to_string table bindings e  =
   let proc (tabl, s) fb =
-    let (new_tabl, new_s) = func_bind_to_string tabl vb in
-    new_tabl, s ^ "\n" ^ new_s 
+    let (new_tabl, new_s) = func_bind_to_string tabl fb in
+    new_tabl, s ^ new_s 
   in
   let (new_table, bstr) = List.fold_left proc (table, "") (List.rev bindings) in
   let (s, et) = expr_to_string new_table e in 
-  bstr ^ "\n ( " ^ s ^ " )", et
+  bstr ^ s, et
 
 and func_bind_to_string table fb =
    try 
-     ignore (sym_table_lookup tablefb.fdecl.fname); (* make sure id doesn't already exist *)
+     ignore (sym_table_lookup table fb.fdecl.fname); (* make sure id doesn't already exist *)
      let build_table (tabl, args_t) decl =
        let new_tabl = StringMap.add decl.dname decl.dtype tabl in
        new_tabl, decl.dtype :: args_t
      in
-     let fun_table, args_t = List.fold_left build_table StringMap.empty fb.fdecl.fargs in
+     let func_table, args_t = List.fold_left build_table (StringMap.empty, []) fb.fdecl.fargs in
      let func_t = FuncType { args_t = List.rev args_t; return_t = fb.fdecl.freturn } in
      let new_table = { table with table = StringMap.add fb.fdecl.fname func_t table.table } in
-     let (s, et) = expr_to_string new_table e in
-     if et <> func_t.return_t then
+     let (body_s, body_t) = expr_to_string { table = func_table; parent = Some(new_table) } fb.body in
+     if body_t <> ValType(Void) then
        raise (Error("mismatched return and function body types"))
      else
-       (* todo *)
-     let oid = id_to_ocaml_id fb.fdecl.fname in
+       let arg_names = List.map (fun decl -> decl.dname) fb.fdecl.fargs in
+       let oid = id_to_ocaml_id fb.fdecl.fname in
+       new_table, "let rec " ^ oid ^ " unit " ^ (String.concat " " arg_names) ^ " = \n " ^ body_s ^ "\nin\n"
+       (* todo : memoization support *)
+
   with No_such_symbol_found -> 
     raise (Error("Duplicate function identifier: " ^  fb.fdecl.fname))
 
@@ -252,7 +255,6 @@ and expr_to_string table = function
 let translate prog =
   let init_table = List.fold_left (fun tabl (id, id_t) -> StringMap.add id id_t tabl) StringMap.empty Builtin.builtins in
   let global_sym_table = { table = init_table; parent = None } in
-  (* todo: handle print and rand *)
   let (s, _) = expr_to_string global_sym_table prog in
   s
   
