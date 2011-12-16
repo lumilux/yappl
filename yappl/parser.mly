@@ -5,7 +5,7 @@
 %token PLUS MINUS TIMES DIVIDE ASSIGN
 %token NOT AND OR IN LET
 %token EQSYM NEQ LT LEQ GT GEQ MEMOEQ
-%token IF ELSE INT FLOAT BOOL FUN USCORE COND_VAR
+%token IF ELSE INT FLOAT BOOL FUN USCORE COND_VAR IN
 %token <bool> BOOL_LITERAL
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
@@ -18,13 +18,14 @@
 %nonassoc NOELSE
 %nonassoc ELSE LET
 %right COLON EQSYM 
-%right NOT AND 
+%right NOT 
 %left EQ NEQ IN
 %left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left CONCAT ATTACH
-%left SEMI 
+%left SEMI AND
+%left LBRACK RBRACK
 
 %start program
 %type <Ast.program> program
@@ -56,8 +57,8 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,    $3) }
   | expr CONCAT expr { Binop($1, ListConcat, $3) }
   | expr ATTACH expr { Binop($1, ListBuild, $3) }
-  /*| FUN func_bind expr  { FuncBind($2, $3) }
-  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
+  | func_bind IN expr { FuncBind($1, $3) }
+/*  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
   | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
   | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) } */
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }  
@@ -68,11 +69,45 @@ expr:
 
 //func_bind: func_bind { $1 }
 
-/*func_binding:
-   FUN_LITERAL val_decl LPAREN formals_list RPAREN EQ expr_list 
-     { { vdecl = $2;
-	 formals = $4;
-	 body = List.rev $7 } }
+/* Function binding */
+
+  /* Question: Why is func_bind a list? */
+
+func_bind:    
+  function_decl assn_op expr 
+      { [{ fdecl = $1;
+	 op = $2;
+	 body = $3}] }
+
+function_decl:
+  FUN t COLON ID args
+    { { freturn = ValType $2;
+        fname = $4;
+        fargs = List.rev $5} }
+
+assn_op: 
+    EQSYM { Assign } 
+  | MEMOEQ { MemoAssign }
+
+t: 
+    INT { Int }
+  | FLOAT { Float }
+  | BOOL { Bool }
+  | t LBRACK RBRACK { List $1 }
+
+name: 
+   ID { $1 }
+
+args:
+  /* nothing */ {[]}
+  | decl args { $1 :: $2 }
+
+decl: 
+  t COLON name 
+    { { dtype = ValType $1;
+      dname = $3 } }
+
+/*val_decl: val_decl { $1 }
 
 formals_list:
                { Noexpr }
@@ -80,12 +115,6 @@ formals_list:
 */
 
 val_decl: decl  { $1 }
-
-decl: dtype COLON dname { {dtype = $1; dname = $3} }
-
-dtype: dtype {$1}
-
-dname: dname {$1} 
 
 expr_list_opt:
     /* nothing */ { [] }
