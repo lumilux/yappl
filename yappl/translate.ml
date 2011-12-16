@@ -195,7 +195,7 @@ and val_bindings_to_string table bindings e =
 
 and val_bind_to_string table vb =
   try 
-    ignore (sym_table_lookup table vb.vdecl.dname);
+    ignore (sym_table_lookup table vb.vdecl.dname); (* make sure id doesn't already exist *)
     let (s, et) = expr_to_string table vb.vexpr in
     if et <> vb.vdecl.dtype then
       raise (Error("Incomptible type for value binding"))
@@ -205,7 +205,34 @@ and val_bind_to_string table vb =
   with No_such_symbol_found -> 
     raise (Error("Duplicate value identifier: " ^  vb.vdecl.dname))
 
-(*and func_binding_to_string table *)
+and func_bindings_to_string table bindings e  =
+  let proc (tabl, s) fb =
+    let (new_tabl, new_s) = func_bind_to_string tabl vb in
+    new_tabl, s ^ "\n" ^ new_s 
+  in
+  let (new_table, bstr) = List.fold_left proc (table, "") (List.rev bindings) in
+  let (s, et) = expr_to_string new_table e in 
+  bstr ^ "\n ( " ^ s ^ " )", et
+
+and func_bind_to_string table fb =
+   try 
+     ignore (sym_table_lookup tablefb.fdecl.fname); (* make sure id doesn't already exist *)
+     let build_table (tabl, args_t) decl =
+       let new_tabl = StringMap.add decl.dname decl.dtype tabl in
+       new_tabl, decl.dtype :: args_t
+     in
+     let fun_table, args_t = List.fold_left build_table StringMap.empty fb.fdecl.fargs in
+     let func_t = FuncType { args_t = List.rev args_t; return_t = fb.fdecl.freturn } in
+     let new_table = { table with table = StringMap.add fb.fdecl.fname func_t table.table } in
+     let (s, et) = expr_to_string new_table e in
+     if et <> func_t.return_t then
+       raise (Error("mismatched return and function body types"))
+     else
+       (* todo *)
+     let oid = id_to_ocaml_id fb.fdecl.fname in
+  with No_such_symbol_found -> 
+    raise (Error("Duplicate function identifier: " ^  fb.fdecl.fname))
+
 
 and expr_to_string table = function
     IntLiteral(i) -> string_of_int i, ValType(Int)
@@ -218,7 +245,7 @@ and expr_to_string table = function
   | Unop(op, e) -> unop_to_string table e op
   | If(pred, e1, e2) -> if_to_string table pred e1 e2
   | ValBind(bindings, e) -> val_bindings_to_string table bindings e
-(*  | FuncBind(bindings, e) -> *)
+  | FuncBind(bindings, e) -> func_bindings_to_string table bindings e
   | Noexpr -> "", ValType(Void)
   | _ -> raise (Error "unsupported expression type")
 
