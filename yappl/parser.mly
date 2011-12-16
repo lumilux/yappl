@@ -18,13 +18,13 @@
 %nonassoc NOELSE
 %nonassoc ELSE LET
 %right COLON EQSYM 
-%right NOT 
+%right NOT SEMI
 %left EQ NEQ IN
 %left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left CONCAT ATTACH
-%left SEMI AND
+%left  AND
 %left LBRACK RBRACK
 
 %start program
@@ -63,8 +63,6 @@ expr:
   | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) } */
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }  
   | LET val_bind_list IN expr {ValBind($2,$4) } 
-/*| ID LPAREN actuals_opt RPAREN { Call($1, $3) }
-*/
 
 //func_bind: func_bind { $1 }
 
