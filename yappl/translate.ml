@@ -42,7 +42,7 @@ let rec ident_to_string table id =
 and seq_to_string table e1 e2 =
   let (s1, _) = expr_to_string table e1 in
   let (s2, t) = expr_to_string table e2 in
-  ("ignore " ^ s1 ^ "; " ^ s2, t)
+  ("(ignore (" ^ s1 ^ ")); " ^ s2, t )
     
 and eval_to_string table id args p =
   match id with
@@ -170,7 +170,7 @@ and unop_to_string table e op =
     | Neg, ValType(Float) -> "-"
     | _ -> raise (Error("Type mismatch with unary operator"))
   in
-  opstr ^ " (" ^ s ^ ")", et
+  opstr ^ "(" ^ s ^ ")", et
 
 and if_to_string table pred e1 e2 =
     let (pred_str, pt) = expr_to_string table pred in

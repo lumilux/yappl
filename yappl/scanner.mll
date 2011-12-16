@@ -42,6 +42,7 @@ rule token = parse
 | "and"    { AND }
 | "or"     { OR }
 | "in"     { IN }
+| "let"    { LET } 
 | "fun"    { FUN }
 | "int"    { INT }
 | "float"  { FLOAT }
