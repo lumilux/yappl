@@ -3,7 +3,7 @@
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK 
 %token COMMA COLON CONCAT ATTACH COND TILDE
 %token PLUS MINUS TIMES DIVIDE ASSIGN
-%token NOT AND OR
+%token NOT AND OR IN LET
 %token EQSYM NEQ LT LEQ GT GEQ MEMOEQ
 %token IF ELSE INT FLOAT BOOL FUN USCORE COND_VAR
 %token <bool> BOOL_LITERAL
@@ -16,15 +16,15 @@
 %nonassoc NOCOND
 %nonassoc COND
 %nonassoc NOELSE
-%nonassoc ELSE 
-%right EQSYM
-%right NOT
-%left EQ NEQ
+%nonassoc ELSE LET
+%right COLON EQSYM 
+%right NOT AND 
+%left EQ NEQ IN
 %left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left CONCAT ATTACH
-%left SEMI AND
+%left SEMI 
 
 %start program
 %type <Ast.program> program
@@ -42,6 +42,7 @@ expr:
   | LPAREN expr RPAREN { $2 }
   | ID               { Id($1) }
   | NOT expr         { Unop(Not, $2) }
+  | MINUS expr         { Unop(Neg, $2) }
   | expr SEMI expr   { ExprSeq($1, $3) }
   | expr PLUS   expr { Binop($1, Add,    $3) }
   | expr MINUS  expr { Binop($1, Sub,    $3) }
@@ -59,8 +60,9 @@ expr:
   | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
   | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
   | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) } */
-  | LBRACK expr_list_opt RBRACK { ListBuilder($2) } /* 
-  | ID EQSYM expr   { ValBind($1, $3) } 
+  | LBRACK expr_list_opt RBRACK { ListBuilder($2) }  
+  | val_bind_list IN expr {ValBind($1,$3) } 
+  /*| ID EQSYM val_bind_list_opt   { ValBind($1, $3) } 
   | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
 */
 
@@ -72,17 +74,30 @@ expr:
 	 formals = $4;
 	 body = List.rev $7 } }
 
-val_decl: val_decl { $1 }
-
 formals_list:
                { Noexpr }
   | val_decl formals_list   { $1 :: $2 }
 */
+
+val_decl: decl  { $1 }
+
+decl: dtype COLON dname { {dtype = $1; dname = $3} }
+
+dtype: dtype {$1}
+
+dname: dname {$1} 
+
 expr_list_opt:
     /* nothing */ { [] }
   |expr_list          {$1}
 
 expr_list:
-    expr                          {[$1] }
+    expr                          {[$1]}
   | expr_list COMMA expr          { $3 :: $1 }
 
+val_bind_list:
+  LET val_bind {[$2]}
+  | val_bind_list AND val_bind { $3 :: $1 } 
+
+val_bind: 
+  | LET val_decl EQSYM expr {{vdecl = $2; vexpr = $4}}
