@@ -51,7 +51,7 @@ expr:
   | expr MINUS  expr { Binop($1, Sub,    $3) }
   | expr TIMES  expr { Binop($1, Mult,   $3) }
   | expr DIVIDE expr { Binop($1, Div,    $3) }
-  | expr EQSYM  expr { Binop($1, Equal, $3) }
+  | expr EQSYM  expr { Binop($1, Equal,  $3) }
   | expr NEQ    expr { Binop($1, Neq,    $3) }
   | expr LT     expr { Binop($1, Less,   $3) }
   | expr LEQ    expr { Binop($1, Leq,    $3) }
@@ -65,8 +65,7 @@ expr:
   | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) } */
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }  
   | LET val_bind_list IN expr {ValBind($2,$4) } 
-  /*| ID EQSYM val_bind_list_opt   { ValBind($1, $3) } 
-  | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
+/*| ID LPAREN actuals_opt RPAREN { Call($1, $3) }
 */
 
 //func_bind: func_bind { $1 }
