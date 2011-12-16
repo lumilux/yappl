@@ -17,6 +17,8 @@
 %nonassoc COND
 %nonassoc NOELSE
 %nonassoc ELSE LET
+%nonassoc TILDE
+%nonassoc ID
 %right COLON EQSYM 
 %right NOT 
 %left EQ NEQ IN
@@ -58,8 +60,8 @@ expr:
   | expr CONCAT expr { Binop($1, ListConcat, $3) }
   | expr ATTACH expr { Binop($1, ListBuild, $3) }
   | func_bind IN expr { FuncBind($1, $3) }
-/*  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
-  | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
+  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
+/*  | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
   | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) } */
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }  
   | LET val_bind_list IN expr {ValBind($2,$4) } 
@@ -106,6 +108,20 @@ decl:
   t COLON name 
     { { dtype = ValType $1;
       dname = $3 } }
+
+/* Function evaluation */
+
+expr_seq_opt:
+  /* nothing */ { [] }
+  | expr_seq    { $1 }
+
+expr_seq:
+  expr          { [$1] }
+  | expr_seq expr   { $2 :: $1 }
+
+cond_opt:
+  /* nothing */ { Noexpr }
+  | COND expr { $2 }
 
 /*val_decl: val_decl { $1 }
 
