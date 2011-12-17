@@ -103,6 +103,7 @@ decl:
     { { dtype = ValType $1;
       dname = $3 } }
 
+
 /* Function evaluation */
 
 expr_seq_opt:
@@ -117,14 +118,8 @@ cond_opt:
   /* nothing */ { Noexpr }
   | COND expr { $2 }
 
-      /*val_decl: val_decl { $1 }
 
-formals_list:
-               { Noexpr }
-  | val_decl formals_list   { $1 :: $2 }
-*/
-
-val_decl: decl  { $1 }
+/* Lists */
 
 expr_list_opt:
     /* nothing */ { [] }
@@ -133,6 +128,11 @@ expr_list_opt:
 expr_list:
     expr                          {[$1]}
   | expr_list COMMA expr          { $3 :: $1 }
+
+
+/* Value binding */
+
+val_decl: decl  { $1 }
 
 val_bind_list:
    val_bind {[$1]}
