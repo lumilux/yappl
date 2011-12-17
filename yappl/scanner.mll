@@ -25,7 +25,7 @@ rule token = parse
 | ":"      { COLON }
 | ';'      { SEMI }
 | ','      { COMMA }
-| '!'	   { NOT }
+| '!'	     { NOT }
 | '+'      { PLUS }
 | '-'      { MINUS }
 | '*'      { TIMES }
@@ -39,6 +39,7 @@ rule token = parse
 | ">="     { GEQ }
 | "if"     { IF }
 | "else"   { ELSE }
+| "then"   { THEN }
 | "and"    { AND }
 | "or"     { OR }
 | "in"     { IN }

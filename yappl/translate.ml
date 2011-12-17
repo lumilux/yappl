@@ -181,6 +181,8 @@ and if_to_string table pred e1 e2 =
       and (s2, t2) = expr_to_string table e2 in
       if t1 = t2 then
 	"if ( " ^ pred_str ^ " ) then ( " ^ s1 ^ " ) else ( " ^ s2 ^ " )", t1
+      else if s2 = "" then (* in case there was no else *)
+  "if ( " ^ pred_str ^ " ) then ( " ^ s1 ^ " )", t1
       else
 	raise (Error("Type mismatch of if expressions"))
 

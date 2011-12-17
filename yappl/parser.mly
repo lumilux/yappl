@@ -5,7 +5,7 @@
 %token PLUS MINUS TIMES DIVIDE ASSIGN
 %token NOT AND OR IN LET
 %token EQSYM NEQ LT LEQ GT GEQ MEMOEQ
-%token IF ELSE INT FLOAT BOOL FUN USCORE COND_VAR IN
+%token IF ELSE THEN INT FLOAT BOOL FUN USCORE COND_VAR IN
 %token <bool> BOOL_LITERAL
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
@@ -61,8 +61,8 @@ expr:
   | expr ATTACH expr { Binop($1, ListBuild, $3) }
   | func_bind IN expr { FuncBind($1, $3) }
 //  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
-/*  | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
-  | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) } */
+  | IF LPAREN expr RPAREN THEN expr %prec NOELSE { If($3, $6, Noexpr) }
+  | IF LPAREN expr RPAREN THEN expr ELSE expr    { If($3, $6, $8) } 
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }  
   | LET val_bind_list IN expr {ValBind($2,$4) } 
 
