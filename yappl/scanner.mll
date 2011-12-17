@@ -50,6 +50,10 @@ rule token = parse
 | "bool"   { BOOL }
 | "true"   { BOOL_LITERAL(true) }
 | "false"  { BOOL_LITERAL(false) }
+| "match"  { MATCH }
+| "with"   { WITH }
+| "->"     { ARROW }
+| "_"      { WILDCARD }
 | (opt1 | opt2 | opt3) as lxm { FLOAT_LITERAL(float_of_string lxm) }
 | digit+ as lxm { INT_LITERAL(int_of_string lxm) }
 | "$" as lxm      { ID(String.make 1 lxm) }

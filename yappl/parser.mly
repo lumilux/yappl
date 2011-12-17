@@ -6,6 +6,7 @@
 %token NOT AND OR IN LET
 %token EQSYM NEQ LT LEQ GT GEQ MEMOEQ
 %token IF ELSE THEN INT FLOAT BOOL FUN USCORE COND_VAR IN
+%token MATCH WITH ARROW WILDCARD
 %token <bool> BOOL_LITERAL
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
@@ -25,7 +26,8 @@
 %nonassoc NOCOND
 %nonassoc COND
 %nonassoc NOELSE
-%nonassoc ELSE LET
+%nonassoc ELSE
+%nonassoc LET
 %nonassoc TILDE
 %nonassoc ID
 
@@ -45,7 +47,7 @@ expr:
   | LPAREN expr RPAREN { $2 }
   | ID               { Id($1) }
   | NOT expr         { Unop(Not, $2) }
-  | MINUS expr         { Unop(Neg, $2) }
+//  | MINUS expr         { Unop(Neg, $2) }
   | expr SEMI expr   { ExprSeq($1, $3) }
   | expr PLUS   expr { Binop($1, Add,    $3) }
   | expr MINUS  expr { Binop($1, Sub,    $3) }
@@ -60,13 +62,12 @@ expr:
   | expr CONCAT expr { Binop($1, ListConcat, $3) }
   | expr ATTACH expr { Binop($1, ListBuild, $3) }
   | func_bind IN expr { FuncBind($1, $3) }
-  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
+//  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
   | IF LPAREN expr RPAREN THEN expr %prec NOELSE { If($3, $6, Noexpr) }
   | IF LPAREN expr RPAREN THEN expr ELSE expr    { If($3, $6, $8) } 
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }  
   | LET val_bind_list IN expr {ValBind($2,$4) } 
-
-//func_bind: func_bind { $1 }
+  | MATCH expr WITH pattern_match { Match($2, $4) }
 
 /* Function binding */
 
@@ -102,7 +103,6 @@ decl:
   t COLON ID 
     { { dtype = ValType $1;
       dname = $3 } }
-
 
 /* Function evaluation */
 
@@ -140,3 +140,19 @@ val_bind_list:
 
 val_bind: 
   | val_decl EQSYM expr {{vdecl = $1; vexpr = $3}}
+
+
+/* Pattern matching */
+
+pattern_match:
+  pattern ARROW expr pattern_match_cont { Pattern($1, $3, NoPattern) }
+//  | COND pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
+
+pattern_match_cont:
+  /* nothing */ { NoPattern }
+//  | COND pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
+
+pattern:
+  ID { Ident($1) }
+  | WILDCARD { Wildcard }
+  | pattern ATTACH pattern { Concat($1, $3) }
