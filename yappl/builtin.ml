@@ -7,7 +7,7 @@ open Unix
 module Builtin =
   struct
     let pred_special_var = "x"
-    let builtins = ["rand", ValType Float; "seed", ValType Bool]
+    let builtins = ["print", ValType Bool; "rand", ValType Float; "seed", ValType Bool]
 
     let rec cond_eval pred f =
       let x = f ()

@@ -94,15 +94,12 @@ t:
   | BOOL { Bool }
   | t LBRACK RBRACK { List $1 }
 
-name: 
-   ID { $1 }
-
 args:
   /* nothing */ {[]}
-  | decl args { $1 :: $2 }
+  | args decl { $2 :: $1 }
 
 decl: 
-  t COLON name 
+  t COLON ID 
     { { dtype = ValType $1;
       dname = $3 } }
 
@@ -110,7 +107,7 @@ decl:
 
 expr_seq_opt:
   /* nothing */ { [] }
-  | expr_seq    { $1 }
+  | expr_seq    { List.rev $1 }
 
 expr_seq:
   expr          { [$1] }
