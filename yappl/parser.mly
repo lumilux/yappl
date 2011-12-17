@@ -60,7 +60,7 @@ expr:
   | expr CONCAT expr { Binop($1, ListConcat, $3) }
   | expr ATTACH expr { Binop($1, ListBuild, $3) }
   | func_bind IN expr { FuncBind($1, $3) }
-  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
+//  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
 /*  | IF LPAREN expr RPAREN expr %prec NOELSE { If($3, $5, Noexpr) }
   | IF LPAREN expr RPAREN expr ELSE expr    { If($3, $5, $7) } */
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }  
@@ -104,10 +104,10 @@ decl:
       dname = $3 } }
 
 
-/* Function evaluation */
+/* Function evaluation * /
 
 expr_seq_opt:
-  /* nothing */ { [] }
+  /* nothing * / { [] }
   | expr_seq    { List.rev $1 }
 
 expr_seq:
@@ -115,7 +115,7 @@ expr_seq:
   | expr_seq expr   { $2 :: $1 }
 
 cond_opt:
-  /* nothing */ { Noexpr }
+  /* nothing * / { Noexpr }
   | COND expr { $2 }
 
 
