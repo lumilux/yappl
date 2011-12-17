@@ -13,12 +13,6 @@
 %token FUN_LITERAL
 %token EOF
 
-%nonassoc NOCOND
-%nonassoc COND
-%nonassoc NOELSE
-%nonassoc ELSE LET
-%nonassoc TILDE
-%nonassoc ID
 %right COLON EQSYM 
 %right NOT SEMI
 %left EQ NEQ IN
@@ -28,6 +22,12 @@
 %left CONCAT ATTACH
 %left  AND
 %left LBRACK RBRACK
+%nonassoc NOCOND
+%nonassoc COND
+%nonassoc NOELSE
+%nonassoc ELSE LET
+%nonassoc TILDE
+%nonassoc ID
 
 %start program
 %type <Ast.program> program
@@ -120,7 +120,7 @@ cond_opt:
   /* nothing */ { Noexpr }
   | COND expr { $2 }
 
-/*val_decl: val_decl { $1 }
+      /*val_decl: val_decl { $1 }
 
 formals_list:
                { Noexpr }

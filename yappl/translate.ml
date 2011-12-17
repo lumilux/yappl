@@ -229,7 +229,7 @@ and func_bind_to_string table fb =
        raise (Error("mismatched return and function body types"))
      else
        (* todo *)
-     let oid = id_to_ocaml_id fb.fdecl.fname in
+     let oid = id_to_ocaml_id fb.fdecl.fname in 
   with No_such_symbol_found -> 
     raise (Error("Duplicate function identifier: " ^  fb.fdecl.fname))
 
