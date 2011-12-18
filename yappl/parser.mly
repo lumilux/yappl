@@ -14,21 +14,24 @@
 %token FUN_LITERAL
 %token EOF
 
+%nonassoc IN
+%nonassoc LET
+%nonassoc MATCH WITH
 %right COLON EQSYM 
-%right NOT SEMI
-%left EQ NEQ IN
+%right SEMI
+%left ATTACH
+%left CONCAT 
+%left AND OR
+%left EQ NEQ 
 %left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE
-%left CONCAT ATTACH
-%left  AND
-%left LBRACK RBRACK
+%left LBRACK RBRACK 
 %nonassoc NOCOND
 %nonassoc COND
 %nonassoc NOELSE
 %nonassoc ELSE
-%nonassoc LET
-%nonassoc TILDE
+%right NOT TILDE
 %nonassoc ID
 
 %start program
@@ -47,7 +50,7 @@ expr:
   | LPAREN expr RPAREN { $2 }
   | ID               { Id($1) }
   | NOT expr         { Unop(Not, $2) }
-//  | MINUS expr         { Unop(Neg, $2) }
+  | MINUS expr         { Unop(Neg, $2) }
   | expr SEMI expr   { ExprSeq($1, $3) }
   | expr PLUS   expr { Binop($1, Add,    $3) }
   | expr MINUS  expr { Binop($1, Sub,    $3) }
@@ -62,12 +65,12 @@ expr:
   | expr CONCAT expr { Binop($1, ListConcat, $3) }
   | expr ATTACH expr { Binop($1, ListBuild, $3) }
   | func_bind IN expr { FuncBind($1, $3) }
-//  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
+  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
   | IF LPAREN expr RPAREN THEN expr %prec NOELSE { If($3, $6, Noexpr) }
   | IF LPAREN expr RPAREN THEN expr ELSE expr    { If($3, $6, $8) } 
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }  
   | LET val_bind_list IN expr {ValBind($2,$4) } 
-  | MATCH expr WITH pattern_match { Match($2, $4) }
+  | MATCH expr WITH pattern_match  { Match($2, $4) }
 
 /* Function binding */
 
@@ -146,11 +149,11 @@ val_bind:
 
 pattern_match:
   pattern ARROW expr pattern_match_cont { Pattern($1, $3, NoPattern) }
-//  | COND pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
+  | COND pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
 
 pattern_match_cont:
-  /* nothing */ { NoPattern }
-//  | COND pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
+  /* nothing */ %prec MATCH { NoPattern }
+  | COND pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
 
 pattern:
   ID { Ident($1) }
