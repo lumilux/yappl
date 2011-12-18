@@ -221,6 +221,15 @@ and string_at_index table s e =
       ("(List.nth " ^ s ^ " " ^ es ^ ")" ), vt  
      with No_such_symbol_found ->
         raise (Error("Unbound symbol referenced"))  
+
+(* TODO: in progress *)
+and match_to_string table e p = 
+    let es,vt = expr_to_string table e in
+    ("match " ^ es ^ " with " ^ (patt_to_string table p )), vt
+
+and patt_to_string table p =
+  "pattern"      
+
      
 and val_bindings_to_string table bindings e =
   let proc (tabl, s) vb =
@@ -291,7 +300,8 @@ and expr_to_string table = function
   | Noexpr -> "", ValType(Void)
   | ListBuilder(l) -> list_to_string table l
   | GetIndex(l, e) -> string_at_index table l e 
-  | _ -> raise (Error "unsupported expression type")
+  | Match(e,p) -> match_to_string table e p 
+  (*| _ -> raise (Error "unsupported expression type")*) 
 
 let translate prog =
   let init_table = List.fold_left (fun tabl (id, id_t) -> StringMap.add id id_t tabl) StringMap.empty Builtin.builtins in
