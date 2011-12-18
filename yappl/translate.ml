@@ -20,7 +20,7 @@ let match_num_types  = function
 let rec sym_table_lookup table id =
   try
     StringMap.find id table.table 
-  with No_such_symbol_found  ->
+  with Not_found  ->
     match table.parent with
       Some(p) -> sym_table_lookup p id
     | None    -> raise No_such_symbol_found
@@ -197,15 +197,16 @@ and val_bindings_to_string table bindings e =
 
 and val_bind_to_string table vb =
   try 
-    ignore (sym_table_lookup table vb.vdecl.dname); (* make sure id doesn't already exist *)
+    ignore (sym_table_lookup table vb.vdecl.dname);  (* make sure id doesn't already exist *)
+    raise (Error("Duplicate value identifier: " ^  vb.vdecl.dname))
+  with No_such_symbol_found -> 
     let (s, et) = expr_to_string table vb.vexpr in
     if et <> vb.vdecl.dtype then
       raise (Error("Incomptible type for value binding"))
     else
       let new_table = { table with table = StringMap.add vb.vdecl.dname et table.table } in
       new_table, "let " ^ vb.vdecl.dname ^ " = " ^ s ^ " in "
-  with No_such_symbol_found -> 
-    raise (Error("Duplicate value identifier: " ^  vb.vdecl.dname))
+
 
 and func_bindings_to_string table bindings e  =
   let proc (tabl, s) fb =

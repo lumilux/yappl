@@ -3,6 +3,9 @@ OBJS = ast.cmo parser.cmo scanner.cmo builtin.cmo translate.cmo yappl.cmo
 yappl : $(OBJS)
 	ocamlc -o yappl unix.cma $(OBJS)
 
+debug : $(OBJS)
+	ocamlc -g -o yappl unix.cma $(OBJS)
+
 scanner.ml : scanner.mll
 	ocamllex scanner.mll
 
@@ -10,10 +13,10 @@ parser.ml parser.mli : parser.mly
 	ocamlyacc parser.mly
 
 %.cmo : %.ml
-	ocamlc -c $<
+	ocamlc -g -c $<
 
 %.cmi : %.mli
-	ocamlc -c $<
+	ocamlc -g -c $<
 
 .PHONY : clean
 clean :
