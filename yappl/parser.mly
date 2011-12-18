@@ -14,7 +14,7 @@
 %token EOF
 
 %nonassoc IN
-%nonassoc SEMI
+%left SEMI
 %nonassoc LET
 %nonassoc MATCH WITH
 %nonassoc NOCOND
