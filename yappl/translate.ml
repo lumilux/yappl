@@ -218,12 +218,12 @@ and list_to_string table l =
 			             else raise (Error("Type mismatch in list" ^ (eg2s vt t1))) 
                                    )
 			       ) l in
+             (* Need type t to construct a list type from the enumerated type *) 
              match (vt) with
               (ValType ty) -> let t = ty in
      	           ("[" ^ (String.concat ";" (List.rev sl)) ^ "]"), ValType(List(t))  
              |_ -> raise (Error("Functions not allowed in lists."))
 
-(* TODO: stub, need parsing to work to test *)
 and string_at_index table s e = 
      try 
       let vt =  (sym_table_lookup table s) in
