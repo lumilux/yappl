@@ -186,6 +186,12 @@ and if_to_string table pred e1 e2 =
       else
 	raise (Error("Type mismatch of if expressions"))
 
+(* placeholder *)
+and list_to_string l =
+   let vt = ValType(Int)
+   in 
+   "[]", vt
+
 and val_bindings_to_string table bindings e =
   let proc (tabl, s) vb =
     let (new_tabl, new_s) = val_bind_to_string tabl vb in
@@ -253,6 +259,7 @@ and expr_to_string table = function
   | ValBind(bindings, e) -> val_bindings_to_string table bindings e
   | FuncBind(bindings, e) -> func_bindings_to_string table bindings e
   | Noexpr -> "", ValType(Void)
+  | ListBuilder(l) -> list_to_string l
   | _ -> raise (Error "unsupported expression type")
 
 let translate prog =

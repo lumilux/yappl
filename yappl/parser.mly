@@ -100,7 +100,7 @@ expr_core:
   | IF LPAREN expr RPAREN THEN expr ELSE expr    { If($3, $6, $8) } */
   | IF  expr  THEN expr { If($2, $4, Noexpr) }  
   | IF  expr THEN expr ELSE expr { If($2, $4, $6) }
-/*  | LBRACK expr_list_opt RBRACK { ListBuilder($2) } */  
+  | LBRACK expr_list_opt RBRACK { ListBuilder($2) }   
   | LET val_bind_list IN expr {ValBind($2,$4) } 
 /*  | MATCH expr WITH pattern_match  { Match($2, $4) }*/
 
