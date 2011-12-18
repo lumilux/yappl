@@ -2,7 +2,7 @@
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK 
 %token COMMA COLON CONCAT ATTACH COND TILDE
-%token PLUS MINUS TIMES DIVIDE ASSIGN
+%token PLUS MINUS TIMES DIVIDE MOD ASSIGN
 %token NOT AND OR IN LET
 %token EQSYM NEQ LT LEQ GT GEQ MEMOEQ
 %token IF ELSE THEN INT FLOAT BOOL FUN COND_VAR IN
@@ -30,7 +30,7 @@
 %left EQ NEQ 
 %left LT GT LEQ GEQ
 %left PLUS MINUS
-%left TIMES DIVIDE
+%left TIMES DIVIDE MOD
 %nonassoc top_precs
 %nonassoc NOT
 %nonassoc TILDE
@@ -61,6 +61,7 @@ binop:
   | expr MINUS  expr { Binop($1, Sub,    $3) }
   | expr TIMES  expr { Binop($1, Mult,   $3) }
   | expr DIVIDE expr { Binop($1, Div,    $3) }
+  | expr MOD    expr { Binop($1, Mod,    $3) }
   | expr EQSYM  expr { Binop($1, Equal,  $3) }
   | expr NEQ    expr { Binop($1, Neq,    $3) }
   | expr LT     expr { Binop($1, Less,   $3) }

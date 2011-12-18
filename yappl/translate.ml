@@ -58,7 +58,10 @@ and eg2s s1 s2 =
     
 and eval_to_string table id args p =
   match id with
-    "print" ->
+    "print_line" ->
+       let p,t = (eval_to_string table "print" args p ) in
+         "ignore ( " ^ p ^ ");\n print_char ('\\n'); true", ValType Bool
+   | "print" ->
       (match p with 
 	Noexpr -> 
 	  let arg = 

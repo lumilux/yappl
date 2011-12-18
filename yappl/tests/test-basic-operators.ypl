@@ -1,7 +1,7 @@
-print_line (-2.5e-6 + 1.0);
-print_line (-2 + 1000);
-print_line (8 * 5);
-print_line (90 -15);
-print_line (1000/10);
-print_line (2 * (-2) + 102 - 6 / 3);
-print_line (10 % 5)
+~print_line (-2.5e-6 + 1.0);
+~print_line (-2 + 1000);
+~print_line (8 * 5);
+~print_line (90 -15);
+~print_line (1000/10);
+~print_line (2 * (-2) + 102 - 6 / 3);
+~print_line (10 % 5)
