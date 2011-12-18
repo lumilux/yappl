@@ -212,6 +212,16 @@ and list_to_string table l =
 			       ) l in
      	     ("[" ^ (String.concat "," (List.rev sl)) ^ "]"), vt  
 
+(* TODO: stub, need parsing to work to test *)
+and string_at_index table s e = 
+     try 
+      let vt =  (sym_table_lookup table s) in
+      let es,_ = expr_to_string table e 
+      in    
+      ("(List.nth " ^ s ^ " " ^ es ^ ")" ), vt  
+     with No_such_symbol_found ->
+        raise (Error("Unbound symbol referenced"))  
+     
 and val_bindings_to_string table bindings e =
   let proc (tabl, s) vb =
     let (new_tabl, new_s) = val_bind_to_string tabl vb in
@@ -280,6 +290,7 @@ and expr_to_string table = function
   | FuncBind(bindings, e) -> func_bindings_to_string table bindings e
   | Noexpr -> "", ValType(Void)
   | ListBuilder(l) -> list_to_string table l
+  | GetIndex(l, e) -> string_at_index table l e 
   | _ -> raise (Error "unsupported expression type")
 
 let translate prog =
