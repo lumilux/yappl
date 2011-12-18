@@ -59,7 +59,10 @@ and eg2s s1 s2 =
     
 and eval_to_string table id args p =
   match id with
-    "print" ->
+    "print_line" ->
+       let p,t = (eval_to_string table "print" args p ) in
+         "ignore ( " ^ p ^ ");\n print_char ('\\n'); true", ValType Bool
+   | "print" ->
       (match p with 
 	Noexpr -> 
 	  let arg = 
@@ -213,6 +216,25 @@ and list_to_string table l =
 			       ) l in
      	     ("[" ^ (String.concat "," (List.rev sl)) ^ "]"), vt  
 
+(* TODO: stub, need parsing to work to test *)
+and string_at_index table s e = 
+     try 
+      let vt =  (sym_table_lookup table s) in
+      let es,_ = expr_to_string table e 
+      in    
+      ("(List.nth " ^ s ^ " " ^ es ^ ")" ), vt  
+     with No_such_symbol_found ->
+        raise (Error("Unbound symbol referenced"))  
+
+(* TODO: in progress *)
+and match_to_string table e p = 
+    let es,vt = expr_to_string table e in
+    ("match " ^ es ^ " with " ^ (patt_to_string table p )), vt
+
+and patt_to_string table p =
+  "pattern"      
+
+     
 and val_bindings_to_string table bindings e =
   let proc (tabl, s) vb =
     let (new_tabl, new_s) = val_bind_to_string tabl vb in
@@ -279,7 +301,9 @@ and expr_to_string table = function
   | FuncBind(bindings, e) -> func_bindings_to_string table bindings e
   | Noexpr -> "", ValType(Void)
   | ListBuilder(l) -> list_to_string table l
-  | _ -> raise (Error "unsupported expression type")
+  | GetIndex(l, e) -> string_at_index table l e 
+  | Match(e,p) -> match_to_string table e p 
+  (*| _ -> raise (Error "unsupported expression type")*) 
 
 let translate prog =
   (*print_endline (string_of_expr "" prog);*)

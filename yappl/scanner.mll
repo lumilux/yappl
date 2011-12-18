@@ -29,6 +29,7 @@ rule token = parse
 | '-'      { MINUS }
 | '*'      { TIMES }
 | '/'      { DIVIDE }
+| '%'      { MOD } 
 | '='      { EQSYM }
 | ":="     { MEMOEQ }
 | "!="     { NEQ }

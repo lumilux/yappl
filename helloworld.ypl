@@ -1,2 +1,2 @@
 # if you need strings, you're doing it wrong.
-print_line 1;
+~print_line 1;
