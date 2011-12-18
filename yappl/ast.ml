@@ -19,6 +19,7 @@ type expr =
   | ValBind of val_bind list * expr
   | FuncBind of func_bind list * expr
   | ListBuilder of expr list 
+  | GetIndex of string * expr
   | Noexpr
 
 (*and literal =
