@@ -43,6 +43,18 @@ and seq_to_string table e1 e2 =
   let (s1, _) = expr_to_string table e1 in
   let (s2, t) = expr_to_string table e2 in
   ("(ignore (" ^ s1 ^ ")); " ^ s2, t )
+
+and type_to_string vt = 
+ match vt with
+   ValType(Int) -> "int"
+ | ValType(Bool) -> "bool"
+ | ValType(Float) -> "float"
+ | ValType(Void) -> "void"
+ | _ -> "unknown crazy voodoo"
+
+(* "expected ... got" string *) 
+and eg2s s1 s2 = 
+ (" Expected " ^ type_to_string s1 ^ ", surprised by " ^ type_to_string s2 )
     
 and eval_to_string table id args p =
   match id with
@@ -175,7 +187,7 @@ and unop_to_string table e op =
 and if_to_string table pred e1 e2 =
     let (pred_str, pt) = expr_to_string table pred in
     if pt <> ValType(Bool) then
-      raise (Error("Predicate for if expression not a boolen"))
+      raise (Error("Predicate for if expression not a boolean"))
     else 
       let (s1, t1) = expr_to_string table e1 
       and (s2, t2) = expr_to_string table e2 in
@@ -186,11 +198,19 @@ and if_to_string table pred e1 e2 =
       else
 	raise (Error("Type mismatch of if expressions"))
 
-(* placeholder *)
-and list_to_string l =
-   let vt = ValType(Int)
-   in 
-   "[]", vt
+
+and list_to_string table l = 
+    match l with
+      []  -> "[]", ValType(Void)
+    | _   -> let head = List.hd (List.rev l) in 
+             let (_,vt) = expr_to_string table head in
+             let sl = List.map ( fun e -> 
+				  (match expr_to_string table e with
+			             (s1, t1) -> if t1 = vt then s1
+			             else raise (Error("Type mismatch in list" ^ (eg2s vt t1))) 
+                                   )
+			       ) l in
+     	     ("[" ^ (String.concat "," (List.rev sl)) ^ "]"), vt  
 
 and val_bindings_to_string table bindings e =
   let proc (tabl, s) vb =
@@ -259,7 +279,7 @@ and expr_to_string table = function
   | ValBind(bindings, e) -> val_bindings_to_string table bindings e
   | FuncBind(bindings, e) -> func_bindings_to_string table bindings e
   | Noexpr -> "", ValType(Void)
-  | ListBuilder(l) -> list_to_string l
+  | ListBuilder(l) -> list_to_string table l
   | _ -> raise (Error "unsupported expression type")
 
 let translate prog =
