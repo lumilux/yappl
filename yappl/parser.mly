@@ -11,7 +11,6 @@
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
 %token <string> ID
-%token FUN_LITERAL
 %token EOF
 
 %nonassoc IN
@@ -20,6 +19,8 @@
 %nonassoc MATCH WITH
 %nonassoc NOCOND
 %nonassoc COND
+%nonassoc IF
+%nonassoc FUN
 %nonassoc NOELSE
 %nonassoc THEN
 %nonassoc ELSE
@@ -33,7 +34,7 @@
 %left TIMES DIVIDE
 %nonassoc NOT
 %nonassoc TILDE
-%nonassoc ID LBRACK RBRACK 
+%nonassoc ID LBRACK RBRACK BOOL_LITERAL FLOAT_LITERAL INT_LITERAL LPAREN LBRACE COMMA
 
 %start program
 %type <Ast.program> program
@@ -51,12 +52,12 @@ expr:
 
 expr_no_eval:
     expr_core { $1 }
-  | binop_no_eval { $1 }  
+ /* | binop_no_eval { $1 }  */
 
 eval:
-  TILDE ID expr_seq_opt /*cond_opt  */ { Noexpr } /* { Eval($2, $3, $4) }*/
+  TILDE ID expr_seq_opt cond_opt   { Eval($2, $3, $4) }
 
-binop_no_eval:
+/*binop_no_eval:
     expr_no_eval SEMI   expr_no_eval { ExprSeq($1, $3) }
   | expr_no_eval PLUS   expr_no_eval { Binop($1, Add,    $3) }
   | expr_no_eval MINUS  expr_no_eval { Binop($1, Sub,    $3) }
@@ -69,7 +70,7 @@ binop_no_eval:
   | expr_no_eval GT     expr_no_eval { Binop($1, Greater,$3) }
   | expr_no_eval GEQ    expr_no_eval { Binop($1, Geq,    $3) }
   | expr_no_eval CONCAT expr_no_eval { Binop($1, ListConcat, $3) }
-  | expr_no_eval ATTACH expr_no_eval { Binop($1, ListBuild, $3) }
+  | expr_no_eval ATTACH expr_no_eval { Binop($1, ListBuild, $3) }*/
 
 binop:
   | expr SEMI   expr { ExprSeq($1, $3) }
@@ -139,17 +140,22 @@ decl:
 
 /* Function evaluation */
 
+
 expr_seq_opt:
-    /* nothing */   { [] }
-  | expr_seq        { List.rev $1 }
+    /* nothing */  %prec ID { [] }
+  | expr_seq       %prec ID { List.rev $1 }
 
 expr_seq:
-    expr_no_eval          { [$1] }
-  | expr_seq expr_no_eval  { $2 :: $1 }
+   expr        %prec ID  { [$1] }
+   | expr_seq expr %prec ID { $2 :: $1 }
+
+
+/*expr_seq_opt:
+  | expr  %prec ID { $1 }*/
 
 cond_opt:
-  /* nothing */ { Noexpr }
-  | COND expr { $2 }
+  /* nothing */ %prec ID { Noexpr }
+  | COND expr %prec ID { $2 }
 
 
 /* Lists */
