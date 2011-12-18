@@ -81,7 +81,7 @@ expr_core:
   | NOT expr         { Unop(Not, $2) }
   | MINUS expr       %prec TIMES { Unop(Neg, $2) }
   | func_bind IN expr { FuncBind($1, $3) }
-  | TILDE ID expr_seq_opt cond_opt   { Eval($2, $3, $4) }
+  | TILDE ID expr_seq_opt cond_opt   { Eval($2, $3, $4) } 
   | IF  expr  THEN expr { If($2, $4, Noexpr) }  
   | IF  expr THEN expr ELSE expr { If($2, $4, $6) }
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }   
@@ -143,7 +143,7 @@ expr_seq:
 
 cond_opt:
   /* nothing */ %prec top_precs { Noexpr }
-  | COND expr { $2 }
+  | COND expr  { $2 } 
 
 
 /* Lists */
