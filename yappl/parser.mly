@@ -15,10 +15,15 @@
 %token EOF
 
 %nonassoc IN
+%nonassoc SEMI
 %nonassoc LET
 %nonassoc MATCH WITH
+%nonassoc NOCOND
+%nonassoc COND
+%nonassoc NOELSE
+%nonassoc THEN
+%nonassoc ELSE
 %right COLON EQSYM 
-%right SEMI
 %left ATTACH
 %left CONCAT 
 %left AND OR
@@ -26,13 +31,9 @@
 %left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE
-%left LBRACK RBRACK 
-%nonassoc NOCOND
-%nonassoc COND
-%nonassoc NOELSE
-%nonassoc ELSE
-%right NOT TILDE
-%nonassoc ID
+%nonassoc NOT
+%nonassoc TILDE
+%nonassoc ID LBRACK RBRACK 
 
 %start program
 %type <Ast.program> program
@@ -44,14 +45,34 @@ program:
   expr          { $1 }
 
 expr:
-    BOOL_LITERAL     { BoolLiteral($1) }
-  | INT_LITERAL      { IntLiteral($1) }
-  | FLOAT_LITERAL    { FloatLiteral($1) }
-  | LPAREN expr RPAREN { $2 }
-  | ID               { Id($1) }
-  | NOT expr         { Unop(Not, $2) }
-  | MINUS expr         { Unop(Neg, $2) }
-  | expr SEMI expr   { ExprSeq($1, $3) }
+    expr_core { $1 }
+  | binop { $1 }
+  | eval { $1 }
+
+expr_no_eval:
+    expr_core { $1 }
+  | binop_no_eval { $1 }  
+
+eval:
+  TILDE ID expr_seq_opt /*cond_opt  */ { Noexpr } /* { Eval($2, $3, $4) }*/
+
+binop_no_eval:
+    expr_no_eval SEMI   expr_no_eval { ExprSeq($1, $3) }
+  | expr_no_eval PLUS   expr_no_eval { Binop($1, Add,    $3) }
+  | expr_no_eval MINUS  expr_no_eval { Binop($1, Sub,    $3) }
+  | expr_no_eval TIMES  expr_no_eval { Binop($1, Mult,   $3) }
+  | expr_no_eval DIVIDE expr_no_eval { Binop($1, Div,    $3) }
+  | expr_no_eval EQSYM  expr_no_eval { Binop($1, Equal,  $3) }
+  | expr_no_eval NEQ    expr_no_eval { Binop($1, Neq,    $3) }
+  | expr_no_eval LT     expr_no_eval { Binop($1, Less,   $3) }
+  | expr_no_eval LEQ    expr_no_eval { Binop($1, Leq,    $3) }
+  | expr_no_eval GT     expr_no_eval { Binop($1, Greater,$3) }
+  | expr_no_eval GEQ    expr_no_eval { Binop($1, Geq,    $3) }
+  | expr_no_eval CONCAT expr_no_eval { Binop($1, ListConcat, $3) }
+  | expr_no_eval ATTACH expr_no_eval { Binop($1, ListBuild, $3) }
+
+binop:
+  | expr SEMI   expr { ExprSeq($1, $3) }
   | expr PLUS   expr { Binop($1, Add,    $3) }
   | expr MINUS  expr { Binop($1, Sub,    $3) }
   | expr TIMES  expr { Binop($1, Mult,   $3) }
@@ -64,17 +85,26 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,    $3) }
   | expr CONCAT expr { Binop($1, ListConcat, $3) }
   | expr ATTACH expr { Binop($1, ListBuild, $3) }
+
+expr_core:
+/*  | LPAREN expr RPAREN { $2 } */
+  | BOOL_LITERAL     { BoolLiteral($1) }
+  | INT_LITERAL      { IntLiteral($1) }
+  | FLOAT_LITERAL    { FloatLiteral($1) }
+  | LPAREN expr RPAREN { $2 }
+  | ID               { Id($1) }
+  | NOT expr         { Unop(Not, $2) }
+  | MINUS expr       { Unop(Neg, $2) }
   | func_bind IN expr { FuncBind($1, $3) }
-  | TILDE ID expr_seq_opt cond_opt { Eval($2, $3, $4) }
-  | IF LPAREN expr RPAREN THEN expr %prec NOELSE { If($3, $6, Noexpr) }
-  | IF LPAREN expr RPAREN THEN expr ELSE expr    { If($3, $6, $8) } 
-  | LBRACK expr_list_opt RBRACK { ListBuilder($2) }  
+/*  | IF LPAREN expr RPAREN THEN expr %prec NOELSE { If($3, $6, Noexpr) }
+  | IF LPAREN expr RPAREN THEN expr ELSE expr    { If($3, $6, $8) } */
+  | IF  expr  THEN expr { If($2, $4, Noexpr) }  
+  | IF  expr THEN expr ELSE expr { If($2, $4, $6) }
+/*  | LBRACK expr_list_opt RBRACK { ListBuilder($2) }  
   | LET val_bind_list IN expr {ValBind($2,$4) } 
-  | MATCH expr WITH pattern_match  { Match($2, $4) }
+  | MATCH expr WITH pattern_match  { Match($2, $4) }*/
 
 /* Function binding */
-
-  /* Question: Why is func_bind a list? */
 
 func_bind:    
   function_decl assn_op expr 
@@ -110,12 +140,12 @@ decl:
 /* Function evaluation */
 
 expr_seq_opt:
-  /* nothing */ { [] }
-  | expr_seq    { List.rev $1 }
+    /* nothing */   { [] }
+  | expr_seq        { List.rev $1 }
 
 expr_seq:
-  expr          { [$1] }
-  | expr_seq expr   { $2 :: $1 }
+    expr_no_eval          { [$1] }
+  | expr_seq expr_no_eval  { $2 :: $1 }
 
 cond_opt:
   /* nothing */ { Noexpr }
