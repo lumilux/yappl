@@ -34,6 +34,7 @@
 %left PLUS MINUS
 %left TIMES DIVIDE MOD
 %nonassoc NOT
+%nonassoc COND_VAR
 %nonassoc TILDE
 %nonassoc ARROW
 %nonassoc LPAREN RPAREN
