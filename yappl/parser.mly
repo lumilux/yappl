@@ -37,7 +37,9 @@
 %nonassoc ARROW
 %nonassoc LPAREN RPAREN
 %nonassoc COND
-%nonassoc ID LBRACK RBRACK BOOL_LITERAL FLOAT_LITERAL INT_LITERAL LBRACE COMMA USCORE
+%nonassoc ID 
+%left LBRACK 
+%nonassoc RBRACK BOOL_LITERAL FLOAT_LITERAL INT_LITERAL LBRACE COMMA USCORE
 
 %start program
 %type <Ast.program> program
