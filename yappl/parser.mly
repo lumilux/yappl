@@ -13,6 +13,7 @@
 %token <string> ID
 %token EOF
 
+%nonassoc top_precs
 %nonassoc IN
 %nonassoc SEMI
 %nonassoc LET
@@ -31,7 +32,6 @@
 %left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE
-%nonassoc top_precs
 %nonassoc NOT
 %nonassoc TILDE
 %nonassoc ARROW
@@ -78,14 +78,16 @@ expr_core:
   | MINUS expr       %prec TIMES { Unop(Neg, $2) }
   | func_bind IN expr { FuncBind($1, $3) }
   | TILDE ID expr_seq_opt cond_opt   { Eval($2, $3, $4) }
-/*  | IF LPAREN expr RPAREN THEN expr %prec NOELSE { If($3, $6, Noexpr) }
-  | IF LPAREN expr RPAREN THEN expr ELSE expr    { If($3, $6, $8) } */
   | IF  expr  THEN expr { If($2, $4, Noexpr) }  
   | IF  expr THEN expr ELSE expr { If($2, $4, $6) }
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }   
   | LET val_bind_list IN expr {ValBind($2,$4) } 
   | MATCH expr WITH pattern_match  { Match($2, $4) }
   | ID LBRACK expr RBRACK { GetIndex($1,$3) }
+
+/*  | IF LPAREN expr RPAREN THEN expr %prec NOELSE { If($3, $6, Noexpr) }
+  | IF LPAREN expr RPAREN THEN expr ELSE expr    { If($3, $6, $8) } */
+
 
 /* Function binding */
 

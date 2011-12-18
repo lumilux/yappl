@@ -12,8 +12,9 @@ exception Error of string
 (* utility functions *)
 
 let match_num_types  = function
-    (ValType(Int), ValType(Int)) -> Some(Int)
-  | (ValType(Float), ValType(Float)) -> Some(Float)
+    ValType(Int), ValType(Int) -> Some(Int)
+  | ValType(Float), ValType(Float) -> Some(Float)
+  | ValType(x), ValType(y) -> print_endline ((string_of_t x) ^ ", " ^ (string_of_t y)); None
   | _ -> None
 
 (* lookup a identifier in the symbol table, recursing upward as necessary *)
@@ -31,7 +32,7 @@ let rec sym_table_lookup table id =
   | FuncEntry(t, _) -> t*)
 	
 let id_to_ocaml_id = function
-    "rand" as id -> "Builtin." ^ id
+    "rand" | "seed" as id -> "Builtin." ^ id
   | _ as id -> "yappl_" ^ id
 	       
 (* expr to string functions *)
@@ -256,16 +257,14 @@ and func_bind_to_string table fb =
      let func_t = FuncType { args_t = List.rev args_t; return_t = fb.fdecl.freturn } in
      let new_table = { table with table = StringMap.add fb.fdecl.fname func_t table.table } in
      let (body_s, body_t) = expr_to_string { table = func_table; parent = Some(new_table) } fb.body in
-     if body_t <> ValType(Void) then
-       raise (Error("mismatched return and function body types"))
+     if body_t <>  fb.fdecl.freturn  then
+       raise (Error("mismatched return and function body types: " ^ (string_of_fv_type body_t) ^ " " ^ (string_of_fv_type fb.fdecl.freturn)))
      else
        let arg_names = List.map (fun decl -> decl.dname) fb.fdecl.fargs in
        let oid = id_to_ocaml_id fb.fdecl.fname in
-       new_table, "let rec " ^ oid ^ " unit " ^ (String.concat " " arg_names) ^ " = \n " ^ body_s ^ "\nin\n"
+       new_table, "let rec " ^ oid  ^ " " ^ (String.concat " " arg_names) ^ " unit = \n " ^ body_s ^ "\nin\n"
        (* todo : memoization support *)
   
-
-
 and expr_to_string table = function
     IntLiteral(i) -> string_of_int i, ValType(Int)
   | BoolLiteral(b) -> string_of_bool b, ValType(Bool)
@@ -283,9 +282,10 @@ and expr_to_string table = function
   | _ -> raise (Error "unsupported expression type")
 
 let translate prog =
+  (*print_endline (string_of_expr "" prog);*)
   let init_table = List.fold_left (fun tabl (id, id_t) -> StringMap.add id id_t tabl) StringMap.empty Builtin.builtins in
   let global_sym_table = { table = init_table; parent = None } in
-  let (s, _) = expr_to_string global_sym_table prog in
-  s
+  let s, _ = expr_to_string global_sym_table prog in
+  "open Builtin\n\nlet _ =\n" ^ s
   
   

@@ -19,7 +19,6 @@ let _ =
   | Compile -> Execute.execute_prog (Compile.translate program)
  *)
 
-
 let lexbuf = Lexing.from_channel stdin in 
 let program = Parser.program Scanner.token lexbuf in
 print_endline (Translate.translate program)
