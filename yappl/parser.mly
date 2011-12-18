@@ -5,7 +5,7 @@
 %token PLUS MINUS TIMES DIVIDE ASSIGN
 %token NOT AND OR IN LET
 %token EQSYM NEQ LT LEQ GT GEQ MEMOEQ
-%token IF ELSE THEN INT FLOAT BOOL FUN USCORE COND_VAR IN
+%token IF ELSE THEN INT FLOAT BOOL FUN COND_VAR IN
 %token MATCH WITH ARROW WILDCARD
 %token <bool> BOOL_LITERAL
 %token <float> FLOAT_LITERAL
@@ -18,7 +18,6 @@
 %nonassoc LET
 %nonassoc MATCH WITH
 %nonassoc NOCOND
-%nonassoc COND
 %nonassoc IF
 %nonassoc FUN
 %nonassoc NOELSE
@@ -32,9 +31,13 @@
 %left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE
+%nonassoc top_precs
 %nonassoc NOT
 %nonassoc TILDE
-%nonassoc ID LBRACK RBRACK BOOL_LITERAL FLOAT_LITERAL INT_LITERAL LPAREN LBRACE COMMA
+%nonassoc ARROW
+%nonassoc LPAREN RPAREN
+%nonassoc COND
+%nonassoc ID LBRACK RBRACK BOOL_LITERAL FLOAT_LITERAL INT_LITERAL LBRACE COMMA USCORE
 
 %start program
 %type <Ast.program> program
@@ -48,29 +51,7 @@ program:
 expr:
     expr_core { $1 }
   | binop { $1 }
-  | eval { $1 }
 
-expr_no_eval:
-    expr_core { $1 }
- /* | binop_no_eval { $1 }  */
-
-eval:
-  TILDE ID expr_seq_opt cond_opt   { Eval($2, $3, $4) }
-
-/*binop_no_eval:
-    expr_no_eval SEMI   expr_no_eval { ExprSeq($1, $3) }
-  | expr_no_eval PLUS   expr_no_eval { Binop($1, Add,    $3) }
-  | expr_no_eval MINUS  expr_no_eval { Binop($1, Sub,    $3) }
-  | expr_no_eval TIMES  expr_no_eval { Binop($1, Mult,   $3) }
-  | expr_no_eval DIVIDE expr_no_eval { Binop($1, Div,    $3) }
-  | expr_no_eval EQSYM  expr_no_eval { Binop($1, Equal,  $3) }
-  | expr_no_eval NEQ    expr_no_eval { Binop($1, Neq,    $3) }
-  | expr_no_eval LT     expr_no_eval { Binop($1, Less,   $3) }
-  | expr_no_eval LEQ    expr_no_eval { Binop($1, Leq,    $3) }
-  | expr_no_eval GT     expr_no_eval { Binop($1, Greater,$3) }
-  | expr_no_eval GEQ    expr_no_eval { Binop($1, Geq,    $3) }
-  | expr_no_eval CONCAT expr_no_eval { Binop($1, ListConcat, $3) }
-  | expr_no_eval ATTACH expr_no_eval { Binop($1, ListBuild, $3) }*/
 
 binop:
   | expr SEMI   expr { ExprSeq($1, $3) }
@@ -88,22 +69,22 @@ binop:
   | expr ATTACH expr { Binop($1, ListBuild, $3) }
 
 expr_core:
-/*  | LPAREN expr RPAREN { $2 } */
   | BOOL_LITERAL     { BoolLiteral($1) }
   | INT_LITERAL      { IntLiteral($1) }
   | FLOAT_LITERAL    { FloatLiteral($1) }
   | LPAREN expr RPAREN { $2 }
   | ID               { Id($1) }
   | NOT expr         { Unop(Not, $2) }
-  | MINUS expr       { Unop(Neg, $2) }
+  | MINUS expr       %prec TIMES { Unop(Neg, $2) }
   | func_bind IN expr { FuncBind($1, $3) }
-/*  | IF LPAREN expr RPAREN THEN expr %prec NOELSE { If($3, $6, Noexpr) }
-  | IF LPAREN expr RPAREN THEN expr ELSE expr    { If($3, $6, $8) } */
+  | TILDE ID expr_seq_opt cond_opt   { Eval($2, $3, $4) }
+  | IF LPAREN expr RPAREN THEN expr %prec NOELSE { If($3, $6, Noexpr) }
+  | IF LPAREN expr RPAREN THEN expr ELSE expr    { If($3, $6, $8) } 
   | IF  expr  THEN expr { If($2, $4, Noexpr) }  
   | IF  expr THEN expr ELSE expr { If($2, $4, $6) }
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }   
   | LET val_bind_list IN expr {ValBind($2,$4) } 
-/*  | MATCH expr WITH pattern_match  { Match($2, $4) }*/
+  | MATCH expr WITH pattern_match  { Match($2, $4) }
 
 /* Function binding */
 
@@ -138,24 +119,24 @@ decl:
     { { dtype = ValType $1;
       dname = $3 } }
 
+
 /* Function evaluation */
 
-
 expr_seq_opt:
-    /* nothing */  %prec ID { [] }
-  | expr_seq       %prec ID { List.rev $1 }
+    /* nothing */  %prec top_precs { [] }
+  | expr_seq       %prec top_precs { List.rev $1 }
 
 expr_seq:
-   expr        %prec ID  { [$1] }
-   | expr_seq expr %prec ID { $2 :: $1 }
+   expr        %prec top_precs  { [$1] }
+   | expr_seq expr %prec top_precs { $2 :: $1 }
 
 
 /*expr_seq_opt:
   | expr  %prec ID { $1 }*/
 
 cond_opt:
-  /* nothing */ %prec ID { Noexpr }
-  | COND expr %prec ID { $2 }
+  /* nothing */ %prec top_precs { Noexpr }
+  | COND expr { $2 }
 
 
 /* Lists */
@@ -166,7 +147,7 @@ expr_list_opt:
 
 expr_list:
     expr                          {[$1]}
-  | expr_list COMMA expr          { $3 :: $1 }
+  | expr_list expr          { $2 :: $1 }
 
 
 /* Value binding */
