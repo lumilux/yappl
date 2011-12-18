@@ -218,7 +218,7 @@ and list_to_string table l =
 			             else raise (Error("Type mismatch in list" ^ (eg2s vt t1))) 
                                    )
 			       ) l in
-     	     ("[" ^ (String.concat "," (List.rev sl)) ^ "]"), vt  
+     	     ("[" ^ (String.concat ";" (List.rev sl)) ^ "]"), ValType(List(Int))  
 
 (* TODO: stub, need parsing to work to test *)
 and string_at_index table s e = 
