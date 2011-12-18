@@ -220,6 +220,8 @@ and func_bindings_to_string table bindings e  =
 and func_bind_to_string table fb =
    try 
      ignore (sym_table_lookup table fb.fdecl.fname); (* make sure id doesn't already exist *)
+     raise (Error("Duplicate function identifier: " ^  fb.fdecl.fname))
+  with No_such_symbol_found -> 
      let build_table (tabl, args_t) decl =
        let new_tabl = StringMap.add decl.dname decl.dtype tabl in
        new_tabl, decl.dtype :: args_t
@@ -235,9 +237,7 @@ and func_bind_to_string table fb =
        let oid = id_to_ocaml_id fb.fdecl.fname in
        new_table, "let rec " ^ oid ^ " unit " ^ (String.concat " " arg_names) ^ " = \n " ^ body_s ^ "\nin\n"
        (* todo : memoization support *)
-
-  with No_such_symbol_found -> 
-    raise (Error("Duplicate function identifier: " ^  fb.fdecl.fname))
+  
 
 
 and expr_to_string table = function
