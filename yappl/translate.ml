@@ -33,12 +33,16 @@ let rec sym_table_lookup table id =
 	
 let id_to_ocaml_id = function
     "rand" | "seed" as id -> "Builtin." ^ id
-  | _ as id -> "yappl_" ^ id
+  | _ as id -> 
+      if id = Builtin.pred_special_var then
+	id
+      else
+	"yappl_" ^ id
 	       
 (* expr to string functions *)
 	       
 let rec ident_to_string table id =
-  id, (sym_table_lookup table id)
+  id_to_ocaml_id id, (sym_table_lookup table id)
     
 and seq_to_string table e1 e2 =
   let (s1, _) = expr_to_string table e1 in
@@ -99,7 +103,7 @@ and eval_to_string table id args p =
 	    match p with 
 	      Noexpr -> eval_str_no_unit ^ " ()"
 	    |  _ ->
-		let temp_table = { table with table = StringMap.add "$" ft.return_t table.table } in (* add special predicate value *)
+		let temp_table = { table with table = StringMap.add Builtin.pred_special_var ft.return_t table.table } in (* add special predicate value *)
 		let (pred, ptype) = expr_to_string temp_table p in
 		if ptype <> ValType(Bool) then
 		  raise (Error "predicate does not evaluate to boolean")    (*predicate does not evaluate to boolean*)
@@ -282,7 +286,7 @@ and func_bind_to_string table fb =
      if body_t <>  fb.fdecl.freturn  then
        raise (Error("mismatched return and function body types: " ^ (string_of_fv_type body_t) ^ " " ^ (string_of_fv_type fb.fdecl.freturn)))
      else
-       let arg_names = List.map (fun decl -> decl.dname) fb.fdecl.fargs in
+       let arg_names = List.map (fun decl -> id_to_ocaml_id decl.dname) fb.fdecl.fargs in
        let oid = id_to_ocaml_id fb.fdecl.fname in
        new_table, "let rec " ^ oid  ^ " " ^ (String.concat " " arg_names) ^ " unit = \n " ^ body_s ^ "\nin\n"
        (* todo : memoization support *)
@@ -292,6 +296,7 @@ and expr_to_string table = function
   | BoolLiteral(b) -> string_of_bool b, ValType(Bool)
   | FloatLiteral(f) -> string_of_float f, ValType(Float)
   | Id(id) -> ident_to_string table id
+  | CondVar -> ident_to_string table Builtin.pred_special_var
   | ExprSeq(e1, e2) -> seq_to_string table e1 e2
   | Eval(id, args, p) -> eval_to_string table id args p
   | Binop(e1, op, e2) -> binop_to_string table e1 e2 op
@@ -299,10 +304,10 @@ and expr_to_string table = function
   | If(pred, e1, e2) -> if_to_string table pred e1 e2
   | ValBind(bindings, e) -> val_bindings_to_string table bindings e
   | FuncBind(bindings, e) -> func_bindings_to_string table bindings e
-  | Noexpr -> "", ValType(Void)
   | ListBuilder(l) -> list_to_string table l
   | GetIndex(l, e) -> string_at_index table l e 
   | Match(e,p) -> match_to_string table e p 
+  | Noexpr -> "", ValType(Void)
   (*| _ -> raise (Error "unsupported expression type")*) 
 
 let translate prog =

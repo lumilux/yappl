@@ -10,6 +10,7 @@ type expr =
   | BoolLiteral of bool
   | FloatLiteral of float 
   | Id of string
+  | CondVar
   | ExprSeq of expr * expr
   | Eval of string * expr list * expr (* id args predicate *)
   | Binop of expr * binop * expr
@@ -89,6 +90,7 @@ let rec string_of_expr indent expr =
     | BoolLiteral(b) -> indent ^ "BoolLit " ^ (string_of_bool b) ^ "\n"
     | FloatLiteral(f) -> indent ^ "FloatLit " ^ (string_of_float f) ^ "\n"
     | Id(id) -> indent ^ "Id " ^ id ^ "\n" 
+    | CondVar -> indent ^ "CondVar\n"
     | ExprSeq(e1, e2) -> 
 	indent ^ "ExprSeq\n" ^ (string_of_expr more_indent e1) ^ (string_of_expr more_indent e2)
     | Eval(id, args, p) -> 

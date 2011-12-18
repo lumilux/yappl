@@ -15,6 +15,7 @@
 
 %nonassoc top_precs
 %nonassoc IN
+%nonassoc COND
 %left SEMI
 %nonassoc LET
 %nonassoc MATCH WITH
@@ -36,7 +37,6 @@
 %nonassoc TILDE
 %nonassoc ARROW
 %nonassoc LPAREN RPAREN
-%nonassoc COND
 %nonassoc ID 
 %left LBRACK 
 %nonassoc RBRACK BOOL_LITERAL FLOAT_LITERAL INT_LITERAL LBRACE COMMA USCORE
@@ -77,6 +77,7 @@ expr_core:
   | FLOAT_LITERAL    { FloatLiteral($1) }
   | LPAREN expr RPAREN { $2 }
   | ID               { Id($1) }
+  | COND_VAR         { CondVar } 
   | NOT expr         { Unop(Not, $2) }
   | MINUS expr       %prec TIMES { Unop(Neg, $2) }
   | func_bind IN expr { FuncBind($1, $3) }

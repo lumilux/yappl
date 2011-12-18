@@ -6,7 +6,7 @@ open Unix
 
 module Builtin =
   struct
-    let pred_special_var = "x"
+    let pred_special_var = "pred_var"
     let builtins = ["print", FuncType { args_t = []; return_t = ValType Bool };
 		    "rand", FuncType  { args_t = []; return_t = ValType Float };
 		    "seed", FuncType  { args_t = []; return_t = ValType Bool }   ]
