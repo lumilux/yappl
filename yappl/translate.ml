@@ -185,12 +185,12 @@ and unop_to_string table e op =
   let (s, et) = expr_to_string table e in
   let opstr = 
     match op, et with
-      Not, ValType(Bool) -> "not"
+      Not, ValType(Bool) -> "not ("
     | Neg, ValType(Int)
-    | Neg, ValType(Float) -> "-"
+    | Neg, ValType(Float) -> "(-"
     | _ -> raise (Error("Type mismatch with unary operator"))
   in
-  opstr ^ "(" ^ s ^ ")", et
+     opstr ^ s ^ ")", et
 
 and if_to_string table pred e1 e2 =
     let (pred_str, pt) = expr_to_string table pred in
@@ -227,9 +227,11 @@ and list_to_string table l =
 and string_at_index table s e = 
      try 
       let vt =  (sym_table_lookup table s) in
-      let es,_ = expr_to_string table e 
-      in    
-      ("(List.nth " ^ s ^ " " ^ es ^ ")" ), vt  
+      let es,et = expr_to_string table e in  
+      if (et <> ValType(Int)) then
+        raise(Error("Invalid index. Must be integer."))
+      else
+        ("(List.nth " ^ s ^ " " ^ es ^ ")" ), vt  
      with No_such_symbol_found ->
         raise (Error("Unbound symbol referenced"))  
 
