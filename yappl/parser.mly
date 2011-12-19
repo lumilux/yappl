@@ -13,10 +13,10 @@
 %token <string> ID
 %token EOF
 
-%nonassoc top_precs
 %nonassoc IN
-%nonassoc COND
 %left SEMI
+%nonassoc top_precs
+%nonassoc COND
 %nonassoc LET
 %nonassoc MATCH WITH
 %nonassoc NOCOND
@@ -167,7 +167,7 @@ val_bind_list:
   | val_bind_list AND val_bind { $3 :: $1 } 
 
 val_bind: 
-  | val_decl EQSYM expr {{vdecl = $1; vexpr = $3}}
+   val_decl EQSYM expr {{vdecl = $1; vexpr = $3}}
 
 
 /* Pattern matching */
