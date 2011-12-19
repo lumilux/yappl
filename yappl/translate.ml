@@ -17,6 +17,12 @@ let match_num_types  = function
   | ValType(x), ValType(y) -> print_endline ((string_of_t x) ^ ", " ^ (string_of_t y)); None
   | _ -> None
 
+let listtype_to_single_type = function
+  | ValType(List(Int)) -> ValType(Int) 
+  | ValType(List(Float)) -> ValType(Float)
+  | ValType(List(Bool)) -> ValType(Bool)
+  | _ -> ValType(Void)
+
 (* lookup a identifier in the symbol table, recursing upward as necessary *)
 let rec sym_table_lookup table id =
   try
@@ -231,34 +237,35 @@ and string_at_index table s e =
       if (et <> ValType(Int)) then
         raise(Error("Invalid index. Must be integer."))
       else
-        ("(List.nth " ^ s ^ " " ^ es ^ ")" ), vt  
+        ("(List.nth yappl_" ^ s ^ " " ^ es ^ ")" ), (listtype_to_single_type vt)  
      with No_such_symbol_found ->
         raise (Error("Unbound symbol referenced"))  
 
 (* pattern matching *)
 and match_to_string table e p = 
-    let es,vt = expr_to_string table e in
-    (" match (" ^ es ^ ") with " ^ (pattlist_to_string table p )), vt
+    let es,mt = expr_to_string table e in
+    (" match (" ^ es ^ ") with " ^ (pattlist_to_string table p mt)), mt
 
-and pattlist_to_string table pl =
+(* mt = match type, for type inference *) 
+and pattlist_to_string table pl mt =
    match (pl) with
-     (Pattern (pat , exp, pmatch)) -> let (patstring, new_table) = pat_to_string table pat in
+     (Pattern (pat , exp, pmatch)) -> let (patstring, new_table) = pat_to_string table pat mt in
                                       let (es, _) =  expr_to_string new_table exp in 
                                       "\n| " ^ patstring ^ 
-                                      " -> " ^ es ^ (pattlist_to_string new_table pmatch) 
+                                      " -> " ^ es ^ (pattlist_to_string new_table pmatch mt) 
     | NoPattern -> ""         
 
-and pat_to_string table p =
+and pat_to_string table p mt =
     match (p) with 
-      (Ident s) -> patid_to_string table s  
+      (Ident s) -> patid_to_string table s mt   
     | (Wildcard) -> "_", table
-    | (Concat (p1, p2)) -> let (p1s, table1) = pat_to_string table p1 in
-                           let (p2s, table2) = pat_to_string table1 p2 in
+    | (Concat (p1, p2)) -> let (p1s, table1) = pat_to_string table  p1 (listtype_to_single_type mt ) in
+                           let (p2s, table2) = pat_to_string table1 p2 mt in
                            p1s ^ "::" ^ p2s, table2 
 
 (* adds symbol to table, clobbers existing symbols *)
-and patid_to_string table s = 
-      let new_table = { table with table = StringMap.add s (ValType(Void)) table.table } in
+and patid_to_string table s mt = 
+      let new_table = { table with table = StringMap.add s mt table.table } in
       "yappl_" ^ s, new_table
 
        

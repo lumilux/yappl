@@ -171,9 +171,12 @@ val_bind:
 
 
 /* Pattern matching */
+
 pattern_match:
-  pattern ARROW expr pattern_match_cont { Pattern($1, $3, NoPattern) }
+  pattern ARROW expr pattern_match_cont { Pattern($1, $3, $4) }
   | COND pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
+
+  
 
 pattern_match_cont:
   /* nothing */ %prec MATCH { NoPattern }
