@@ -16,7 +16,6 @@
 %nonassoc IN
 %left SEMI
 %nonassoc top_precs
-%nonassoc COND
 %nonassoc LET
 %nonassoc MATCH WITH
 %nonassoc NOCOND
@@ -33,6 +32,7 @@
 %left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE MOD
+%nonassoc COND
 %nonassoc NOT
 %nonassoc COND_VAR
 %nonassoc TILDE

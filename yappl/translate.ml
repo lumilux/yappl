@@ -238,10 +238,12 @@ and string_at_index table s e =
 (* TODO: in progress *)
 and match_to_string table e p = 
     let es,vt = expr_to_string table e in
-    ("match " ^ es ^ " with " ^ (patt_to_string table p )), vt
+    ("match " ^ es ^ " with " ^ (pattlist_to_string table p )), vt
 
-and patt_to_string table p =
-  "pattern"      
+and pattlist_to_string table p =
+   match (p) with
+     (Pattern (pat , exp, pmatch)) -> "pat " ^ (pattlist_to_string table pmatch) 
+    | NoPattern -> ""         
 
      
 and val_bindings_to_string table bindings e =
