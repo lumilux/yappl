@@ -263,7 +263,7 @@ and val_bind_to_string table vb =
       raise (Error("Incomptible type for value binding"))
     else
       let new_table = { table with table = StringMap.add vb.vdecl.dname et table.table } in
-      new_table, "let " ^ vb.vdecl.dname ^ " = " ^ s ^ " in "
+      new_table, "let yappl_" ^ vb.vdecl.dname ^ " = " ^ s ^ " in "
 
 
 and func_bindings_to_string table bindings e  =
