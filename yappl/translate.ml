@@ -235,16 +235,23 @@ and string_at_index table s e =
      with No_such_symbol_found ->
         raise (Error("Unbound symbol referenced"))  
 
-(* TODO: in progress *)
 and match_to_string table e p = 
     let es,vt = expr_to_string table e in
-    ("match " ^ es ^ " with " ^ (pattlist_to_string table p )), vt
+    (" match (" ^ es ^ ") with " ^ (pattlist_to_string table p )), vt
 
-and pattlist_to_string table p =
-   match (p) with
-     (Pattern (pat , exp, pmatch)) -> "pat " ^ (pattlist_to_string table pmatch) 
+and pattlist_to_string table pl =
+   match (pl) with
+     (Pattern (pat , exp, pmatch)) -> let (es, _) = expr_to_string table exp in 
+                                      "\n| " ^ pat_to_string table pat ^ 
+                                      " -> "^ es ^ (pattlist_to_string table pmatch) 
     | NoPattern -> ""         
 
+and pat_to_string table p =
+    match (p) with 
+      (Ident s) -> s
+    | (Wildcard) -> "_"
+    | (Concat (p1, p2)) -> pat_to_string table p1 ^ "::" ^ pat_to_string table p2 
+    
      
 and val_bindings_to_string table bindings e =
   let proc (tabl, s) vb =
