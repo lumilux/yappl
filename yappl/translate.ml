@@ -235,23 +235,33 @@ and string_at_index table s e =
      with No_such_symbol_found ->
         raise (Error("Unbound symbol referenced"))  
 
+(* pattern matching *)
 and match_to_string table e p = 
     let es,vt = expr_to_string table e in
     (" match (" ^ es ^ ") with " ^ (pattlist_to_string table p )), vt
 
 and pattlist_to_string table pl =
    match (pl) with
-     (Pattern (pat , exp, pmatch)) -> let (es, _) = expr_to_string table exp in 
-                                      "\n| " ^ pat_to_string table pat ^ 
-                                      " -> "^ es ^ (pattlist_to_string table pmatch) 
+     (Pattern (pat , exp, pmatch)) -> let (patstring, new_table) = pat_to_string table pat in
+                                      let (es, _) =  expr_to_string new_table exp in 
+                                      "\n| " ^ patstring ^ 
+                                      " -> " ^ es ^ (pattlist_to_string new_table pmatch) 
     | NoPattern -> ""         
 
 and pat_to_string table p =
     match (p) with 
-      (Ident s) -> s
-    | (Wildcard) -> "_"
-    | (Concat (p1, p2)) -> pat_to_string table p1 ^ "::" ^ pat_to_string table p2 
-    
+      (Ident s) -> patid_to_string table s  
+    | (Wildcard) -> "_", table
+    | (Concat (p1, p2)) -> let (p1s, table1) = pat_to_string table p1 in
+                           let (p2s, table2) = pat_to_string table1 p2 in
+                           p1s ^ "::" ^ p2s, table2 
+
+(* adds symbol to table, clobbers existing symbols *)
+and patid_to_string table s = 
+      let new_table = { table with table = StringMap.add s (ValType(Void)) table.table } in
+      "yappl_" ^ s, new_table
+
+       
      
 and val_bindings_to_string table bindings e =
   let proc (tabl, s) vb =
