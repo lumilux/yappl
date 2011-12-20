@@ -93,7 +93,7 @@ and eval_to_string table id args p =
   match id with
     "print_line" ->
        let p,t = (eval_to_string table "print" args p ) in
-         "ignore ( " ^ p ^ ");\n print_char ('\\n'); true", ValType Bool
+         "ignore ( " ^ p ^ ");\n print_newline (); true", ValType Bool
    | "print" ->
       (match p with 
 	Noexpr -> 
@@ -350,8 +350,33 @@ and func_bind_to_string table fb =
      else
        let arg_names = List.map (fun decl -> id_to_ocaml_id decl.dname) fb.fdecl.fargs in
        let oid = id_to_ocaml_id fb.fdecl.fname in
-       new_table, "let rec " ^ oid  ^ " " ^ (String.concat " " arg_names) ^ " unit = \n " ^ body_s ^ "\nin\n"
-       (* todo : memoization support *)
+       let arg_str = String.concat " " arg_names in
+       match fb.op with
+	 Assign ->
+	   new_table, "let rec " ^ oid  ^ " " ^ arg_str ^ " unit = \n " ^ body_s ^ "\nin\n"
+       | MemoAssign ->
+	   let t_oid  = "table_" ^ oid and nm_oid = "no_mem_" ^ oid 
+	   and tbl_name = "hash_table_for_" ^ oid and arg_tpl = String.concat ", " arg_names
+	   in
+	   new_table, "let rec " ^ t_oid ^ " tabl " ^ arg_str ^ " unit = \n " ^
+	   "let rec " ^ nm_oid  ^ " " ^ arg_str ^ " unit = \n " ^ body_s ^ "\nin\n" ^
+	   "try Hashtbl.find tabl (" ^ arg_tpl ^ ") with Not_found ->\n" ^
+	   "let result = " ^ nm_oid ^ " " ^ arg_str ^ " () in \n" ^
+	   "Hashtbl.add tabl " ^ arg_tpl ^ " result; result\nin\n" ^
+	   "let " ^ tbl_name ^ " = Hashtbl.create 50 in\n" ^
+	   "let " ^ oid ^ " = " ^ t_oid ^ " " ^ tbl_name ^ " in\n"
+							
+												  
+										       
+(*and tabl_yappl_my_func tabl arg1 arg2 =
+  let no_mem_my_func arg1 arg2 = 
+    arg1 + arg2
+  in
+  try 
+    Hashtbl.find tabl (arg1, arg2) 
+  with Not_found ->
+    let result = no_mem_my_func arg1 arg2 in
+    Hashtbl.add tabl (arg1, arg2) result;*)
   
 and expr_to_string table = function
     IntLiteral(i) -> string_of_int i, ValType(Int)
@@ -377,6 +402,6 @@ let translate prog =
   let init_table = List.fold_left (fun tabl (id, id_t) -> StringMap.add id id_t tabl) StringMap.empty Builtin.builtins in
   let global_sym_table = { table = init_table; parent = None } in
   let s, _ = expr_to_string global_sym_table prog in
-  "open Builtin\n\nlet _ =\n" ^ s
+  "open Builtin\nopen Hashtbl\n\nlet _ =\n" ^ s
   
   
