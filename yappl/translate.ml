@@ -66,6 +66,19 @@ and type_to_string vt =
 (* "expected ... got" string *) 
 and eg2s s1 s2 = 
  (" Expected " ^ type_to_string s1 ^ ", surprised by " ^ type_to_string s2 )
+
+(* Ocaml list string to yappl list string *) 
+(* done the long way *)
+and ocaml_lstring_to_yappl ls =
+   let len = String.length ls in  
+   if (len) > 1 then
+      let hd = (String.sub ls 0 1) in      
+        if (hd = ";") then "," ^ (ocaml_lstring_to_yappl (String.sub ls 1 (len - 1))) 
+        else hd ^ (ocaml_lstring_to_yappl (String.sub ls 1 (len - 1))) 
+   else 
+      if (len = 1 ) then ls 
+      else ""
+     
     
 and eval_to_string table id args p =
   match id with
@@ -86,7 +99,8 @@ and eval_to_string table id args p =
 	    ValType Bool -> "print_string (string_of_bool ( " ^ arg_s ^ " )); true ", ret_t
 	  | ValType Int -> "print_int ( " ^ arg_s ^ " ); true ", ret_t
 	  | ValType Float -> "print_float ( " ^ arg_s ^ " ); true ", ret_t
-	  | _ -> raise (Error("unsupported print expression type")))
+          | ValType List(_) -> "print_string (\"" ^ (ocaml_lstring_to_yappl arg_s) ^ "\"); true ", ret_t
+ 	  | _ -> raise (Error("unsupported print expression type")))
       | _ -> raise (Error("print does not support predicates")))  
   | _ ->
     match sym_table_lookup table id with 
