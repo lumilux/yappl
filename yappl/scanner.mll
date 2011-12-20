@@ -40,8 +40,9 @@ rule token = parse
 | "if"     { IF }
 | "else"   { ELSE }
 | "then"   { THEN }
-| "and"    { AND }
-| "or"     { OR }
+| "&&"     { AND }
+| "and"    { BIND_SEP }
+| "||"     { OR }
 | "in"     { IN }
 | "let"    { LET } 
 | "fun"    { FUN }

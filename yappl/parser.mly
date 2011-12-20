@@ -3,7 +3,7 @@
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK 
 %token COMMA COLON CONCAT ATTACH COND TILDE
 %token PLUS MINUS TIMES DIVIDE MOD ASSIGN
-%token NOT AND OR IN LET
+%token NOT AND OR IN LET BIND_SEP
 %token EQSYM NEQ LT LEQ GT GEQ MEMOEQ
 %token IF ELSE THEN INT FLOAT BOOL FUN COND_VAR IN
 %token MATCH WITH ARROW WILDCARD
@@ -17,6 +17,7 @@
 %left SEMI
 %nonassoc top_precs
 %nonassoc LET
+%nonassoc BIND_SEP
 %nonassoc MATCH WITH
 %nonassoc NOCOND
 %nonassoc IF
@@ -166,7 +167,7 @@ val_decl: decl  { $1 }
 
 val_bind_list:
    val_bind {[$1]}
-  | val_bind_list AND val_bind { $3 :: $1 } 
+  | val_bind_list BIND_SEP val_bind { $3 :: $1 } 
 
 val_bind: 
    val_decl EQSYM expr {{vdecl = $1; vexpr = $3}}

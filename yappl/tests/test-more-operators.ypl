@@ -11,7 +11,7 @@
 ~print_line (17 <= 19);
 ~print_line (21 >= 21);
 ~print_line (21 >= 20);
-~print_line ((1 != 2) or (5 = 5));
-~print_line ((3 != 0) and (8 != 1));
+~print_line ((1 != 2) || (5 = 5));
+~print_line ((3 != 0) && (8 != 1));
 ~print_line ([2, 3] @ [4, 5]);
 ~print_line (1 :: [2, 3])
