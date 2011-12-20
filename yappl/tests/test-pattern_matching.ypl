@@ -6,5 +6,5 @@ in match f with
 | foo::bar -> ~print_line (bar[1] / 1.434e22); 
                 ~print_line (b[0] && !false);
                 ~print_line (i[2] > i[1]) 
-| _ -> 0
+| _ -> ~print_line 0 
 

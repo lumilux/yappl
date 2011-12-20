@@ -4,5 +4,5 @@ let int[]:i = [3,2,1] and
    
 in match f with 
 | foo::bar -> ~print_line (bar[1] / 1.434e22)
-| _ -> 3 
+| _ -> ~print_line 3 
 

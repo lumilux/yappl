@@ -1,7 +1,7 @@
 %{ open Ast %}
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK 
-%token COMMA COLON CONCAT ATTACH COND TILDE
+%token COMMA COLON CONCAT ATTACH COND GIVEN TILDE
 %token PLUS MINUS TIMES DIVIDE MOD ASSIGN
 %token NOT AND OR IN LET BIND_SEP
 %token EQSYM NEQ LT LEQ GT GEQ MEMOEQ
@@ -33,7 +33,7 @@
 %left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE MOD
-%left COND
+%left COND GIVEN
 %nonassoc NOT
 %nonassoc COND_VAR
 %nonassoc TILDE
@@ -147,7 +147,7 @@ expr_seq:
 
 cond_opt:
   /* nothing */ %prec top_precs { Noexpr }
-  | COND expr  { $2 } 
+  | GIVEN expr  { $2 } 
 
 
 /* Lists */

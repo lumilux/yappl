@@ -1,1 +1,1 @@
-let int[]:b = [3,2,1,0] in match b with (c::d) -> ~print_line (c * d[0]) | _ -> 4
+let int[]:b = [3,2,1,0] in match b with (c::d) -> ~print_line (c * d[0]) | _ -> ~print_line (4)
