@@ -1,0 +1,1 @@
+let int[]:b = [3,2,1,0] in match b with (c::d) -> c * d[0] | _ -> 4

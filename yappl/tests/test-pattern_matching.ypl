@@ -1,0 +1,10 @@
+let int[]:i = [3,2,1] and
+    bool[]:b = [true,false,true] and
+    float[]:f = [3.1415, 2.7182, 6.022e23 ] 
+   
+in match f with 
+| foo::bar -> ~print_line (bar[1] / 1.434e22); 
+                ~print_line (b[0] && !false);
+                ~print_line (i[2] > i[1]) 
+| _ -> 0
+
