@@ -23,11 +23,6 @@ type expr =
   | GetIndex of string * expr
   | Noexpr
 
-(*and literal =
-    IntLiteral of int
-  | BoolLiteral of bool
-  | FloatLiteral of float 
-*)
 and pattern = 
     Ident of string 
   | Wildcard 
@@ -68,8 +63,6 @@ and sym_table = {
     table : fv_type StringMap.t;
     parent : sym_table option;
 } 
-
-(*and st_entry = ValEntry of fv_type | FuncEntry of fv_type * sym_table*)
 
 (* Types *)
 and fv_type = FuncType of func_type | ValType of t

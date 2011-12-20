@@ -1,4 +1,4 @@
-(* builtin ocaml functionality that generated code needs to access *)
+(* builtin ocaml functionality that yappl-generated code needs to access *)
 
 open Random
 open Ast
