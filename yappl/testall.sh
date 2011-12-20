@@ -66,9 +66,9 @@ Check() {
 #    Run "$YAPPL" "<" $1 ">" ${basename}.i.out &&
 #    Compare ${basename}.i.out ${reffile}.out ${basename}.i.diff
 
-    generatedfiles="$generatedfiles ${basename}.c.out" &&
-    Run "$YAPPL"  "<" $1 "> test.ml ; ocamlc -o atest test.ml ; ./atest > " ${basename}.c.out &&
-    Compare ${basename}.c.out ${reffile}.out ${basename}.c.diff
+    generatedfiles="$generatedfiles ${basename}.o.out" &&
+    Run "$YAPPL"  "<" $1 "> test.ml ; ocamlc -o test_binary test.ml ; ./test_binary > " ${basename}.o.out &&
+    Compare ${basename}.o.out ${reffile}.out ${basename}.o.diff
 
     # Report the status and clean up the generated files
 
