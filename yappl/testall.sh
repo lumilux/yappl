@@ -62,12 +62,12 @@ Check() {
 
     generatedfiles=""
 
-    generatedfiles="$generatedfiles ${basename}.i.out" &&
-    Run "$YAPPL" "-i" "<" $1 ">" ${basename}.i.out &&
-    Compare ${basename}.i.out ${reffile}.out ${basename}.i.diff
+#    generatedfiles="$generatedfiles ${basename}.i.out" &&
+#    Run "$YAPPL" "<" $1 ">" ${basename}.i.out &&
+#    Compare ${basename}.i.out ${reffile}.out ${basename}.i.diff
 
     generatedfiles="$generatedfiles ${basename}.c.out" &&
-    Run "$YAPPL" "-c" "<" $1 ">" ${basename}.c.out &&
+    Run "$YAPPL"  "<" $1 "> test.ml ; ocamlc -o atest test.ml ; ./atest > " ${basename}.c.out &&
     Compare ${basename}.c.out ${reffile}.out ${basename}.c.diff
 
     # Report the status and clean up the generated files

@@ -71,6 +71,7 @@ binop:
   | expr GEQ    expr { Binop($1, Geq,    $3) }
   | expr CONCAT expr { Binop($1, ListConcat, $3) }
   | expr ATTACH expr { Binop($1, ListBuild, $3) }
+  | expr OR     expr { Binop($1, Or, $3) } 
 
 expr_core:
   | BOOL_LITERAL     { BoolLiteral($1) }

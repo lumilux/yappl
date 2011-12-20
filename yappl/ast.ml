@@ -1,6 +1,6 @@
 module StringMap = Map.Make(String)
 
-type binop = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | Mod | ListConcat | ListBuild
+type binop = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | Or | Mod | ListConcat | ListBuild
 type unop = Neg | Not
 type assignop = Assign | MemoAssign
 
@@ -142,6 +142,7 @@ and string_of_binop = function
   | Mod -> "%" 
   | ListConcat -> "@"
   | ListBuild -> "::"
+  | Or -> "or"
 
 and string_of_unop = function
   | Neg -> "-"

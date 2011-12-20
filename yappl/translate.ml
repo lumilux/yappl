@@ -176,6 +176,10 @@ and binop_to_string table e1 e2 op =
 	  "mod", ValType(Int)
 	else
 	  raise (Error("Invalid types for %"))
+    | Or ->
+        (match (t1,t2) with
+         (ValType(Bool),ValType(Bool)) -> "||", ValType(Bool)
+        | _ -> raise (Error("Type mismatch for or")))
     | ListConcat -> 
 	(match (t1,t2) with
 	  ValType(List(lt1)), ValType(List(lt2)) when lt1 = lt2 -> "@", t1
