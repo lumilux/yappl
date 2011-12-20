@@ -1,0 +1,4 @@
+let int[]:fib = [1,1,2,3,5,8,13,21,34,55,89,144] in
+let bool:piranha = (fib[3] + fib[4]) = (fib[5])  in
+~print_line piranha;
+~print_line fib[if ( fib[4] = 5 ) then 7 else 8] 

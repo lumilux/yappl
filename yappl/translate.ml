@@ -268,7 +268,7 @@ and string_at_index table s e =
       if (et <> ValType(Int)) then
         raise(Error("Invalid index. Must be integer."))
       else
-        ("(List.nth yappl_" ^ s ^ " " ^ es ^ ")" ), (listtype_to_single_type vt)  
+        ("(List.nth yappl_" ^ s ^ " (" ^ es ^ "))" ), (listtype_to_single_type vt)  
      with No_such_symbol_found ->
         raise (Error("Unbound symbol referenced"))  
 
