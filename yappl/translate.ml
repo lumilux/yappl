@@ -180,6 +180,10 @@ and binop_to_string table e1 e2 op =
         (match (t1,t2) with
          (ValType(Bool),ValType(Bool)) -> "||", ValType(Bool)
         | _ -> raise (Error("Type mismatch for or")))
+    | And ->
+        (match (t1,t2) with 
+         (ValType(Bool),ValType(Bool)) -> "&&", ValType(Bool)
+        | _ -> raise (Error("Type mismatch for and")))
     | ListConcat -> 
 	(match (t1,t2) with
 	  ValType(List(lt1)), ValType(List(lt2)) when lt1 = lt2 -> "@", t1
