@@ -33,7 +33,7 @@
 %left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE MOD
-%nonassoc COND
+%left COND
 %nonassoc NOT
 %nonassoc COND_VAR
 %nonassoc TILDE
@@ -178,12 +178,14 @@ val_bind:
 pattern_match:
   pattern ARROW expr pattern_match_cont { Pattern($1, $3, $4) }
   | COND pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
+  | LPAREN pattern RPAREN ARROW expr pattern_match_cont { Pattern($2,$5,$6) }
 
   
 
 pattern_match_cont:
   /* nothing */ %prec MATCH { NoPattern }
   | COND pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
+  | COND LPAREN pattern RPAREN ARROW expr pattern_match_cont { Pattern($3,$6,$7) }
 
 pattern:
   ID { Ident($1) }
