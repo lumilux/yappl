@@ -1,1 +1,1 @@
-# todo
+fun bool:flip float:bias = ~rand <= bias in  
