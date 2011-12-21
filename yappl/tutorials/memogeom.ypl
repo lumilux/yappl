@@ -16,3 +16,4 @@ in
 ~seed;
 let (fun int int):g = ~geom_list_gen 0.5 in
 ~print_line [~g 1, ~g 1,~g 2,~g 3, ~g 3]
+
