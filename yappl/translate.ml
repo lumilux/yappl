@@ -409,7 +409,7 @@ and expr_to_string table = function
   (*| _ -> raise (Error "unsupported expression type")*) 
 
 let translate prog =
-  print_endline (string_of_expr "" prog);
+  (* print_endline (string_of_expr "" prog);*)
   let init_table = List.fold_left (fun tabl (id, id_t) -> StringMap.add id id_t tabl) StringMap.empty Builtin.builtins in
   let global_sym_table = { table = init_table; parent = None } in
   let s, _ = expr_to_string global_sym_table prog in
