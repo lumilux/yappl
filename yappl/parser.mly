@@ -88,7 +88,6 @@ expr_core:
   | ID               { Id($1) }
   | COND_VAR         { CondVar } 
   | NOT expr         { Unop(Not, $2) }
-<<<<<<< HEAD
   | MINUS expr       %prec TIMES { Unop(Neg, $2) } 
   | func_bind IN seq_expr { FuncBind($1, $3) } 
   | TILDE ID expr_seq_opt cond_opt  { Eval($2, $3, $4) }  
