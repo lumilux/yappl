@@ -1,1 +1,2 @@
-fun bool:flip float:bias = ~rand <= bias in  
+fun bool:flip float:bias = ~rand <= bias in 
+ 
