@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+FILE="$1"
+if [ $FILE -a -f $FILE ]
+then	
+	name=$(echo "$FILE" | sed 's/\.[^\.]*$//')
+	stdlib="stdlib.ypl"
+	if [ -f $stdlib ]
+	then
+		cat $stdlib $FILE | ./yappl > ${name}.ml
+	else
+		./yappl < $FILE > ${name}.ml
+	fi
+	
+	ocamlc -c ${name}.ml
+	ocamlc -o ${name} unix.cma builtin.cmo ${name}.cmo
+	echo "run with ./${name}"
+else
+	echo "file $FILE does not exist"
+fi

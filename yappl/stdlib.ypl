@@ -1,1 +1,3 @@
-# todo
+# Flip based on supplied probability  ~flip .5 is a fair coint toss
+fun bool:flip float:bias = ~rand <= bias in 
+ 

@@ -1,32 +1,32 @@
 YAPPL was designed to make it easy to work with probabilities. The following tutorial will give a quick tour of the basics of the language and eventually build up to define a probability distribution and draw samples from it.
 
-\subsection{Basic variables}
+\subsection{Basic values}
 
-Let's begin by exploring the simple concepts of the language. There are three basic data types: integers, floating-point numbers, and booleans. Here's how to declare variables as each one of these:
+Let's begin by exploring the simple concepts of the language. There are three basic data types: integers, floating-point numbers, and booleans. Here's how to declare values as each one of these:
 \begin{floatbox}
 \begin{verbatim}
 int:num
 float:number_with_a_dot
 bool:truthful
 \end{verbatim}
-\caption{Variable declarations.}
+\caption{Value declarations.}
 \end{floatbox}
 
-It would be helpful if we could give these variables values and actually use them. To do so, we need to discuss scope. When a variable is bound to a value, you must also specify where it is defined. This is done explicitly through the \texttt{let\dots in} construction:
+It would be helpful if we could give these names values and actually use them. To do so, we need to discuss scope. When a value is bound to a name, you must also specify where it is defined. This is done explicitly through the \texttt{let\dots in} construction:
 
 \begin{floatbox}
 \begin{verbatim}
 let int:num = 5 in
   num + 5
 \end{verbatim}
-\caption{Variable definition and scoping.}
+\caption{Value definition and scoping.}
 \end{floatbox}
 
 The scope of \texttt{num} is the block after \texttt{in}.
 
 \subsection{Functions}
 
-Function declaration and definition looks similar to its variable counterparts. Scoping works in a similar way, though a function's scope begins immediately after the \texttt{=}, so it may be called recursively.  There is no need to explicitly define a function as being recursive. 
+Function declaration and definition looks similar to its value counterparts. Scoping works in a similar way, though a function's scope begins immediately after the \texttt{=}, so it may be called recursively.  There is no need to explicitly define a function as being recursive. 
 \begin{floatbox}
 \begin{alltt}
 fun int:add int:a int:b = 
@@ -47,7 +47,7 @@ The above code also demonstrates a built-in function of YAPPL, \texttt{print\_li
 
 \subsection{Expressions}
 
-Function and variable declarations and definitions are expressions, so are function evaluations. Sequences of expressions are separated by semicolons. The \texttt{if} statement will be useful in this tutorial:
+Function and value declarations and definitions are expressions, and so are function evaluations. Sequences of expressions are separated by semicolons. The \texttt{if} statement will be useful in this tutorial:
 \begin{floatbox}
 \begin{alltt}
 if x < 10 then
@@ -102,9 +102,7 @@ To compile a YAPPL file, you must pass it into the YAPPL compiler, which will pr
 
 \begin{floatbox}
 \begin{alltt}
-\$ ./yappl < geom.ypl > geom.ml
-\$ ocamlc -c geom.ml
-\$ ocamlc -o geom unix.cma builtin.cmo geom.cmo
+\$ ./yapplc geom.ypl
 \$ ./geom
 \$ 8
 \end{alltt}
