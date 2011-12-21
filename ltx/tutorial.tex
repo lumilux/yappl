@@ -1,0 +1,54 @@
+YAPPL was designed to make working with probabilities as easy as possible. The following tutorial will show you how to define a geometric distribution and use it for simple queries.
+
+\begin{verbatim}
+fun float:geom float:q = 
+\end{verbatim}
+
+
+
+%# single line comment
+%### multi
+%    line
+%	comment
+%###
+%
+%# value definition
+%float:q = .9;
+%# q is defined as 0.9 in the global scope
+%
+%# sample binding;
+%int:x = ~geom q | @ > 5;
+%# x is bound to the return value of the function geom evaluated with
+%# parameter q; the Ò| @ > 5Ó means that the return value of ~geom q is 
+%# conditions being greater than 5
+%
+%# function definition
+%int:oneOrTwo float:q = geom q | @ = 1 or @ = 2;
+%# a function that samples from geom q, conditional on the sample being 1 or 2
+%
+%# function equivalent to above
+%fun int:oneOrTwo2 int:q =
+%   int:x = ~geom q in
+%   if x = 1 or x = 2 then
+%x
+%   else
+%~oneOrTwo2 q;
+%
+%fun bool gtFive int:x = x > 5;
+%
+%# this is a memoized function
+%fun int:f int:n := ~geom .9 | gtFive @;
+%~f 0;
+%-> 16
+%~f 1;
+%-> 6
+%# later, ~f 0 still returns 16
+%~f 0;
+%-> 16 
+%
+%fun int[]:apply (fun int int):f int[]:a =
+%	match(a) with
+%case x :: rest -> ~f x :: ~apply f rest
+%		case [] 	   -> ();
+%# apply has type fun int[] ((fun int int) int[])
+%# f has type fun int (int)

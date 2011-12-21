@@ -1,0 +1,6 @@
+fun int:memod int:n := ~rand in
+let int:a = ~memod 5 and int:b = ~memod 5 
+and int:c = ~memod 5 and int:d = ~memod 5 in
+~print_line (a == b);
+~print_line (b == c);
+~print_line (c == d)
