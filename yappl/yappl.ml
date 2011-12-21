@@ -21,4 +21,5 @@ let _ =
 
 let lexbuf = Lexing.from_channel stdin in 
 let program = Parser.program Scanner.token lexbuf in
-print_endline (Translate.translate program)
+print_endline (Translate.translate program);
+(*create_process "ocamlc"  ["unix.cma"; "builtin.cmo"; "mytest.ml"] Unix.stdin Unix.stdout Unix.stderr *)
