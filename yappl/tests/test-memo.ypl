@@ -1,6 +1,8 @@
 fun float:memod int:n := ~rand in
 let float:a = ~memod 5 and float:b = ~memod 5 
-and float:c = ~memod 5 and float:d = ~memod 5 in
+and float:c = ~memod 5 and float:d = ~memod 5 
+and float:e = ~memod 7 in 
 ~print_line (a = b);
 ~print_line (b = c);
-~print_line (c = d)
+~print_line (c = d);
+~print_line !(e = a)
