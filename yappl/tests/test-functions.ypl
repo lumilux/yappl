@@ -8,4 +8,4 @@ fun int:t2 int:a int:b =
 	a + 5 + b
 in
 ~print_line ~t2 1 2;
-~print_line ~t2 -1 -2
+~print_line ~t2 (-1) (-2)
