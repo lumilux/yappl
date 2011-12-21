@@ -23,12 +23,12 @@ The scope of \texttt{num} is the block after \texttt{in}.
 
 Function declaration and definition looks similar to its variable counterparts. Scoping works the same way, where a function's scope begins immediately after the \texttt{in} keyword. 
 
-\begin{verbatim}
+\begin{Verbatim}[commandchars=\\\{\}]
 fun int:add int:a int:b = 
    a + b
 in 
-  add 1 2
-\end{verbatim}
+  {\midtilde}add 1 2
+\end{Verbatim}
 
 \begin{verbatim}
 fun float:geom float:q = 
