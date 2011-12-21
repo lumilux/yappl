@@ -121,7 +121,7 @@ and eval_to_string table id args p =
 	in
 	let err = try (* check that arg and actual expr types match *)
 	  List.fold_left2 check false rev_args_and_types (List.rev ft.args_t)
-	with Not_found ->
+	with Invalid_argument s ->
 	  raise Argument_count_mismatch
 	in
 	if err then 
@@ -168,6 +168,10 @@ and binop_to_string table e1 e2 op =
 	  Some(Int) -> "/", ValType(Int)
 	| Some(Float) -> "/.", ValType(Float)
 	| _ -> raise (Error("Type mismatch for /")))
+    | Expon ->
+	(match match_num_types (t1, t2) with
+	  Some(Float) -> "**", ValType(Float)
+	| _ -> raise (Error("Type mismatch for **")))
     | Equal -> 
 	if t1 = t2 then
 	  "=", ValType(Bool) 
@@ -405,7 +409,7 @@ and expr_to_string table = function
   (*| _ -> raise (Error "unsupported expression type")*) 
 
 let translate prog =
-  (*print_endline (string_of_expr "" prog);*)
+  print_endline (string_of_expr "" prog);
   let init_table = List.fold_left (fun tabl (id, id_t) -> StringMap.add id id_t tabl) StringMap.empty Builtin.builtins in
   let global_sym_table = { table = init_table; parent = None } in
   let s, _ = expr_to_string global_sym_table prog in
