@@ -1,0 +1,1 @@
+let bool[]:boolio = [true,false,false,false] in boolio[true]
