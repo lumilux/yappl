@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
-#echo `date +%N | sed -e 's/000$//' -e 's/^0//'`
-if [ $1 -a -f $1 ]
-then
-	#if [-f stdlib.ypl]
-	#then
-	#	cat stdlib.ypl $1 > temp_
-	#fi
-	name=$(echo "$1" | sed 's/\.[^\.]*$//')
-	./yappl < $1 > ${name}.ml
+FILE="$1"
+if [ $FILE -a -f $FILE ]
+then	
+	name=$(echo "$FILE" | sed 's/\.[^\.]*$//')
+	stdlib="stdlib.ypl"
+	if [ -f $stdlib ]
+	then
+		cat $stdlib $FILE | ./yappl > ${name}.ml
+	else
+		./yappl < $FILE > ${name}.ml
+	fi
+	
 	ocamlc -c ${name}.ml
 	ocamlc -o ${name} unix.cma builtin.cmo ${name}.cmo
 	echo "run with ./${name}"
 else
-	echo "file $1 does not exist"
+	echo "file $FILE does not exist"
 fi
