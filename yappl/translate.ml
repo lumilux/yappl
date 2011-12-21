@@ -275,7 +275,8 @@ and string_at_index table s e =
 (* pattern matching *)
 and match_to_string table e p = 
     let es,mt = expr_to_string table e in
-    (" match (" ^ es ^ ") with " ^ (pattlist_to_string table p mt)), mt
+    let match_table = { table = StringMap.empty; parent = Some(table) } in  
+    (" match (" ^ es ^ ") with " ^ (pattlist_to_string match_table p mt)), mt
 
 (* mt = match type, for type inference *) 
 and pattlist_to_string table pl mt =
@@ -286,7 +287,7 @@ and pattlist_to_string table pl mt =
                                       "\n| " ^ patstring ^ " -> " ^ es
     | NoPattern -> ""         
 
-and pat_to_string table p mt =
+and pat_to_string table p mt =    
     match (p) with 
       Ident s -> patid_to_string table s mt   
     | Wildcard -> "_", table
@@ -296,9 +297,12 @@ and pat_to_string table p mt =
 
 (* adds symbol to table, clobbers existing symbols *)
 and patid_to_string table s mt = 
-      let new_table = { table with table = StringMap.add s mt table.table } in
-      "yappl_" ^ s, new_table
-
+      try 
+      ignore (sym_table_lookup table s);
+      raise (Error("Type mismatch in concatenation")) 
+      with  No_such_symbol_found _ ->
+        let new_table = { table with table = StringMap.add s mt table.table } in
+        "yappl_" ^ s, new_table     
        
      
 and val_bindings_to_string table bindings e =
