@@ -26,7 +26,7 @@ The scope of \texttt{num} is the block after \texttt{in}.
 
 \subsection{Functions}
 
-Function declaration and definition looks similar to its variable counterparts. Scoping works the same way, where a function's scope begins immediately after the \texttt{in} keyword. 
+Function declaration and definition looks similar to its variable counterparts. Scoping works in a similar way, though a function's scope begins immediately after the \texttt{=}, so it may be called recursively.  There is no need to explicitly define a function as being recursive. 
 \begin{floatbox}
 \begin{alltt}
 fun int:add int:a int:b = 
@@ -37,17 +37,17 @@ in
 \caption{A simple function.}
 \end{floatbox}
 
-This creates a function \texttt{add} that returns an integer and takes in two integers as arguments. The body of the function is after the \texttt{=} sign, and it is allowed to be called after \texttt{in}. The last line of a function is its return value. Recursion is permitted: a function can call itself within its own body. There is no need to explicitly define a function as recursive. 
+This creates a function \texttt{add} that returns an integer and takes in two integers as arguments. The body of the function is after the \texttt{=} sign. A function returns whatever value its body expression evaluates to. 
 
 Functions are called using the function evaluation operator, tilde (\midtilde). 
 
 \subsubsection{Built-in functions}
 
-The above code also demonstrates a built-in function of YAPPL, \texttt{print\_line}, which takes in a single argument to print. \texttt{rand} and \texttt{seed} are other built-in functions that we will use later in this tutorial.
+The above code also demonstrates a built-in function of YAPPL, \texttt{print\_line}, which takes in a single argument to print. The other built-in functions are \texttt{rand} and \texttt{seed}, which we will use later in this tutorial.
 
 \subsection{Expressions}
 
-Function and variable declarations and definitions are expressions, so are function evaluations. Sequences of expressions are separated by semicolons, and the \texttt{if} statement will be useful in this tutorial:
+Function and variable declarations and definitions are expressions, so are function evaluations. Sequences of expressions are separated by semicolons. The \texttt{if} statement will be useful in this tutorial:
 \begin{floatbox}
 \begin{alltt}
 if x < 10 then
@@ -62,7 +62,7 @@ For a more formal description, please see the Language Reference Manual.
 
 \subsection{A simple distribution}
 
-We now know enough to construct a function that takes a sample from a distribution. We will use the geometric distribution because it is a simple enough construct to use in an exemplary program. To remind the reader, a sample from a geometric distribution will return the number of Bernoulli trials needed to obtain a success, given some probability of success $p$. 
+We now know enough to construct a function that takes a sample from a distribution. We will use the geometric distribution because it is a simple enough construct to use in an exemplary program, but still interesting. To remind the reader, a sample from a geometric distribution will return the number of Bernoulli trials needed to obtain a success, given some probability of success $p$. 
 
 Our approach will generate a random number for a number of iterations. Each time a random number is generated, we will increase our integer return value. The function will continue to iterate until the random number is within $[0, p)$. We return the final value. We implement the increment recursively:
 
