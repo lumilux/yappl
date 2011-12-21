@@ -43,7 +43,7 @@
 %nonassoc LPAREN RPAREN
 %nonassoc ID COND_VAR 
 %left LBRACK
-%nonassoc RBRACK BOOL_LITERAL FLOAT_LITERAL INT_LITERAL LBRACE COMMA USCORE
+%nonassoc RBRACK BOOL_LITERAL FLOAT_LITERAL INT_LITERAL LBRACE COMMA USCORE INT FLOAT BOOL
 
 %start program
 %type <Ast.program> program
@@ -71,6 +71,7 @@ binop:
   | expr TIMES  expr { Binop($1, Mult,   $3) }
   | expr DIVIDE expr { Binop($1, Div,    $3) }
   | expr MOD    expr { Binop($1, Mod,    $3) }
+  | expr EXPON  expr { Binop($1, Expon,   $3) }
   | expr EQSYM  expr { Binop($1, Equal,  $3) }
   | expr NEQ    expr { Binop($1, Neq,    $3) }
   | expr LT     expr { Binop($1, Less,   $3) }
@@ -109,14 +110,23 @@ func_bind:
 	 body = $3}] }
 
 function_decl:
-  t COLON ID args
-    { { freturn = ValType $1;
+  fvtype COLON ID args
+    { { freturn = $1;
         fname = $3;
         fargs = List.rev $4} }
 
 assn_op: 
     EQSYM { Assign } 
   | MEMOEQ { MemoAssign }
+
+fvtype:
+  | LPAREN fvtype RPAREN { $2 }
+  | FUN fvtype fvtype_list_opt { FuncType({args_t = List.rev $3; return_t = $2}) }
+  | t { ValType $1 }
+
+fvtype_list_opt:
+     /* nothing */ { [] }
+  |  fvtype_list_opt fvtype { $2 :: $1 }
 
 t: 
     INT { Int }
@@ -129,8 +139,8 @@ args:
   | args decl { $2 :: $1 }
 
 decl: 
-  t COLON ID 
-    { { dtype = ValType $1;
+  fvtype COLON ID 
+    { { dtype = $1;
       dname = $3 } }
 
 
@@ -166,7 +176,7 @@ expr_list:
 
 /* Value binding */
 
-val_decl: decl  { $1 }
+val_decl:  decl  { $1 }
 
 val_bind_list:
    val_bind {[$1]}

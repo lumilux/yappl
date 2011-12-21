@@ -177,8 +177,16 @@ The boolean operator \texttt{!} (negation) and numerical operator \texttt{-} (mi
 \quad \term{!} \nterm{expr}
 \end{alltt}
 
+\subsubsection{Exponential operator}
+
+The exponential operator \texttt{**} is a binary operator that groups right-to-left.
+\begin{alltt}
+\quad \nterm{expr} \term{**} \nterm{expr}
+\end{alltt}
+Both expressions must be of type \texttt{float}. The operator evaluates to a \texttt{float}. 
+
 \subsubsection{Multiplicative operators}
-The multiplicative operators \texttt{*} (multiplication), \texttt{/} (division), and \texttt{\%} (modulus) are binary and group left-to-right. The  binary \% operator results in the remainder from the division of the first expression by the second. Both operands must be type \texttt{int} and the result is \texttt{int}. The remainder has the same sign as the dividend.
+The multiplicative operators \texttt{*} (multiplication), \texttt{/} (division), and \texttt{\%} (modulus) are binary and group left-to-right. The  binary \% operator results in the remainder from the division of the first expression by the second. For multiplication and dilation, both operands must be of type \texttt{int} or \texttt{float} and the result is of the same type. Modulus takes integers and returns an integer. The remainder has the same sign as the dividend.
 
 \begin{alltt}
 \quad \nterm{expr} \term{*} \nterm{expr}
@@ -250,12 +258,13 @@ A pair of expressions separated by a semicolon is evaluated left-to-right and th
 \end{alltt}
 
 \subsection{Built-in Functions}
-There are four built-in functions in YAPPL: \term{rand}, \term{seed}, \term{print}, and \term{print\_line}. These are  reserved keywords. 
+There are four built-in functions in YAPPL: \term{rand}, \term{seed}, \term{print}, and \term{print\_line}. These are  reserved keywords. They are called by using the tilde operator just like any other function.
+
 \subsubsection{Random values}
 The function \term{rand} takes no arguments and returns a random or pseudo-random number between 0 and 1. \term{seed} also takes no arguments. If it is called before \term{rand}, all subsequent calls of \term{rand} will be seeded with a value based on the current system time. Otherwise all calls to \term{rand} use the same default seed.
 
 \subsubsection{Printing}
-Since YAPPL does not currently support the \term{string} type or string literals, or allow for side-effects, printing must be achieved explicitly within the language. The \term{print} function takes a single expression of one of the three basic types as an argument and prints a string representation of that argument to standard output. \term{print\_line} functions like \term{print} but appends a newline.
+Since YAPPL does not currently support the \term{string} type or string literals, or allow for side-effects (excepting \term{rand} and \term{seed}), printing must be achieved explicitly within the language. The \term{print} function takes a single expression of one of the three basic types (\term{int}, \term{bool}, and {float}) or a list of one of those three types as an argument and prints a string representation of that argument to standard output. \term{print\_line} functions like \term{print} but appends a newline.
 
 %that is a list of integers. For each number encountered in the list, \term{print} interprets this as the decimal representation of an ASCII character and prints to standard out the corresponding letter character in the ASCII table. It always returns \term{true}. \\
 %\begin{verbatim}

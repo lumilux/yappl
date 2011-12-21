@@ -72,7 +72,7 @@ and ocaml_lstring_to_yappl ls t =
        Int -> "print_int"
       |Bool -> "print_bool"
       |Float -> "print_float"
-      |_     -> "print_hope"  
+      |_     -> raise (Error("Unsupported type for printing: " ^ (string_of_t (List t))))
    in
    "( print_char '[') ;  ( match (" ^ ls ^" ) with | [] -> () | h::t ->   (" ^ pc ^ " h) ;" ^
    "ignore ( List.map (fun i -> print_char ',' ;" ^ pc ^ " i) t ) );  ( print_char ']')"
