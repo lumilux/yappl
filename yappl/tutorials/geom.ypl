@@ -1,0 +1,11 @@
+~seed;
+fun int:geom float:q =
+  fun int:geom_helper float:orig_q int:i =
+    if ~rand < orig_q then
+      i
+    else
+      ~geom_helper orig_q (i+1)
+  in 
+    ~geom_helper q 1
+in
+  ~print_line ~geom 0.1
