@@ -116,10 +116,10 @@ Functions are evaluated with the following construct:
 \quad \term{\midtilde} \nterm{identifier} [ \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n} ] [ \term{given} \nterm{expr} ] 
 \end{alltt}
 
-where  \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n} are arguments passed to the function. The arguments must match the number and type of the arguments in the declared function being called. \term{|} \nterm{expr} specifies an optional condition that the return value of the function must fulfill. The return value of the function may be referenced within the conditional statement by the special variable \term{\$}. Below is a sample function evaluation that utilizes this construct. \texttt{geom} takes a single argument.
+where  \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n} are arguments passed to the function. The arguments must match the number and type of the arguments in the declared function being called. The \term{given} \nterm{expr} portion specifies an optional condition that the return value of the function must fulfill. The return value of the function may be referenced within the conditional statement by the special variable \term{\$}. Below is a sample function evaluation that utilizes this construct. The random function \texttt{geom}, which generates a draw from a geometric random variable, takes a single argument between 0 and 1.
 
 \begin{alltt}
-\quad \midtilde geom q | \$ > 5
+\quad \midtilde geom q given \$ > 5
 \end{alltt}
 
 Functions are evaluated when they are called. 
