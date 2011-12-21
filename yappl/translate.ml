@@ -318,7 +318,7 @@ and val_bind_to_string table vb =
   with No_such_symbol_found _ -> 
     let (s, et) = expr_to_string table vb.vexpr in
     if et <> vb.vdecl.dtype then
-      raise (Error("Incomptible type for value binding"))
+      raise (Error("Incompatible type for value binding"))
     else
       let new_table = { table with table = StringMap.add vb.vdecl.dname et table.table } in
       new_table, "let yappl_" ^ vb.vdecl.dname ^ " = " ^ s ^ " in "
