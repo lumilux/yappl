@@ -89,11 +89,10 @@ expr_core:
   | COND_VAR         { CondVar } 
   | NOT expr         { Unop(Not, $2) }
   | MINUS expr       %prec TIMES { Unop(Neg, $2) } 
-  | func_bind IN seq_expr { FuncBind($1, $3) } 
   | TILDE ID expr_seq_opt cond_opt  { Eval($2, $3, $4) }  
 /*  | TILDE ID expr_seq_opt   { Eval($2, $3, Noexpr) }     */
   | IF seq_expr THEN expr ELSE expr { If($2, $4, $6) }
-/*  | IF seq_expr THEN expr { If($2, $4, Noexpr) }  */
+  | FUN func_bind IN seq_expr { FuncBind($2, $4) }
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }   
   | LET val_bind_list IN seq_expr {ValBind($2,$4) } 
   | MATCH seq_expr WITH pattern_match  { Match($2, $4) } 
