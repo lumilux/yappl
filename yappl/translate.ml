@@ -218,7 +218,8 @@ and binop_to_string table e1 e2 op =
     | ListBuild ->
 	(match (t1,t2) with
 	  ValType(lt1), ValType(List(lt2)) when lt1 = lt2 -> "::", t2
-	| _ -> raise (Error("Type mismatch for ::")))
+	| ValType(lt1), ValType(List Void) -> "::", ValType(List lt1)
+	| _ -> raise (Error("Type mismatch for :: " ^ (string_of_fv_type t1) ^ " " ^ (string_of_fv_type t2))))
   in
   "(" ^ s1 ^ ") " ^ ocaml_op ^  " (" ^ s2 ^ ")", return_t
 
@@ -250,7 +251,7 @@ and if_to_string table pred e1 e2 =
 
 and list_to_string table l = 
     match l with
-      []  -> "[]", ValType(Void)
+      []  -> "[]", ValType(List Void)
     | _   -> let head = List.hd (List.rev l) in 
              let (_,vt) = expr_to_string table head in
              let sl = List.map ( fun e -> 
@@ -409,7 +410,7 @@ and expr_to_string table = function
   (*| _ -> raise (Error "unsupported expression type")*) 
 
 let translate prog =
-  (* print_endline (string_of_expr "" prog);*)
+  (*print_endline (string_of_expr "" prog);*)
   let init_table = List.fold_left (fun tabl (id, id_t) -> StringMap.add id id_t tabl) StringMap.empty Builtin.builtins in
   let global_sym_table = { table = init_table; parent = None } in
   let s, _ = expr_to_string global_sym_table prog in

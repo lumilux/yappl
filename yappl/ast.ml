@@ -98,7 +98,7 @@ let rec string_of_expr indent expr =
     | ValBind(bindings, e) -> indent ^ "ValBindings\n" ^ (String.concat "" (List.map (string_of_val_bind more_indent) bindings)) ^ (string_of_expr more_indent e)
     | FuncBind(bindings, e) -> indent ^ "FuncBindings\n" ^ (String.concat "" (List.map (string_of_func_bind more_indent) bindings)) ^ (string_of_expr more_indent e)
     | Noexpr -> indent ^ "Noexpr\n"
-(*    | ListBuilder(l) -> list_to_string table l*)
+    | ListBuilder(l) -> indent ^ "ListBuilder\n" ^ (String.concat "\n" (List.map (string_of_expr more_indent) l)) 
     | _ -> raise Not_found
  
 
