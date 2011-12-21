@@ -141,8 +141,8 @@ and string_of_binop = function
   | Expon -> "**"
   | ListConcat -> "@"
   | ListBuild -> "::"
-  | Or -> "or"
-  | And -> "and"
+  | Or -> "||"
+  | And -> "&&"
 
 and string_of_unop = function
   | Neg -> "-"

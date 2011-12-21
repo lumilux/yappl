@@ -149,14 +149,56 @@ Todo\\
 \includegraphics[scale=0.5]{block-diagram.png}
 }
 
-\frame[t] {
-\frametitle{Implementation 2}
-Todo
-}
+\begin{frame}[fragile] 
+\frametitle{YAPPL code conversion to AST}
+\begin{alltt} 
+fun int:t1 int:a =
+    a + 3
+in
+~print_line ~t1 2 
+\end{alltt}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{YAPPL code conversion to AST}
+\begin{alltt}
+FuncBindings
+    FuncBind =
+        FuncDecl(t1, ValType(Int), Decl(a, ValType(Int))
+        Binop +
+            Id a
+            IntLit 3
+    Eval print_line
+        Eval t1
+            IntLit 2
+            Noexpr
+        Noexpr
+
+\end{alltt}
+\end{frame}
 
 \frame[t] {
-\frametitle{Implementation 3}
+\frametitle{Code Generation}
 
+ {\bf Important steps}
+
+\begin{itemize}
+  \item Generate symbol table
+     \begin{itemize}
+        \item tracks identifiers and type
+        \item can point to parent symbol table for scoping
+     \end{itemize}
+  \item expr\_to\_string
+     \begin{itemize}
+        \item main function for evaluation of ast
+        \item resolves reserved identifiers before using symtable
+     \end{itemize}
+  \item Compile OCaml to executable
+      \begin{itemize}
+         \item links with builtin (includes functions like rand)
+      \end{itemize}  
+\end{itemize}
 }
 
 \frame[t] {
