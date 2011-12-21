@@ -1,1 +1,3 @@
-let int:a = 4 and int:b = 5 in ~print_line ( a + b )
+let int:a = 4 and int:b = 5 in ~print_line ( a + b );
+let int[]:x = [1,2,3] in ~print_line x[2] + x[0];
+let fun float:r = rand in ~rand 
