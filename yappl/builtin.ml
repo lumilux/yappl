@@ -21,7 +21,7 @@ module Builtin =
 
     let rand () = Random.float 1.0
 
-    let seed () = Random.init (int_of_float (Unix.time ())); true
+    let seed () = Random.init (int_of_float(10000. *. fst(modf(Unix.gettimeofday())))); true
 
 (* Prototype for memoization:
     let no_mem_my_func arg1 arg2 = 
