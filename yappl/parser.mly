@@ -1,7 +1,7 @@
 %{ open Ast %}
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK 
-%token COMMA COLON CONCAT ATTACH COND GIVEN TILDE
+%token COMMA COLON CONCAT ATTACH BAR GIVEN TILDE
 %token PLUS MINUS TIMES DIVIDE MOD ASSIGN
 %token NOT AND OR IN LET BIND_SEP
 %token EQSYM NEQ LT LEQ GT GEQ MEMOEQ
@@ -15,18 +15,19 @@
 %token EOF
 
 %nonassoc IN
-%left SEMI
-%nonassoc top_precs
-%nonassoc LET
+%nonassoc below_SEMI
+%nonassoc SEMI
+%nonassoc above_SEMI
+%nonassoc LET FUN
+%nonassoc WITH
 %nonassoc BIND_SEP
-%nonassoc MATCH WITH
-%nonassoc NOCOND
-%nonassoc IF
-%nonassoc FUN
-%nonassoc NOELSE
 %nonassoc THEN
 %nonassoc ELSE
+%nonassoc IF MATCH
 %right COLON EQSYM 
+%nonassoc below_BAR
+%nonassoc BAR
+%nonassoc GIVEN
 %left ATTACH
 %left CONCAT 
 %left AND OR
@@ -34,14 +35,12 @@
 %left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE MOD
-%left COND GIVEN
 %nonassoc NOT
-%nonassoc COND_VAR
 %nonassoc TILDE
 %nonassoc ARROW
 %nonassoc LPAREN RPAREN
-%nonassoc ID 
-%left LBRACK 
+%nonassoc ID COND_VAR 
+%left LBRACK
 %nonassoc RBRACK BOOL_LITERAL FLOAT_LITERAL INT_LITERAL LBRACE COMMA USCORE
 
 %start program
@@ -51,7 +50,12 @@
 
 program:
    /* nothing  { None }*/
-  expr          { $1 }
+  seq_expr          { $1 }
+
+seq_expr:
+| expr        %prec below_SEMI { $1 }
+| expr SEMI              { $1 }
+| expr SEMI seq_expr     { ExprSeq($1,$3) }
 
 expr:
     expr_core { $1 }
@@ -59,7 +63,7 @@ expr:
 
 
 binop:
-  | expr SEMI   expr { ExprSeq($1, $3) }
+/* | expr SEMI   expr { ExprSeq($1, $3) } */
   | expr PLUS   expr { Binop($1, Add,    $3) }
   | expr MINUS  expr { Binop($1, Sub,    $3) }
   | expr TIMES  expr { Binop($1, Mult,   $3) }
@@ -80,28 +84,24 @@ expr_core:
   | BOOL_LITERAL     { BoolLiteral($1) }
   | INT_LITERAL      { IntLiteral($1) }
   | FLOAT_LITERAL    { FloatLiteral($1) }
-  | LPAREN expr RPAREN { $2 }
+  | LPAREN seq_expr RPAREN { $2 }
   | ID               { Id($1) }
   | COND_VAR         { CondVar } 
   | NOT expr         { Unop(Not, $2) }
-  | MINUS expr       %prec TIMES { Unop(Neg, $2) }
-  | FUN func_bind IN expr { FuncBind($2, $4) }
-  | TILDE ID expr_seq_opt cond_opt   { Eval($2, $3, $4) } 
-  | IF  expr  THEN expr { If($2, $4, Noexpr) }  
-  | IF  expr THEN expr ELSE expr { If($2, $4, $6) }
+  | MINUS expr       %prec TIMES { Unop(Neg, $2) } 
+  | TILDE ID expr_seq_opt cond_opt  { Eval($2, $3, $4) }  
+/*  | TILDE ID expr_seq_opt   { Eval($2, $3, Noexpr) }     */
+  | IF seq_expr THEN expr ELSE expr { If($2, $4, $6) }
+  | FUN func_bind IN seq_expr { FuncBind($2, $4) }
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }   
-  | LET val_bind_list IN expr {ValBind($2,$4) } 
-  | MATCH expr WITH pattern_match  { Match($2, $4) }
+  | LET val_bind_list IN seq_expr {ValBind($2,$4) } 
+  | MATCH seq_expr WITH pattern_match  { Match($2, $4) } 
   | ID LBRACK expr RBRACK { GetIndex($1,$3) }
-
-/*  | IF LPAREN expr RPAREN THEN expr %prec NOELSE { If($3, $6, Noexpr) }
-  | IF LPAREN expr RPAREN THEN expr ELSE expr    { If($3, $6, $8) } */
-
 
 /* Function binding */
 
 func_bind:    
-  function_decl assn_op expr 
+  function_decl assn_op seq_expr 
       { [{ fdecl = $1;
 	 op = $2;
 	 body = $3}] }
@@ -135,19 +135,19 @@ decl:
 /* Function evaluation */
 
 expr_seq_opt:
-    /* nothing */  %prec top_precs { [] }
-  | expr_seq       %prec top_precs { List.rev $1 }
+    /* nothing */   %prec above_SEMI { [] }
+  | expr_seq       %prec above_SEMI { List.rev $1 }
 
 expr_seq:
-   expr        %prec top_precs  { [$1] }
-   | expr_seq expr %prec top_precs { $2 :: $1 }
+     expr          %prec above_SEMI  { [$1] }
+   | expr_seq expr %prec above_SEMI { $2 :: $1 }
 
 
 /*expr_seq_opt:
   | expr  %prec ID { $1 }*/
 
 cond_opt:
-  /* nothing */ %prec top_precs { Noexpr }
+  /* nothing*/ %prec below_BAR { Noexpr }
   | GIVEN expr  { $2 } 
 
 
@@ -171,24 +171,29 @@ val_bind_list:
   | val_bind_list BIND_SEP val_bind { $3 :: $1 } 
 
 val_bind: 
-   val_decl EQSYM expr {{vdecl = $1; vexpr = $3}}
+   val_decl EQSYM seq_expr {{vdecl = $1; vexpr = $3}}
 
 
 /* Pattern matching */
 
 pattern_match:
-  pattern ARROW expr pattern_match_cont { Pattern($1, $3, $4) }
-  | COND pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
-  | LPAREN pattern RPAREN ARROW expr pattern_match_cont { Pattern($2,$5,$6) }
+  | bar_opt pattern ARROW seq_expr { Pattern($2, $4, NoPattern) }
+  | pattern_match BAR pattern ARROW seq_expr   { Pattern($3, $5, $1) }
+/*  pattern ARROW expr pattern_match_cont { Pattern($1, $3, $4) }
+  | BAR pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
+  | LPAREN pattern RPAREN ARROW expr pattern_match_cont { Pattern($2,$5,$6) } */
 
-  
+bar_opt:
+  | /* nothing */ {} 
+  | BAR  {}
 
-pattern_match_cont:
-  /* nothing */ %prec MATCH { NoPattern }
-  | COND pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
-  | COND LPAREN pattern RPAREN ARROW expr pattern_match_cont { Pattern($3,$6,$7) }
+/*pattern_match_cont:
+  nothing  %prec MATCH { NoPattern }
+  | BAR pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
+  | BAR LPAREN pattern RPAREN ARROW expr pattern_match_cont { Pattern($3,$6,$7) }*/
 
 pattern:
-  ID { Ident($1) }
+  | LPAREN pattern RPAREN { $2 }
+  | ID { Ident($1) }
   | WILDCARD { Wildcard }
   | pattern ATTACH pattern { Concat($1, $3) }

@@ -17,7 +17,7 @@ rule token = parse
 | '['      { LBRACK }
 | ']'      { RBRACK }
 | '$'      { COND_VAR }
-| '|'      { COND }
+| '|'      { BAR }
 | "given"  { GIVEN }
 | '~'      { TILDE }
 | "@"      { CONCAT }
