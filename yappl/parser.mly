@@ -197,5 +197,8 @@ bar_opt:
 pattern:
   | LPAREN pattern RPAREN { $2 }
   | ID %prec below_EQUAL { Ident($1) }
+  | INT_LITERAL {IntPatt $1}
+  | BOOL_LITERAL {BoolPatt $1}
+  | FLOAT_LITERAL {FloatPatt $1}
   | WILDCARD { Wildcard }
   | pattern ATTACH pattern { Concat($1, $3) }

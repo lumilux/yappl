@@ -295,6 +295,9 @@ and pattlist_to_string table pl mt =
 and pat_to_string table p mt =    
     match (p) with 
       Ident s -> patid_to_string table s mt   
+    | IntPatt i  -> string_of_int i, table
+    | BoolPatt b -> string_of_bool b, table
+    | FloatPatt f -> string_of_float f, table
     | Wildcard -> "_", table
     | Concat (p1, p2) -> let (p1s, table1) = pat_to_string table  p1 (listtype_to_single_type mt ) in
                            let (p2s, table2) = pat_to_string table1 p2 mt in
