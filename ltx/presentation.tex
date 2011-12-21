@@ -28,6 +28,7 @@
 
 %\newcommand{\argmax}{\operatornamewithlimits{argmax}}
 \def\newblock{\hskip .11em plus .33em minus .07em}
+\newcommand\midtilde{{\lower.50ex\hbox{\texttt{\char`\~}}}}
 
 % Author, Title, etc.
 
@@ -65,58 +66,80 @@
 
 \frame[t] {
 \frametitle{Overview: Introduction}
-Todo
-\newline
-\newline
-Inspiration
+Inspiration: functional,  {\bf probabilistic programming languages}
 \begin{itemize}
-\item Church
-\item HANSEI
-\item OCaml
+\item {\bf Church}: PPL based on pure subset of Scheme
+\item HANSEI: PPL based on Ocaml
+\item OCaml: inspiration for syntax
+\end{itemize}
+Church and HANSEI code can be difficult to read and understand 
+}
+
+
+\frame[t] {
+\frametitle{Overview: Probabilistic Programming}
+What is probabilistic programming about?
+\begin{itemize}
+\item allows for the concise definition of complex statistical models
+\item in particular, we are interested in defining generative {\bf Bayesian models} and conditionally sampling from them
+\item to accomplish these goals, use {\bf conditional evaluation} and {\bf memoization}
+\item a memoized function remembers what value it returned for previously evaluated argument values and always returns the same value in the future given those arguments 
+\item memoization is useful because it lets you have "infinite" things (like lists or matrices), but only {\bf lazily generate} items from the list 
 \end{itemize}
 }
 
-
 \frame[t] {
-\frametitle{Overview: Motivations}
-Todo
-}
-
-\frame[t] {
-\frametitle{Tutorial 1}
-Todo.
+\frametitle{Overview: Goals}
+Improving on HANSEI and Church by...
+\begin{itemize}
+\item implementing a functional, natively probabilistic programming language with modern, Ocaml-like syntax
+\item build conditional evaluation and memoization directly into the language
+\item making syntax cleaner and more readable
+\end{itemize}
 }
 
 \begin{frame}[fragile]
-\frametitle{Tutorial 2}
+\frametitle{Tutorial 1}
+tutorials/add.ypl
 \begin{alltt}
-~seed;
-fun int:geom float:q =
-  fun int:geom_helper float:orig_q int:i =
-    if ~rand < orig_q then i
-    else ~geom_helper orig_q (i+1)
-  in 
-    ~geom_helper q 1
-in
+fun int:add int:a int:b = 
+   a + b
+in 
+  {\midtilde}print_line {\midtilde}add 1 2
+\end{alltt}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Tutorial 2}
+tutorials/geom\_cond.ypl
+\begin{alltt}
+ {\midtilde}seed;
+ fun int:geom float:q =
+   fun int:geom_helper float:orig_q int:i =
+     if {\midtilde}rand < orig_q then i
+     else {\midtilde}geom_helper orig_q (i+1)
+   in 
+     {\midtilde}geom_helper q 1
+ in
 \end{alltt}
 \end{frame}
 
 \begin{frame}[fragile]
 \frametitle{Tutorial 3}
 \begin{alltt}
-fun int:try_g = ~geom 0.1 given $ > 100 in
-~print_line ~try_g;
-~print_line ~try_g;
-~print_line ~try_g;
-~print_line ~try_g;
-~print_line ~try_g;
-
-fun int:try_g2 = ~geom 0.1 given $ > 10 in
-~print_line ~try_g2;
-~print_line ~try_g2;
-~print_line ~try_g2;
-~print_line ~try_g2;
-~print_line ~try_g2
+ fun int:try_g = {\midtilde}geom 0.1 given $ > 100 in
+ {\midtilde}print_line {\midtilde}try_g;
+ {\midtilde}print_line {\midtilde}try_g;
+ {\midtilde}print_line {\midtilde}try_g;
+ {\midtilde}print_line {\midtilde}try_g;
+ {\midtilde}print_line {\midtilde}try_g;
+ 
+ fun int:try_g2 = {\midtilde}geom 0.1 given $ > 10 in
+ {\midtilde}print_line {\midtilde}try_g2;
+ {\midtilde}print_line {\midtilde}try_g2;
+ {\midtilde}print_line {\midtilde}try_g2;
+ {\midtilde}print_line {\midtilde}try_g2;
+ {\midtilde}print_line {\midtilde}try_g2
 \end{alltt}
 \end{frame}
 
