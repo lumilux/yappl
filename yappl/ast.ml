@@ -25,6 +25,9 @@ type expr =
 
 and pattern = 
     Ident of string 
+  | IntPatt of int
+  | BoolPatt of bool
+  | FloatPatt of float   
   | Wildcard 
   | Concat of pattern * pattern
 
