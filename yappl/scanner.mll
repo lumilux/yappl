@@ -54,6 +54,7 @@ rule token = parse
 | "false"  { BOOL_LITERAL(false) }
 | "match"  { MATCH }
 | "with"   { WITH }
+| "string" { STRING } (* our LRM states this is reserved, but it's not being used *)
 | "->"     { ARROW }
 | "_"      { WILDCARD }
 | (opt1 | opt2 | opt3) as lxm { FLOAT_LITERAL(float_of_string lxm) }
