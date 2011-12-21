@@ -2,7 +2,7 @@
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK 
 %token COMMA COLON CONCAT ATTACH BAR GIVEN TILDE
-%token PLUS MINUS TIMES DIVIDE MOD ASSIGN
+%token PLUS MINUS TIMES DIVIDE MOD EXPON
 %token NOT AND OR IN LET BIND_SEP
 %token EQSYM NEQ LT LEQ GT GEQ MEMOEQ
 %token IF ELSE THEN INT FLOAT BOOL FUN COND_VAR IN
@@ -24,20 +24,22 @@
 %nonassoc THEN
 %nonassoc ELSE
 %nonassoc IF MATCH
-%right COLON EQSYM 
+%left COLON 
 %nonassoc below_BAR
-%nonassoc BAR
-%nonassoc GIVEN
-%left ATTACH
-%left CONCAT 
-%left AND OR
-%left EQ NEQ 
-%left LT GT LEQ GEQ
+%left BAR
+%nonassoc GIVEN 
+%nonassoc ARROW
+%right OR
+%right AND
+%nonassoc below_EQUAL
+%left MEMOEQ EQSYM NEQ LT GT LEQ GEQ
+%right CONCAT
+%right ATTACH
 %left PLUS MINUS
 %left TIMES DIVIDE MOD
+%right EXPON
 %nonassoc NOT
 %nonassoc TILDE
-%nonassoc ARROW
 %nonassoc LPAREN RPAREN
 %nonassoc ID COND_VAR 
 %left LBRACK
@@ -101,7 +103,7 @@ expr_core:
 /* Function binding */
 
 func_bind:    
-  function_decl assn_op seq_expr 
+  function_decl assn_op seq_expr
       { [{ fdecl = $1;
 	 op = $2;
 	 body = $3}] }
@@ -194,6 +196,6 @@ bar_opt:
 
 pattern:
   | LPAREN pattern RPAREN { $2 }
-  | ID { Ident($1) }
+  | ID %prec below_EQUAL { Ident($1) }
   | WILDCARD { Wildcard }
   | pattern ATTACH pattern { Concat($1, $3) }

@@ -1,6 +1,6 @@
 module StringMap = Map.Make(String)
 
-type binop = Add | And | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | Or | Mod | ListConcat | ListBuild
+type binop = Add | And | Sub | Mult | Div | Expon | Equal | Neq | Less | Leq | Greater | Geq | Or | Mod | ListConcat | ListBuild
 type unop = Neg | Not
 type assignop = Assign | MemoAssign
 
@@ -92,13 +92,15 @@ let rec string_of_expr indent expr =
     | Binop(e1, op, e2) -> indent ^ "Binop " ^ (string_of_binop op) ^ "\n" ^ (string_of_expr more_indent e1) ^ (string_of_expr more_indent e2) 
     | Unop(op, e) -> indent ^ "Unop " ^ (string_of_unop op) ^ "\n" ^ (string_of_expr more_indent e)
     | If(pred, e1, e2) ->  indent ^ "IfThenElse\n" ^  (string_of_expr more_indent pred) ^ (string_of_expr more_indent e1) ^ (string_of_expr more_indent e2)
-   (* | ValBind(bindings, e) -> val_bindings_to_string table bindings e *)
+    | ValBind(bindings, e) -> indent ^ "ValBindings\n" ^ (String.concat "" (List.map (string_of_val_bind more_indent) bindings)) ^ (string_of_expr more_indent e)
     | FuncBind(bindings, e) -> indent ^ "FuncBindings\n" ^ (String.concat "" (List.map (string_of_func_bind more_indent) bindings)) ^ (string_of_expr more_indent e)
     | Noexpr -> indent ^ "Noexpr\n"
 (*    | ListBuilder(l) -> list_to_string table l*)
     | _ -> raise Not_found
  
 
+and string_of_val_bind indent fb =
+  ""
 
 and string_of_func_bind indent fb =
   let more_indent = "    " ^ indent in
@@ -133,6 +135,7 @@ and string_of_binop = function
   | Greater -> ">"
   | Geq -> ">="
   | Mod -> "%" 
+  | Expon -> "**"
   | ListConcat -> "@"
   | ListBuild -> "::"
   | Or -> "or"

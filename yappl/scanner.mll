@@ -25,9 +25,10 @@ rule token = parse
 | ":"      { COLON }
 | ';'      { SEMI }
 | ','      { COMMA }
-| '!'	     { NOT }
+| '!'	   { NOT }
 | '+'      { PLUS }
 | '-'      { MINUS }
+| "**"     { EXPON }
 | '*'      { TIMES }
 | '/'      { DIVIDE }
 | '%'      { MOD } 
