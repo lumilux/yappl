@@ -67,7 +67,7 @@ Check() {
 #    Compare ${basename}.i.out ${reffile}.out ${basename}.i.diff
 
     generatedfiles="$generatedfiles ${basename}.o.out" &&
-    Run "$YAPPL"  "<" $1 "> test.ml ; ocamlc -o test_binary test.ml ; ./test_binary > " ${basename}.o.out &&
+    Run "$YAPPL"  "<" $1 "> test.ml ; ocamlc -o test_binary unix.cma builtin.cmo test.ml ; ./test_binary > " ${basename}.o.out &&
     Compare ${basename}.o.out ${reffile}.out ${basename}.o.diff
 
     # Report the status and clean up the generated files

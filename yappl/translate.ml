@@ -3,7 +3,7 @@
 open Ast
 open Builtin
 
-exception No_such_symbol_found
+exception No_such_symbol_found of string
 exception Function_identifier_expected of string
 exception Argument_count_mismatch
 exception Argument_type_mismatch
@@ -30,7 +30,7 @@ let rec sym_table_lookup table id =
   with Not_found  ->
     match table.parent with
       Some(p) -> sym_table_lookup p id
-    | None    -> raise No_such_symbol_found
+    | None    -> raise (No_such_symbol_found id)
 
 (*let sym_table_lookup_type table id = 
   match sym_table_lookup table id with
@@ -269,8 +269,8 @@ and string_at_index table s e =
         raise(Error("Invalid index. Must be integer."))
       else
         ("(List.nth yappl_" ^ s ^ " (" ^ es ^ "))" ), (listtype_to_single_type vt)  
-     with No_such_symbol_found ->
-        raise (Error("Unbound symbol referenced"))  
+     with No_such_symbol_found id ->
+        raise (Error("Unbound symbol " ^ id ^ " referenced"))  
 
 (* pattern matching *)
 and match_to_string table e p = 
@@ -280,17 +280,17 @@ and match_to_string table e p =
 (* mt = match type, for type inference *) 
 and pattlist_to_string table pl mt =
    match (pl) with
-     (Pattern (pat , exp, pmatch)) -> let (patstring, new_table) = pat_to_string table pat mt in
+     Pattern (pat , exp, pmatch) -> let (patstring, new_table) = pat_to_string table pat mt in
                                       let (es, _) =  expr_to_string new_table exp in 
-                                      "\n| " ^ patstring ^ 
-                                      " -> " ^ es ^ (pattlist_to_string new_table pmatch mt) 
+				      (pattlist_to_string new_table pmatch mt) ^
+                                      "\n| " ^ patstring ^ " -> " ^ es
     | NoPattern -> ""         
 
 and pat_to_string table p mt =
     match (p) with 
-      (Ident s) -> patid_to_string table s mt   
-    | (Wildcard) -> "_", table
-    | (Concat (p1, p2)) -> let (p1s, table1) = pat_to_string table  p1 (listtype_to_single_type mt ) in
+      Ident s -> patid_to_string table s mt   
+    | Wildcard -> "_", table
+    | Concat (p1, p2) -> let (p1s, table1) = pat_to_string table  p1 (listtype_to_single_type mt ) in
                            let (p2s, table2) = pat_to_string table1 p2 mt in
                            p1s ^ "::" ^ p2s, table2 
 
@@ -314,7 +314,7 @@ and val_bind_to_string table vb =
   try 
     ignore (sym_table_lookup table vb.vdecl.dname);  (* make sure id doesn't already exist *)
     raise (Error("Duplicate value identifier: " ^  vb.vdecl.dname))
-  with No_such_symbol_found -> 
+  with No_such_symbol_found _ -> 
     let (s, et) = expr_to_string table vb.vexpr in
     if et <> vb.vdecl.dtype then
       raise (Error("Incomptible type for value binding"))
@@ -336,7 +336,7 @@ and func_bind_to_string table fb =
    try 
      ignore (sym_table_lookup table fb.fdecl.fname); (* make sure id doesn't already exist *)
      raise (Error("Duplicate function identifier: " ^  fb.fdecl.fname))
-  with No_such_symbol_found -> 
+  with No_such_symbol_found _ -> 
      let build_table (tabl, args_t) decl =
        let new_tabl = StringMap.add decl.dname decl.dtype tabl in
        new_tabl, decl.dtype :: args_t
