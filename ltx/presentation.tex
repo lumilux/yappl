@@ -2,6 +2,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage[]{natbib}
+\usepackage{alltt}
 \usepackage{graphicx}
 
 % Setup appearance:
@@ -83,18 +84,41 @@ Todo
 
 \frame[t] {
 \frametitle{Tutorial 1}
-Todo
+Todo.
 }
 
-\frame[t] {
+\begin{frame}[fragile]
 \frametitle{Tutorial 2}
-Todo
-}
+\begin{alltt}
+~seed;
+fun int:geom float:q =
+  fun int:geom_helper float:orig_q int:i =
+    if ~rand < orig_q then i
+    else ~geom_helper orig_q (i+1)
+  in 
+    ~geom_helper q 1
+in
+\end{alltt}
+\end{frame}
 
-\frame[t] {
+\begin{frame}[fragile]
 \frametitle{Tutorial 3}
-Todo
-}
+\begin{alltt}
+fun int:try_g = ~geom 0.1 given $ > 100 in
+~print_line ~try_g;
+~print_line ~try_g;
+~print_line ~try_g;
+~print_line ~try_g;
+~print_line ~try_g;
+
+fun int:try_g2 = ~geom 0.1 given $ > 10 in
+~print_line ~try_g2;
+~print_line ~try_g2;
+~print_line ~try_g2;
+~print_line ~try_g2;
+~print_line ~try_g2
+\end{alltt}
+\end{frame}
 
 \frame[t] {
 \frametitle{Implementation 1}
