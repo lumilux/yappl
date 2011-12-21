@@ -8,4 +8,4 @@ fun int:geom float:q =
   in 
     ~geom_helper q 1
 in
-  ~print_line ~geom 0.1
+  ~print_line ~geom 0.1 given $ > 10
