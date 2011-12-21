@@ -130,7 +130,7 @@ Functions are evaluated when they are called.
 
 As with function declaration, the arguments passed in are separated by whitespace only.
 
-We make a special note here to remind the reader that whitespace is ignored and to be mindful when calling functions with multiple arguments. As an example, if \texttt{add} expects two integer arguments, when dealing with negative numbers, one must call \texttt{\midtilde add (-1) (-1)}. Neglecting to do so in this situation would have resulted with YAPPL interpreting the second unary minus as a binary minus operator and reducing\texttt{\midtilde add -1 -1} to \texttt{\midtilde add -2}, resulting in an error.
+We make a special note here to remind the reader that whitespace is ignored and to be mindful when calling functions with multiple arguments. As an example, if \texttt{add} expects two integer arguments, when dealing with negative numbers, one must call \texttt{\midtilde add (-1) (-1)}. Neglecting to do so in this situation would have resulted with YAPPL interpreting the second unary minus as a binary minus operator and reducing \texttt{\midtilde add -1 -1} to \texttt{\midtilde add -2}, resulting in an error.
 
 \subsubsection{List construction}
 
@@ -254,7 +254,7 @@ A pair of expressions separated by a semicolon is evaluated left-to-right and th
 \subsection{Built-in Functions}
 There are four built-in functions in YAPPL: \term{rand}, \term{seed}, \term{print}, and \term{print\_line}. These are  reserved keywords. 
 \subsubsection{Random values}
-The function \term{rand} takes no arguments and returns a random or pseudo-random number between 0 and 1. \term{seed} functions the same as \term{rand}, except all generated numbers are based on some initial seed.
+The function \term{rand} takes no arguments and returns a random or pseudo-random number between 0 and 1. \term{seed} also takes no arguments. If it is called before \term{rand}, all subsequent calls of \term{rand} will be seeded with a value based on the current system time. Otherwise all calls to \term{rand} use the same default seed.
 
 \subsubsection{Printing}
 Since YAPPL does not currently support the \term{string} type or string literals, or allow for side-effects, printing must be achieved explicitly within the language. The \term{print} function takes a single expression of one of the three basic types as an argument and prints a string representation of that argument to standard output. \term{print\_line} functions like \term{print} but appends a newline.
