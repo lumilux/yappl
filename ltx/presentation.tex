@@ -2,6 +2,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage[]{natbib}
+\usepackage{alltt}
 \usepackage{graphicx}
 
 % Setup appearance:
@@ -27,6 +28,7 @@
 
 %\newcommand{\argmax}{\operatornamewithlimits{argmax}}
 \def\newblock{\hskip .11em plus .33em minus .07em}
+\newcommand\midtilde{{\lower.50ex\hbox{\texttt{\char`\~}}}}
 
 % Author, Title, etc.
 
@@ -96,20 +98,48 @@ Improving on HANSEI and Church by...
 \end{itemize}
 }
 
-\frame[t] {
+\begin{frame}[fragile]
 \frametitle{Tutorial 1}
-Todo
-}
+\begin{alltt}
+fun int:add int:a int:b = 
+   a + b
+in 
+  {\midtilde}print_line add 1 2
+\end{alltt}
+\end{frame}
 
-\frame[t] {
+\begin{frame}[fragile]
 \frametitle{Tutorial 2}
-Todo
-}
+\begin{alltt}
+ {\midtilde}seed;
+ fun int:geom float:q =
+   fun int:geom_helper float:orig_q int:i =
+     if {\midtilde}rand < orig_q then i
+     else {\midtilde}geom_helper orig_q (i+1)
+   in 
+     {\midtilde}geom_helper q 1
+ in
+\end{alltt}
+\end{frame}
 
-\frame[t] {
+\begin{frame}[fragile]
 \frametitle{Tutorial 3}
-Todo
-}
+\begin{alltt}
+ fun int:try_g = {\midtilde}geom 0.1 given $ > 100 in
+ {\midtilde}print_line {\midtilde}try_g;
+ {\midtilde}print_line {\midtilde}try_g;
+ {\midtilde}print_line {\midtilde}try_g;
+ {\midtilde}print_line {\midtilde}try_g;
+ {\midtilde}print_line {\midtilde}try_g;
+ 
+ fun int:try_g2 = {\midtilde}geom 0.1 given $ > 10 in
+ {\midtilde}print_line {\midtilde}try_g2;
+ {\midtilde}print_line {\midtilde}try_g2;
+ {\midtilde}print_line {\midtilde}try_g2;
+ {\midtilde}print_line {\midtilde}try_g2;
+ {\midtilde}print_line {\midtilde}try_g2
+\end{alltt}
+\end{frame}
 
 \frame[t] {
 \frametitle{Implementation 1}
