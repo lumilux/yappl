@@ -1,4 +1,34 @@
-YAPPL was designed to make working with probabilities as easy as possible. The following tutorial will show you how to define a geometric distribution and use it for simple queries.
+YAPPL was designed to make working with probabilities as easy as possible. The following tutorial will guide you through the language and eventually define a geometric distribution and use it for simple queries. 
+
+\subsection{Basic variables}
+
+Let's begin by exploring the simple concepts of the language. There are three basic data types: integers, floating-point numbers, and booleans. Here's how to declare variables as each one of these:
+
+\begin{verbatim}
+int:num
+float:number_with_a_dot
+bool:truthful
+\end{verbatim}
+
+It would be helpful if we could give these variables values and actually use them. To do so, we need to discuss scope. When a variable is bound to a value, you must also specify where it is defined. This is done explicitly through the \texttt{let\dots in} operation:
+
+\begin{verbatim}
+let int:num = 5 in
+  num + 5
+\end{verbatim}
+
+The scope of \texttt{num} is the block after \texttt{in}.
+
+\subsection{Functions}
+
+Function declaration and definition looks similar to its variable counterparts. Scoping works the same way, where a function's scope begins immediately after the \texttt{in} keyword. 
+
+\begin{Verbatim}[commandchars=\\\{\}]
+fun int:add int:a int:b = 
+   a + b
+in 
+  {\midtilde}add 1 2
+\end{Verbatim}
 
 \begin{verbatim}
 fun float:geom float:q = 

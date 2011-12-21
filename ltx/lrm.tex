@@ -5,11 +5,11 @@ Through the document, \nterm{nonterminals} are in brown italics and \term{termin
 
 \subsection{Definition of a program}
 
-A program is an expression. 
+A program is a sequence of one or more expressions.
 
 \subsection{Lexical conventions}
 
-As syntax of YAPPL is inspired by OCaml, many of the lexical conventions follow those of that language. YAPPL has four kinds of tokens: identifiers, keywords, constants, and expression operators. Whitespace such as blanks, tabs, and newlines are ignored and serve to separate tokens. Comments are also ignored.
+As syntax of YAPPL is inspired by OCaml, many of the lexical conventions follow those of that language. YAPPL has four kinds of tokens: identifiers, keywords, constants, and expression operators. Whitespace such as blanks, tabs, and newlines are ignored and serve to separate tokens. They have no other semantic meaning. Comments are also ignored.
 
 \subsubsection{Comments}
 
@@ -82,13 +82,13 @@ All bindings must either be declared within a function declaration or declared w
 
 \subsubsection{Function Type Declarations}
 
-Function declarations consists of \term{fun} followed by a type declaration for the function in the format \nterm{type} \term{:} \nterm{identifier}. This is followed by zero or more type declarations for arguments of function. Optionally, parentheses may surround the type declarations.
+Function declarations consists of \term{fun} followed by a type declaration for the function in the format \nterm{type} \term{:} \nterm{identifier}. This is followed by zero or more type declarations for arguments of function, which are separated by whitespace. 
 
 Below are examples of function type declarations: 
 
 \begin{alltt}
 \quad fun int:add int:a int:b
-\quad fun bool:contains (float:a float[]:list)
+\quad fun bool:contains float:a float[]:list
 \end{alltt}
 
 \subsection{Operations}
@@ -123,6 +123,12 @@ where  \nterm{expr}\textsuperscript{1} \dots \nterm{expr}\textsuperscript{n} are
 \end{alltt}
 
 Functions are evaluated when they are called. 
+
+\paragraph{A word of caution about function evaluation}
+
+As with function declaration, the arguments passed in are separated by whitespace only.
+
+We make a special note here to remind the reader that whitespace is ignored and to be mindful when calling functions with multiple arguments. As an example, if \texttt{add} expects two integer arguments, when dealing with negative numbers, one must call \texttt{\midtilde add (-1) (-1)}. Neglecting to do so in this situation would have resulted with YAPPL interpreting the second unary minus as a binary minus operator and reducing \texttt{\midtilde add -1 -1} to \texttt{\midtilde add -2}, resulting in an error.
 
 \subsubsection{List construction}
 
@@ -246,7 +252,7 @@ A pair of expressions separated by a semicolon is evaluated left-to-right and th
 \subsection{Built-in Functions}
 There are four built-in functions in YAPPL: \term{rand}, \term{seed}, \term{print}, and \term{print\_line}. These are  reserved keywords. 
 \subsubsection{Random values}
-The function \term{rand} takes no arguments and returns a random or pseudo-random number between 0 and 1. \term{seed} functions the same as \term{rand}, except all generated numbers are based on some initial seed.
+The function \term{rand} takes no arguments and returns a random or pseudo-random number between 0 and 1. \term{seed} also takes no arguments. If it is called before \term{rand}, all subsequent calls of \term{rand} will be seeded with a value based on the current system time. Otherwise all calls to \term{rand} use the same default seed.
 
 \subsubsection{Printing}
 Since YAPPL does not currently support the \term{string} type or string literals, or allow for side-effects, printing must be achieved explicitly within the language. The \term{print} function takes a single expression of one of the three basic types as an argument and prints a string representation of that argument to standard output. \term{print\_line} functions like \term{print} but appends a newline.
@@ -275,7 +281,7 @@ A summary of the grammar for YAPPL.
 \quad \nterm{expr infix-op expr}
 \quad \term{[} \nterm{expr} \{ \term{,} \nterm{expr} \} \term{]}
 \quad \nterm{identifier} \term{[} \nterm{expr} \term{]}
-\quad \term{if} \nterm{expr \term{then} expr} \term{else} \nterm{expr}
+\quad \term{if} \nterm{expr} \term{then} \nterm{expr} \term{else} \nterm{expr}
 \quad \term{match} \nterm{expr} \term{with} \nterm{pattern-matching}
 \quad \term{let} \nterm{value-binding} \{ \term{and} \nterm{value-binding} \} \term{in} \nterm{expr}
 \quad \term{fun} \nterm{function-binding} \{ \term{and} \nterm{function-binding} \} \term{in} \nterm{expr}
