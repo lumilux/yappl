@@ -16,6 +16,24 @@
 \newcommand{\term}[1]{\texttt{\color{Cyan}#1}}
 \newcommand{\nterm}[1]{\textnormal{\em\color{Brown}#1}}
 
+\usepackage{float}
+ 
+%allows use of "@" before \begin{document}
+\makeatletter
+ 
+% this creates a custom and simpler ruled box style
+\newcommand\floatc@simplerule[2]{{\@fs@cfont #1 #2}\par}
+\newcommand\fs@simplerule{\def\@fs@cfont{\bfseries}\let\@fs@capt\floatc@simplerule
+  \def\@fs@pre{\hrule height.8pt depth0pt \kern4pt}%
+  \def\@fs@post{\kern4pt\hrule height.8pt depth0pt \kern4pt \relax}%
+  \def\@fs@mid{\kern8pt}%
+  \let\@fs@iftopcapt\iftrue}
+ 
+% this code block defines the new and custom floatbox float environment
+\floatstyle{simplerule}
+\newfloat{floatbox}{thp}{lob}[section]
+\floatname{floatbox}{Figure}
+
 \pagestyle{fancy}
 
 \begin{document}

@@ -1,40 +1,115 @@
-YAPPL was designed to make working with probabilities as easy as possible. The following tutorial will guide you through the language and eventually define a geometric distribution and use it for simple queries. 
+YAPPL was designed to make it easy to work with probabilities. The following tutorial will give a quick tour of the basics of the language and eventually build up to define a probability distribution and draw samples from it.
 
 \subsection{Basic variables}
 
 Let's begin by exploring the simple concepts of the language. There are three basic data types: integers, floating-point numbers, and booleans. Here's how to declare variables as each one of these:
-
+\begin{floatbox}
 \begin{verbatim}
 int:num
 float:number_with_a_dot
 bool:truthful
 \end{verbatim}
+\caption{Variable declarations.}
+\end{floatbox}
 
 It would be helpful if we could give these variables values and actually use them. To do so, we need to discuss scope. When a variable is bound to a value, you must also specify where it is defined. This is done explicitly through the \texttt{let\dots in} operation:
 
+\begin{floatbox}
 \begin{verbatim}
 let int:num = 5 in
   num + 5
 \end{verbatim}
+\caption{Variable definition and scoping.}
+\end{floatbox}
 
 The scope of \texttt{num} is the block after \texttt{in}.
 
 \subsection{Functions}
 
 Function declaration and definition looks similar to its variable counterparts. Scoping works the same way, where a function's scope begins immediately after the \texttt{in} keyword. 
-
-\begin{Verbatim}[commandchars=\\\{\}]
+\begin{floatbox}
+\begin{alltt}
 fun int:add int:a int:b = 
    a + b
 in 
-  {\midtilde}add 1 2
-\end{Verbatim}
+  {\midtilde}print\_line {\midtilde}add 1 2
+\end{alltt}
+\caption{A simple function.}
+\end{floatbox}
 
-\begin{verbatim}
-fun float:geom float:q = 
-\end{verbatim}
+This creates a function \texttt{add} that returns an integer and takes in two integers as arguments. The body of the function is after the \texttt{=} sign, and it is allowed to be called after \texttt{in}. The last line of a function is its return value. Recursion is permitted: a function can call itself within its own body. There is no need to explicitly define a function as recursive. 
 
+Functions are called using the function evaluation operator, tilde (\midtilde). 
 
+\subsubsection{Built-in functions}
+
+The above code also demonstrates a built-in function of YAPPL, \texttt{print\_line}, which takes in a single argument to print. \texttt{rand} and \texttt{seed} are other built-in functions that we will use later in this tutorial.
+
+\subsection{Expressions}
+
+Function and variable declarations and definitions are expressions, so are function evaluations. Sequences of expressions are separated by semicolons, and the \texttt{if} statement will be useful in this tutorial:
+\begin{floatbox}
+\begin{alltt}
+if x < 10 then
+  {\midtilde}print\_line x
+else
+  {\midtilde}print\_line 10
+\end{alltt}
+\caption{An \texttt{if} statement.}
+\end{floatbox}
+
+For a more formal description, please see the Language Reference Manual. 
+
+\subsection{A simple distribution}
+
+We now know enough to construct a function that takes a sample from a distribution. We will use the geometric distribution because it is a simple enough construct to use in an exemplary program. To remind the reader, a sample from a geometric distribution will return the number of Bernoulli trials needed to obtain a success, given some probability of success $p$. 
+
+Our approach will generate a random number for a number of iterations. Each time a random number is generated, we will increase our integer return value. The function will continue to iterate until the random number is within $[0, p)$. We return the final value. We implement the increment recursively:
+
+\begin{floatbox}
+\begin{alltt}
+fun int:geom float:p int:i =
+    if {\midtilde}rand < p then
+      i
+    else
+      {\midtilde}geom p (i+1)
+\end{alltt}
+\caption{The basics of sampling from a geometric distribution.}
+\end{floatbox}
+
+This is a good start, except we now mention a nuance of YAPPL. For \texttt{rand} to return unique numbers on each execution of a program, \texttt{seed} must first be called. Furthermore, the interface is not very clean: it would be better to have a function that takes a single parameter that is some probability $p$. Finally, we would actually like to call this and run the program. The final code for \texttt{geom.ypl} is below.
+
+\begin{floatbox}
+\begin{alltt}
+ {\midtilde}seed;
+ fun int:geom float:p =
+   fun int:geom_helper float:orig_p int:i =
+     if {\midtilde}rand < orig_p then
+       i
+     else
+       {\midtilde}geom_helper orig_p (i+1)
+   in 
+     {\midtilde}geom_helper p 1
+ in
+   {\midtilde}print_line {\midtilde}geom 0.1
+\end{alltt}
+\caption{The full \texttt{geom.ypl}.}
+\end{floatbox}
+
+\subsection{Compilation and execution}
+
+To compile a YAPPL file, you must pass it into the YAPPL compiler, which will produce an OCaml source file. In order to execute the resulting OCaml code, it will first have to be linked with YAPPL's built-in function library. The following is the basic breakdown of compiling and executing a \texttt{.ypl} file:
+
+\begin{floatbox}
+\begin{alltt}
+\$ ./yappl < geom.ypl > geom.ml
+\$ ocamlc -c geom.ml
+\$ ocamlc -o geom unix.cma builtin.cmo geom.cml
+\$ ./geom
+\$ 8
+\end{alltt}
+\caption{Compilation and execution.}
+\end{floatbox}
 
 %# single line comment
 %### multi
