@@ -5,3 +5,10 @@
 ~print_line (1000/10);
 ~print_line (2 * (-2) + 102 - 6 / 3);
 ~print_line (10 % 5)
+# this is a single line comment.
+### this
+is
+a
+multiline
+comment
+###

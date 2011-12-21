@@ -2,4 +2,10 @@ fun int:t1 int:a =
     a + 3
 in
 ~print_line ~t1 2;
-~print_line ~t1 -2
+~print_line ~t1 -2;
+
+fun int:t2 int:a int:b = 
+	a + 5 + b
+in
+~print_line ~t2 1 2;
+~print_line ~t2 -1 -2

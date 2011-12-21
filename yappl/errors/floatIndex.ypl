@@ -1,0 +1,1 @@
+let float[]:floaty = [4.1, 3.0, 1.1] in floaty[9.1]
