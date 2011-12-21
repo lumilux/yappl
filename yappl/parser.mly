@@ -7,6 +7,7 @@
 %token EQSYM NEQ LT LEQ GT GEQ MEMOEQ
 %token IF ELSE THEN INT FLOAT BOOL FUN COND_VAR IN
 %token MATCH WITH ARROW WILDCARD
+%token STRING // unused but reserved
 %token <bool> BOOL_LITERAL
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
@@ -84,7 +85,7 @@ expr_core:
   | COND_VAR         { CondVar } 
   | NOT expr         { Unop(Not, $2) }
   | MINUS expr       %prec TIMES { Unop(Neg, $2) }
-  | func_bind IN expr { FuncBind($1, $3) }
+  | FUN func_bind IN expr { FuncBind($2, $4) }
   | TILDE ID expr_seq_opt cond_opt   { Eval($2, $3, $4) } 
   | IF  expr  THEN expr { If($2, $4, Noexpr) }  
   | IF  expr THEN expr ELSE expr { If($2, $4, $6) }
@@ -106,10 +107,10 @@ func_bind:
 	 body = $3}] }
 
 function_decl:
-  FUN t COLON ID args
-    { { freturn = ValType $2;
-        fname = $4;
-        fargs = List.rev $5} }
+  t COLON ID args
+    { { freturn = ValType $1;
+        fname = $3;
+        fargs = List.rev $4} }
 
 assn_op: 
     EQSYM { Assign } 
