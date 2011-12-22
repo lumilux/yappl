@@ -53,7 +53,7 @@ let rec ident_to_string table id =
 and seq_to_string table e1 e2 =
   let (s1, _) = expr_to_string table e1 in
   let (s2, t) = expr_to_string table e2 in
-  ("(ignore (" ^ s1 ^ ")); " ^ s2, t )
+  ("(ignore (" ^ s1 ^ "));\n" ^ s2, t )
 
 and type_to_string vt = 
  match vt with

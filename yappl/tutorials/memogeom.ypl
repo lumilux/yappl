@@ -1,19 +1,6 @@
-fun int:geom float:q =
-  fun int:geom_helper float:orig_q int:i =
-    if ~rand < orig_q then
-      i
-    else
-      ~geom_helper orig_q (i+1)
-  in 
-    ~geom_helper q 1
-in
-fun (fun int int):geom_list_gen float:p = 
-    fun int:geom_list int:n :=
-    	~geom p
-    in
-    geom_list
-in
 ~seed;
 let (fun int int):g = ~geom_list_gen 0.5 in
-~print_line [~g 1, ~g 1,~g 2,~g 3, ~g 3]
-
+~print_line [1, ~g 1, ~g 1];
+~print_line [2, ~g 2, ~g 2];
+~print_line [3, ~g 3, ~g 3];
+~print_line [4, ~g 4, ~g 4];

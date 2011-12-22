@@ -1,4 +1,11 @@
 # Flip based on supplied probability  ~flip .5 is a fair coint toss
 fun bool:flip float:bias = ~rand <= bias in 
 fun bool:fflip = ~flip .5 in
+fun int:geom float:q =
+  fun int:geom_helper float:orig_q int:i =
+    if ~rand < orig_q then i
+    else ~geom_helper orig_q (i+1)
+  in 
+    ~geom_helper q 1
+in
  

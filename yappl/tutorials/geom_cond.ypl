@@ -1,11 +1,4 @@
 ~seed;
-fun int:geom float:q =
-  fun int:geom_helper float:orig_q int:i =
-    if ~rand < orig_q then i
-    else ~geom_helper orig_q (i+1)
-  in 
-    ~geom_helper q 1
-in
 fun int:try_g = ~geom 0.1 given $ > 100 in
 ~print_line ~try_g;
 ~print_line ~try_g;
@@ -18,4 +11,11 @@ fun int:try_g2 = ~geom 0.1 given $ > 10 in
 ~print_line ~try_g2;
 ~print_line ~try_g2;
 ~print_line ~try_g2;
-~print_line ~try_g2
+~print_line ~try_g2;
+
+fun int:try_g3 = ~geom 0.1 given $ + (~geom .7) > 50 in
+~print_line ~try_g3;
+~print_line ~try_g3;
+~print_line ~try_g3;
+~print_line ~try_g3;
+~print_line ~try_g3;
