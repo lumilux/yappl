@@ -82,13 +82,14 @@ All bindings must either be declared within a function declaration or declared w
 
 \subsubsection{Function Type Declarations}
 
-Function declarations consists of \term{fun} followed by a type declaration for the function in the format \nterm{type} \term{:} \nterm{identifier}. This is followed by zero or more type declarations for arguments of function, which are separated by whitespace. 
+Function declarations consists of \term{fun} followed by a type declaration for the function in the format \nterm{fun-type} \term{:} \nterm{identifier}. This is followed by zero or more type declarations for arguments of function, which are separated by whitespace. The return types for a function may be a basic type or a function type in the format \term{( fun} \nterm{return-type} \nterm{arg-types} \term{)}
 
 Below are examples of function type declarations: 
 
 \begin{alltt}
 \quad fun int:add int:a int:b
 \quad fun bool:contains float:a float[]:list
+\quad fun (fun int int):fun_gen int:a
 \end{alltt}
 
 \subsection{Operations}
@@ -310,11 +311,7 @@ A summary of the grammar for YAPPL.
 \quad \nterm{function-decl} \nterm{assignment-op} \nterm{expr} 
 
 \nterm{function-decl} =
-\quad \nterm{type-decl} \{ \nterm{fun-args-paren} \}
-
-\nterm{fun-args-paren} =
-\quad  \nterm{fun-args}
-\quad \term{(} \nterm{fun-args} \term{)}
+\quad \nterm{type} \term{:} \nterm{identifier} \{ \nterm{fun-args} \}
 
 \nterm{fun-args} =
 \quad \nterm{fun-args} \nterm{type-decl}  
