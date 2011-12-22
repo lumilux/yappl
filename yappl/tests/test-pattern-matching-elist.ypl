@@ -1,0 +1,7 @@
+fun bool:partytime int[]:a =  
+    match a with 
+    b::c -> ((~print_line b) && (~partytime c ))
+   | [] -> false
+
+in ~print_line ( ~partytime [5,4,3,1,0] )
+
