@@ -1,0 +1,22 @@
+fun float:beta float:a float:b = (a + b) / 2. in
+
+fun int:pickastick (fun float int):sticks int:j =
+    if ~rand < ~sticks j then j else ~pickastick sticks j+1
+in
+
+fun (fun float):DP float:alpha (fun float):proc =
+    fun float:sticks int:x := ~beta 1.0 alpha in
+    fun float:atoms  int:x := ~proc in
+    fun float:f = ~atoms ~pickastick sticks 1 in
+    f 
+in
+
+fun (fun (fun float) float):DPmem float:alpha (fun float float):proc =
+    fun (fun float):dps float:arg := 
+    	fun float:apply = ~proc arg in
+    	~DP alpha apply 
+    in
+    fun (fun float):adp float:arg = ~dps arg in
+    adp 
+in
+
