@@ -126,11 +126,14 @@ Below is a line of code that returns a random number less than .5 and the last l
 \caption{Two conditionals with \texttt{given}.}
 \end{floatbox}
 
-\subsection{Memoization}
+\subsection{Memoization \& returning functions}
 
-You can create a memoized function using the \texttt{:=} operator instead of the \texttt{=} operator during function definition. A memoized function will remember the value it returned for previously evaluated parameter values, and it will always return this same value. Below we give a memoized version of our geometric sampler. The notation \texttt{(fun int int):geom\_list\_gen} indicates that the return type of \texttt{geom\_list\_gen} is a function that returns an integer value and takes a single integer value as a parameter.
+You can create a memoized function using the \texttt{:=} operator instead of the \texttt{=} operator during function definition. A memoized function will remember the value it returned for previously evaluated parameter values, and it will always return this same value. Below we give a memoized version of our geometric sampler. 
+
+The code below also highlights another useful feature of YAPPL: the ability pass around and return functions. The notation \texttt{(fun int int):geom\_list\_gen} indicates that the return type of \texttt{geom\_list\_gen} is a function that returns an integer value and takes a single integer value as a parameter.
 
 \begin{floatbox}
+\caption{A memoized \texttt{geom.ypl}.}
 \begin{alltt}
  fun int:geom float:q =
    fun int:geom_helper float:orig_q int:i =
@@ -157,12 +160,20 @@ Sample output: \texttt{[4, 4, 2, 2]}
 \end{floatbox}
 
 Note that \texttt{geom} is the same as before; however, we define a \texttt{geom\_list\_gen} function that creates a returns a memoized version of  \texttt{geom}. \texttt{g} is an instance of \texttt{geom\_list\_gen}. Although we are taking four different samples, because of memoization, the first two elements of the printed list will always have the same value, as well as the last two elements.
+\newpage
+\subsection{Pattern matching}
 
-\subsection{Functions as arguments}
+YAPPL also supports pattern matching. The following code uses the standard library function \texttt{fflip}, which returns either \texttt{true} or \texttt{false}. However, instead of printing these boolean values, we use pattern matching to print \texttt{0} or \texttt{1} instead.
 
-An important feature of YAPPL is the ability to pass functions as arguments. 
-
-{\bf ****TODO: passing around functions****}
+\begin{floatbox}
+\caption{Basic pattern matching.}
+\begin{alltt}
+ {\midtilde}seed;
+ match {\midtilde}fflip with
+   true -> {\midtilde}print_line 1
+   | false -> {\midtilde}print_line 0
+\end{alltt}
+\end{floatbox}
 
 %# single line comment
 %### multi

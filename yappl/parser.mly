@@ -210,5 +210,6 @@ pattern:
   | INT_LITERAL {IntPatt $1}
   | BOOL_LITERAL {BoolPatt $1}
   | FLOAT_LITERAL {FloatPatt $1}
+  | LBRACK RBRACK { ListPatt [] }
   | WILDCARD { Wildcard }
   | pattern ATTACH pattern { Concat($1, $3) }

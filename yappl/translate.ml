@@ -269,17 +269,18 @@ and string_at_index table s e =
 (* pattern matching *)
 and match_to_string table e p = 
     let es,mt = expr_to_string table e in
-    let match_table = { table = StringMap.empty; parent = Some(table) } in  
-    (" match (" ^ es ^ ") with " ^ (pattlist_to_string match_table p mt)), mt
+    let match_table = { table = StringMap.empty; parent = Some(table) } in
+    let (pls,pmt) = pattlist_to_string match_table p mt in  
+    " match (" ^ es ^ ") with " ^ pls, pmt
 
 (* mt = match type, for type inference *) 
 and pattlist_to_string table pl mt =
    match (pl) with
      Pattern (pat , exp, pmatch) -> let (patstring, new_table) = pat_to_string table pat mt in
-                                      let (es, _) =  expr_to_string new_table exp in 
-				      (pattlist_to_string new_table pmatch mt) ^
-                                      "\n| " ^ patstring ^ " -> " ^ es
-    | NoPattern -> ""         
+                                      let (es, pt) =  expr_to_string new_table exp in 
+				      let (ps, _ ) = pattlist_to_string new_table pmatch mt in 
+                                      ps ^ "\n| " ^ patstring ^ " -> " ^ es, pt
+    | NoPattern -> "", ValType(Void)                  
 
 and pat_to_string table p mt =    
     match (p) with 
@@ -291,7 +292,8 @@ and pat_to_string table p mt =
     | Concat (p1, p2) -> let (p1s, table1) = pat_to_string table  p1 (listtype_to_single_type mt ) in
                            let (p2s, table2) = pat_to_string table1 p2 mt in
                            p1s ^ "::" ^ p2s, table2 
-
+    | ListPatt lp -> "[]", table
+    
 (* adds symbol to table, clobbers existing symbols *)
 and patid_to_string table s mt = 
       try 

@@ -28,6 +28,7 @@ and pattern =
   | IntPatt of int
   | BoolPatt of bool
   | FloatPatt of float   
+  | ListPatt of expr list
   | Wildcard 
   | Concat of pattern * pattern
 
