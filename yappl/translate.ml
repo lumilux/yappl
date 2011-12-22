@@ -278,13 +278,14 @@ and pattlist_to_string table pl mt =
    match (pl) with
      Pattern (pat , exp, pmatch) -> let (patstring, new_table) = pat_to_string table pat mt in
                                       let (es, pt) =  expr_to_string new_table exp in 
-				      let (ps, _ ) = pattlist_to_string new_table pmatch mt in 
+				      let (ps, _ ) = pattlist_to_string table pmatch mt in 
                                       ps ^ "\n| " ^ patstring ^ " -> " ^ es, pt
     | NoPattern -> "", ValType(Void)                  
 
 and pat_to_string table p mt =    
     match (p) with 
-      Ident s -> patid_to_string table s mt   
+    | ListPatt lp -> "[]", table
+    | Ident s -> patid_to_string table s mt   
     | IntPatt i  -> string_of_int i, table
     | BoolPatt b -> string_of_bool b, table
     | FloatPatt f -> string_of_float f, table
@@ -292,7 +293,6 @@ and pat_to_string table p mt =
     | Concat (p1, p2) -> let (p1s, table1) = pat_to_string table  p1 (listtype_to_single_type mt ) in
                            let (p2s, table2) = pat_to_string table1 p2 mt in
                            p1s ^ "::" ^ p2s, table2 
-    | ListPatt lp -> "[]", table
     
 (* adds symbol to table, clobbers existing symbols *)
 and patid_to_string table s mt = 
