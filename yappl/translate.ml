@@ -291,7 +291,8 @@ and pat_to_string table p mt =
     | Concat (p1, p2) -> let (p1s, table1) = pat_to_string table  p1 (listtype_to_single_type mt ) in
                            let (p2s, table2) = pat_to_string table1 p2 mt in
                            p1s ^ "::" ^ p2s, table2 
-
+    | ListPatt lp -> "[]", table
+    
 (* adds symbol to table, clobbers existing symbols *)
 and patid_to_string table s mt = 
       try 
