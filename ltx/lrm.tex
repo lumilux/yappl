@@ -42,7 +42,7 @@ The keyword \term{string}  is not currently used, but is reserved for future use
 
 \subsubsection{Constants}
 
-The reserved boolean constants are \term{true} and \term{false}. The empty list constant is \term{[]} (for all types). 
+The reserved boolean constants are \term{true} and \term{false}. 
 
 \subsubsection{Integer Literals}
 
@@ -129,7 +129,7 @@ Functions are evaluated when they are called.
 
 As with function declaration, the arguments passed in are separated by whitespace only.
 
-We make a special note here to remind the reader that whitespace is ignored and to be mindful when calling functions with multiple arguments. As an example, if \texttt{add} expects two integer arguments, when dealing with negative numbers, one must call \texttt{\midtilde add (-1) (-1)}. Neglecting to do so in this situation would have resulted with YAPPL interpreting the second unary minus as a binary minus operator and reducing \texttt{\midtilde add -1 -1} to \texttt{\midtilde add -2}, resulting in an error.
+We make a special note here to remind the reader that whitespace is ignored (except for purposes token delineation) and to be mindful when calling functions with multiple arguments. As an example, if \texttt{add} expects two integer arguments, when dealing with negative numbers, one must call \texttt{\midtilde add (-1) (-1)}. Neglecting to do so in this situation would have resulted with YAPPL interpreting the second unary minus as a binary minus operator and reducing \texttt{\midtilde add -1 -1} to \texttt{\midtilde add -2}, producing an error.
 
 \subsubsection{List construction}
 
@@ -146,7 +146,7 @@ Patterns are templates that allow selecting values of a given shape and binding 
 A variable pattern consists of a value identifier. The pattern will match any value, and the value will be bound to the identifier. The pattern \term{\_} will also match any value, but will not result in a binding. A value identifier can only appear once in a pattern.
 
 \paragraph{Constant Patterns}
-A pattern consisting of a constant matches the values equal to that constant. Valid pattern constants are: literals of type \term{int}, \term{bool}, or \term{float}, and the empty list (\term{[]}).
+A pattern consisting of a constant matches the values equal to that constant.
 
 \paragraph{Variant Patterns}
 The pattern \nterm{pattern} \term{::} \nterm{pattern} matches non-empty lists whose heads match the first pattern and whose tails match the second pattern. The \term{::} operator for patterns is left-associative.
@@ -246,7 +246,7 @@ The conditional expression evaluates to the second expression if the first is tr
 \end{alltt}
 
 \subsubsection{Pattern match expression}
-The case expression notation yields the expression paired with the first pattern matching the expression to be matched. Each \nterm{pattern}\textsuperscript{1}\dots \nterm{pattern}\textsuperscript{n} should be of the same type. 
+The case expression notation yields the expression paired with the first pattern matching the expression to be matched. Each \nterm{pattern}\textsuperscript{1}\dots \nterm{pattern}\textsuperscript{n} should be of the same type.
 
 \begin{alltt}
 \quad \term{match} \nterm{expr} \term{with} \nterm{pattern}\textsuperscript{1} \term{->} \nterm{expr}\textsuperscript{1} \term{|} \dots \term{|} \nterm{pattern}\textsuperscript{n} \term{->} \nterm{expr}\textsuperscript{n}
@@ -265,7 +265,7 @@ There are four built-in functions in YAPPL: \term{rand}, \term{seed}, \term{prin
 The function \term{rand} takes no arguments and returns a random or pseudo-random number between 0 and 1. \term{seed} also takes no arguments. If it is called before \term{rand}, all subsequent calls of \term{rand} will be seeded with a value based on the current system time. Otherwise all calls to \term{rand} use the same default seed.
 
 \subsubsection{Printing}
-Since YAPPL does not currently support the \term{string} type or string literals, or allow for side-effects (excepting \term{rand} and \term{seed}), printing must be achieved explicitly within the language. The \term{print} function takes a single expression of one of the three basic types (\term{int}, \term{bool}, and \term{float}) or a list of one of those three types as an argument and prints a string representation of that argument to standard output. \term{print\_line} functions like \term{print} but appends a newline.
+Since YAPPL does not currently support the \term{string} type or string literals, or allow for side-effects (excepting \term{rand} and \term{seed}), printing must be achieved explicitly within the language. The \term{print} function takes a single expression of one of the three basic types (\term{int}, \term{bool}, and {float}) or a list of one of those three types as an argument and prints a string representation of that argument to standard output. \term{print\_line} functions like \term{print} but appends a newline.
 
 %that is a list of integers. For each number encountered in the list, \term{print} interprets this as the decimal representation of an ASCII character and prints to standard out the corresponding letter character in the ASCII table. It always returns \term{true}. \\
 %\begin{verbatim}

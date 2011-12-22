@@ -3,8 +3,18 @@ fun bool:partytime int[]:a =
      b::c -> ((~print_line b) && (~partytime c ))
    | [] -> false
 in 
+
 let int[]:x = [5,4,3,1,0] in
+
 ~print_line ( ~partytime x );
-match x with
+
+(match x with
    _ :: n -> ~print_line n
- | _ -> ~print_line 0
+ | n -> ~print_line 0);
+
+fun int:add int[]:nums =
+    match nums with 
+    	  n :: rest -> n + ~add rest
+	| []        -> 0
+in
+~print_line ~add x

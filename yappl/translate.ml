@@ -94,9 +94,9 @@ and eval_to_string table id args p =
 	  let ret_t = ValType Bool in
 	  let (arg_s, arg_t) = expr_to_string table arg in
 	  (match arg_t with
-	    ValType Bool -> "print_string (string_of_bool ( " ^ arg_s ^ " )); true ", ret_t
-	  | ValType Int -> "print_int ( " ^ arg_s ^ " ); true ", ret_t
-	  | ValType Float -> "print_float ( " ^ arg_s ^ " ); true ", ret_t
+	    ValType Bool -> "print_string (string_of_bool ( " ^ arg_s ^ " )); print_char ' '; true", ret_t
+	  | ValType Int -> "print_int ( " ^ arg_s ^ " ); print_char ' '; true", ret_t
+	  | ValType Float -> "print_float ( " ^ arg_s ^ " ); print_char ' '; true", ret_t
           | ValType List(t) -> (ocaml_lstring_to_yappl arg_s t), ret_t
  	  | _ -> raise (Error("unsupported print expression type")))
       | _ -> raise (Error("print does not support predicates")))  
@@ -349,7 +349,7 @@ and func_bind_to_string table fb =
      let new_table = { table with table = StringMap.add fb.fdecl.fname func_t table.table } in
      let (body_s, body_t) = expr_to_string { table = func_table; parent = Some(new_table) } fb.body in
      if body_t <>  fb.fdecl.freturn  then
-       raise (Error("mismatched return and function body types: " ^ (string_of_fv_type body_t) ^ " " ^ (string_of_fv_type fb.fdecl.freturn)))
+       raise (Error("mismatched return and function body types for " ^ fb.fdecl.fname ^ ": " ^ (string_of_fv_type body_t) ^ " " ^ (string_of_fv_type fb.fdecl.freturn)))
      else
        let arg_names = List.map (fun decl -> id_to_ocaml_id decl.dname) fb.fdecl.fargs in
        let oid = id_to_ocaml_id fb.fdecl.fname in

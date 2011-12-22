@@ -1,7 +1,0 @@
-fun int:add int[]:nums =
-    match nums with 
-    	  n :: rest -> n + ~add rest
-	| n :: []   -> n
-	| []        -> 0
-in
-~print_line ~add [2, 3, 4]

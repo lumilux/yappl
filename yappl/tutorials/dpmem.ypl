@@ -1,22 +1,42 @@
-fun float:beta float:a float:b = (a + b) / 2. in
+### 
+An implementation of the Dirichlet Process using memoization. For an explantion, see 
+
+Teh et. al. Hierarchical Dirichlet processes. Journal of the Am. Stat. Assoc., 101(476):1566–1581, 2006. 
+###
+
+# placeholder for a function that would generate a draw from the beta distribution (so this is a draw from the Beta(1,1) distribution, no matter what a and b are
+fun float:beta float:a float:b = ~rand in 
 
 fun int:pickastick (fun float int):sticks int:j =
     if ~rand < ~sticks j then j else ~pickastick sticks j+1
 in
 
-fun (fun float):DP float:alpha (fun float):proc =
+fun (fun int):DP float:alpha (fun int):proc =
     fun float:sticks int:x := ~beta 1.0 alpha in
-    fun float:atoms  int:x := ~proc in
-    fun float:f = ~atoms ~pickastick sticks 1 in
-    f 
+    fun int:atoms  int:x := ~proc in
+    fun int:f = ~atoms ~pickastick sticks 1 in
+    f # return f
 in
 
-fun (fun (fun float) float):DPmem float:alpha (fun float float):proc =
-    fun (fun float):dps float:arg := 
-    	fun float:apply = ~proc arg in
+fun (fun (fun int) float):DPmem float:alpha (fun int float):proc =
+    fun (fun int):dps float:arg := 
+    	fun int:apply = ~proc arg in
     	~DP alpha apply 
     in
-    fun (fun float):adp float:arg = ~dps arg in
-    adp 
+    fun (fun int):dp_gen float:arg = ~dps arg in
+    dp_gen
 in
 
+# this function will create Dirichlet Processes with geometric base distribution
+let (fun (fun int) float):geom_dps = ~DPmem 1.0 geom in
+ 
+# this is a DP with geometric base measure with q = .2
+let (fun int):mydp = ~geom_dps .2 in
+
+# use a tail-recurive loop to generate some samples from the Dirichlet Process
+fun bool:loop int:i =
+    ~print ~mydp;
+    if i > 0 then ~loop i - 1 else true
+in
+~loop 20; ~print_line ~mydp
+    

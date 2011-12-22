@@ -179,11 +179,11 @@ Another example of pattern matching is this function which calculates the sum of
 \begin{floatbox}
 \caption{Pattern matching with lists.}
 \begin{alltt}
-fun int:add int[]:nums =
-   match nums with 
-   	   n :: rest -> n + {\midtilde}add rest
-     | []        -> 0
-in
+ fun int:add int[]:nums =
+    match nums with 
+        n :: rest -> n + {\midtilde}add rest
+      | []        -> 0
+ in
  {\midtilde}print_line {\midtilde}add [1,2,3,4,5]
 \end{alltt}
 \end{floatbox}
