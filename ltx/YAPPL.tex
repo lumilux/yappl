@@ -21,7 +21,9 @@
 \newcommand{\lstyappltestlisting}[1]{\lstinputlisting[title=tests/#1.ypl, language=YAPPL]{../yappl/tests/#1.ypl} \lstinputlisting[title=tests/#1.out, language={}]{../yappl/tests/#1.out}}
 
 \lstdefinelanguage{YAPPL}{
-	morekeywords={fun,int,bool,float,true,rand,given,if,then,else,in,false,and,print_line,match,with,case,string,print,or,seed}
+	morekeywords={fun,int,bool,float,true,rand,given,if,then,else,in,false,and,print_line,match,with,case,string,print,or,seed},
+	morecomment=[l][\itshape]{\#},
+	morecomment=[s][\itshape]{\#\#\#}{\#\#\#}
 }
 \lstset{basicstyle=\small, numbers=left, numberstyle=\tiny, numberfirstline=false, stepnumber=1, numbersep=10pt, tabsize=2, belowcaptionskip=2em, abovecaptionskip=3em, breaklines=true, breakatwhitespace=true}
 

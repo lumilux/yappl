@@ -1,7 +1,7 @@
 ### 
 An implementation of the Dirichlet Process using memoization. For an explantion, see 
 
-Teh et. al. Hierarchical Dirichlet processes. Journal of the Am. Stat. Assoc., 101(476):1566–1581, 2006. 
+Teh et. al. Hierarchical Dirichlet processes. Journal of the Am. Stat. Assoc., 101(476):1566--1581, 2006. 
 ###
 
 # placeholder for a function that would generate a draw from the beta distribution (so this is a draw from the Beta(1,1) distribution, no matter what a and b are
