@@ -22,7 +22,7 @@ let int:num = 5 in
 \caption{Value definition and scoping.}
 \end{floatbox}
 
-The scope of \texttt{num} is the block after \texttt{in}.
+The scope of \texttt{num} is the expression after \texttt{in}.
 
 \subsection{Functions}
 
@@ -47,7 +47,7 @@ The above code also demonstrates a built-in function of YAPPL, \texttt{print\_li
 
 \subsection{Expressions}
 
-Function and value declarations and definitions are expressions, and so are function evaluations. Sequences of expressions are separated by semicolons. The \texttt{if} statement will be useful in this tutorial:
+Function and value declarations and definitions are expressions, and so are function evaluations. Sequences of expressions are separated by semicolons. The \texttt{if} statement will prove to be useful.
 \begin{floatbox}
 \begin{alltt}
 if x < 10 then
@@ -115,7 +115,7 @@ With the basics of the language covered, we now give an overview of special cons
 
 Below we explain conditionals, which can be specified after any function evaluation. The \texttt{given} keyword specifies a condition that must be met. The special symbol \texttt{\$} references the return value of a function within the context of \texttt{given}.
 
-Below is a line of code that returns a random number less than .5 and the last line of \texttt{geom.ypl} after modifying it to say we want \texttt{geom} to return a value great than some other value \texttt{a}.
+Below is a line of code that returns a random number less than .5 and the last line of \texttt{geom.ypl} after modifying it to say we want \texttt{geom} to return a value greater than some other value \texttt{a}.
 
 \begin{floatbox}
 \begin{alltt}

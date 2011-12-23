@@ -1,5 +1,5 @@
 ### 
-An implementation of the Dirichlet Process using memoization. For an explantion, see 
+An implementation of the Dirichlet process (DP) using memoization. For an explanation of DPs, see 
 
 Teh et. al. Hierarchical Dirichlet processes. Journal of the Am. Stat. Assoc., 101(476):1566--1581, 2006. 
 ###
@@ -30,7 +30,7 @@ in
 # this function will create Dirichlet Processes with geometric base distribution
 let (fun (fun int) float):geom_dps = ~DPmem 1.0 geom in
  
-# this is a DP with geometric base measure with q = .2
+# this is a DP with geometric base base with q = .2
 let (fun int):mydp = ~geom_dps .2 in
 
 # use a tail-recursive loop to generate some samples from the Dirichlet Process

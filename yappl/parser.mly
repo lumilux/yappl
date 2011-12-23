@@ -65,7 +65,6 @@ expr:
 
 
 binop:
-/* | expr SEMI   expr { ExprSeq($1, $3) } */
   | expr PLUS   expr { Binop($1, Add,    $3) }
   | expr MINUS  expr { Binop($1, Sub,    $3) }
   | expr TIMES  expr { Binop($1, Mult,   $3) }
@@ -93,7 +92,6 @@ expr_core:
   | NOT expr         { Unop(Not, $2) }
   | MINUS expr       %prec TIMES { Unop(Neg, $2) } 
   | TILDE ID expr_seq_opt cond_opt  { Eval($2, $3, $4) }  
-/*  | TILDE ID expr_seq_opt   { Eval($2, $3, Noexpr) }     */
   | IF seq_expr THEN expr ELSE expr { If($2, $4, $6) }
   | FUN func_bind IN seq_expr { FuncBind($2, $4) }
   | LBRACK expr_list_opt RBRACK { ListBuilder($2) }   
@@ -155,9 +153,6 @@ expr_seq:
    | expr_seq expr %prec above_SEMI { $2 :: $1 }
 
 
-/*expr_seq_opt:
-  | expr  %prec ID { $1 }*/
-
 cond_opt:
   /* nothing*/ %prec below_BAR { Noexpr }
   | GIVEN expr  { $2 } 
@@ -191,18 +186,10 @@ val_bind:
 pattern_match:
   | bar_opt pattern ARROW seq_expr { Pattern($2, $4, NoPattern) }
   | pattern_match BAR pattern ARROW seq_expr   { Pattern($3, $5, $1) }
-/*  pattern ARROW expr pattern_match_cont { Pattern($1, $3, $4) }
-  | BAR pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
-  | LPAREN pattern RPAREN ARROW expr pattern_match_cont { Pattern($2,$5,$6) } */
 
 bar_opt:
   | /* nothing */ {} 
   | BAR  {}
-
-/*pattern_match_cont:
-  nothing  %prec MATCH { NoPattern }
-  | BAR pattern ARROW expr pattern_match_cont { Pattern($2, $4, $5) }
-  | BAR LPAREN pattern RPAREN ARROW expr pattern_match_cont { Pattern($3,$6,$7) }*/
 
 pattern:
   | LPAREN pattern RPAREN { $2 }

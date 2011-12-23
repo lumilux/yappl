@@ -33,11 +33,6 @@ let rec sym_table_lookup table id =
       Some(p) -> sym_table_lookup p id
     | None    -> raise (No_such_symbol_found id)
 
-(*let sym_table_lookup_type table id = 
-  match sym_table_lookup table id with
-    FuncType ft -> 
-  | FuncEntry(t, _) -> t*)
-	
 let id_to_ocaml_id = function
     "rand" | "seed" as id -> "Builtin." ^ id
   | _ as id -> 
@@ -62,7 +57,7 @@ and type_to_string vt =
  | ValType(Bool) -> "bool"
  | ValType(Float) -> "float"
  | ValType(Void) -> "void"
- | _ -> "unknown crazy voodoo"
+ | _ -> raise (Error "unexpected type")
 
 (* "expected ... got" string *) 
 and eg2s s1 s2 = 

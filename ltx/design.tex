@@ -1,6 +1,6 @@
 \subsection{Block Diagram}
 
-YAPPL (it is appropriate to shout when pronouncing the all-caps name) is implemented using a standard model for non-optimizing compilers. The input is tokenized, parsed, and then translated to ml. The components are implemented in ocamllex, ocamlyacc and OCaml. The generated ml can then be compiled into executable code. \\
+YAPPL (it is appropriate to shout when pronouncing the all-caps name) is implemented using a standard model for compilers. The input is tokenized, parsed, and then translated into OCaml. The components are implemented in ocamllex, ocamlyacc and OCaml. The generated .ml can then be compiled into executable code. \\
 \includegraphics[width=1.5in]{block-diagram.png}
 
 \subsection{Components}
@@ -9,6 +9,6 @@ The translator builds an initial table for storing user specified identifiers an
 \subsubsection{expr\_to\_string} 
 This is the main function for the evaluation of the program expression and returns both a string representation of the parse tree it is given, and its type. It is called recursively to evaluate the program parse tree. As part of the output generation, types are checked for validity. When the function converts identifiers to strings, it will first check if that identifier is built-in, such as \texttt{print}, before performing a lookup with the symbol table.
 \subsubsection{Memoization}
-Memoization is implemented using a hash table that is populated when a memoized function is called with a new parameter.  In the generated code, user-defined identifiers will be prepended with \texttt{yappl\_}, to prevent namespace collisions with OCaml identifiers, such as hash tables, used by the YAPPL compiler.
+Memoization is implemented using a hash table that is populated when a memoized function is called with a new parameter.  In the generated code, all user-defined identifiers (not just those in the memoized function) will be prepended with \texttt{yappl\_}, to prevent namespace collisions with OCaml identifiers, such as hash tables, used by the YAPPL compiler.
 \subsubsection{Compiling to executable}
-The \texttt{ocamlc} utility links the compiled generated code with built-in OCaml functionality such as \texttt{rand}. It also includes \texttt{stdlib.ypl}, if it exists, to function as a standard library.
+The \texttt{ocamlc} utility links the compiled generated code with built-in OCaml functionality such as \texttt{rand}. It also prepends \texttt{stdlib.ypl}, if it exists, to function as a standard library.
