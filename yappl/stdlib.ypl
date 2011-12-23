@@ -1,4 +1,4 @@
-# Flip based on supplied probability  ~flip .5 is a fair coint toss
+# Flip based on supplied probability  ~flip .5 is a fair coin toss
 fun bool:flip float:bias = ~rand <= bias in 
 fun bool:fflip = ~flip .5 in
 fun int:geom float:q =
