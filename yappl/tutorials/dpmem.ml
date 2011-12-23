@@ -60,19 +60,20 @@ Hashtbl.add tabl yappl_arg result; result
 in
 let hash_table_for_yappl_dps = Hashtbl.create 50 in
 let yappl_dps = table_yappl_dps hash_table_for_yappl_dps in
-let rec yappl_dp_gen yappl_arg unit = 
+let rec yappl_dp yappl_arg unit = 
  yappl_dps ( yappl_arg ) () 
 in
-yappl_dp_gen 
+yappl_dp 
 in
  
- let yappl_geom_dps = yappl_DPmem ( 1. ) ( yappl_geom ) () in 
+ let yappl_geom_dp = yappl_DPmem ( 1. ) ( yappl_geom ) () in 
  (  
- let yappl_mydp = yappl_geom_dps ( 0.2 ) () in 
+ let yappl_mydraw = yappl_geom_dp ( 0.2 ) () in 
  ( let rec yappl_loop yappl_i unit = 
- (ignore ( print_int ( yappl_mydp  () ); print_char ' '; true ));
+ (ignore ( print_int ( yappl_mydraw  () ); print_char ' '; true ));
 if ( ( yappl_i ) > ( 0 ) ) then ( yappl_loop ( ( yappl_i ) - ( 1 ) ) () ) else ( true ) 
 in
-(ignore ( yappl_loop ( 20 ) () ));
-ignore ( print_int ( yappl_mydp  () ); print_char ' '; true );
+(ignore ( Builtin.seed  () ));
+(ignore ( yappl_loop ( 30 ) () ));
+ignore ( print_int ( yappl_mydraw  () ); print_char ' '; true );
  print_newline (); true ) )

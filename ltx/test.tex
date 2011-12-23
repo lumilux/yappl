@@ -1,4 +1,6 @@
 \subsection{Example Programs}
+The Dirichlet process (DP) is a stochastic process. Draws from a DP are discrete distributions with some other distribution as their ``mean'' distribution. In the example below, we create a draw from a DP with a geometric distribution as its mean. We are then able to take samples from this distribution. We use the ``stick breaking'' representation of the Dirichlet process. Memoization is used to keep track of the weights on the atoms in the draw from the DP. A distribution drawn from a DP has a ``rich-get-richer'' property. So when the code below is run, you will see that numbers that appear early in the sequence tend to reappear. 
+
 \lstyappllisting{tutorials/dpmem.ypl}
 \lstinputlisting[title=tutorials/dpmem.ml, language={[Objective]Caml}]{../yappl/tutorials/dpmem.ml}
 
