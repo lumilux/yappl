@@ -1,0 +1,21 @@
+### Calculate Fibonacci numbers  ###
+
+fun int:fib int:n =
+    if n <= 1 then n
+    else (~fib n-1) + (~fib n-2)
+in
+fun int:fib_memo int:n :=
+    if n <= 1 then n
+    else (~fib_memo n-1) + (~fib_memo n-2)
+in
+~print_line ~fib 5;
+~print_line ~fib 20;
+~print_line ~fib 35;
+~print_line ~fib 40;
+
+~print_line ~fib_memo 5;
+~print_line ~fib_memo 20;
+~print_line ~fib_memo 35;
+~print_line ~fib_memo 40;
+
+    

@@ -2,6 +2,7 @@
 
 open Ast
 open Builtin
+open Str
 
 exception No_such_symbol_found of string
 exception Function_identifier_expected of string
@@ -53,7 +54,7 @@ let rec ident_to_string table id =
 and seq_to_string table e1 e2 =
   let (s1, _) = expr_to_string table e1 in
   let (s2, t) = expr_to_string table e2 in
-  ("(ignore (" ^ s1 ^ "));\n" ^ s2, t )
+  ("(ignore ( " ^ s1 ^ " ));\n" ^ s2, t )
 
 and type_to_string vt = 
  match vt with
@@ -74,7 +75,7 @@ and ocaml_lstring_to_yappl ls t =
       |Float -> "print_float"
       |_     -> raise (Error("Unsupported type for printing: " ^ (string_of_t (List t))))
    in
-   "( print_char '[') ;  ( match (" ^ ls ^" ) with | [] -> () | h::t ->   (" ^ pc ^ " h) ;" ^
+   "( print_char '[') ;  ( match ( " ^ ls ^" ) with | [] -> () | h::t -> ( " ^ pc ^ " h) ;" ^
    "ignore ( List.map (fun i -> print_char ',' ;" ^ pc ^ " i) t ) );  ( print_char ']')"
 
     
@@ -82,7 +83,7 @@ and eval_to_string table id args p =
   match id with
     "print_line" ->
        let p,t = (eval_to_string table "print" args p ) in
-         "ignore ( " ^ p ^ ");\n print_newline (); true", ValType Bool
+         "ignore ( " ^ p ^ " );\n print_newline (); true", ValType Bool
    | "print" ->
       (match p with 
 	Noexpr -> 
@@ -126,7 +127,7 @@ and eval_to_string table id args p =
 		if ptype <> ValType(Bool) then
 		  raise (Error "predicate does not evaluate to boolean")    (*predicate does not evaluate to boolean*)
 		else 
-		  "Builtin.cond_eval ( fun " ^ Builtin.pred_special_var ^ " -> " ^  pred ^ ") (" ^ eval_str_no_unit ^ " )" 
+		  "Builtin.cond_eval ( fun " ^ Builtin.pred_special_var ^ " -> " ^  pred ^ " ) ( " ^ eval_str_no_unit ^ " )" 
 	  in
 	  str, ft.return_t 
     | _ -> raise (Function_identifier_expected id)
@@ -210,18 +211,18 @@ and binop_to_string table e1 e2 op =
 	| ValType(lt1), ValType(List Void) -> "::", ValType(List lt1)
 	| _ -> raise (Error("Type mismatch for :: " ^ (string_of_fv_type t1) ^ " " ^ (string_of_fv_type t2))))
   in
-  "(" ^ s1 ^ ") " ^ ocaml_op ^  " (" ^ s2 ^ ")", return_t
+  "( " ^ s1 ^ " ) " ^ ocaml_op ^  " ( " ^ s2 ^ " )", return_t
 
 and unop_to_string table e op = 
   let (s, et) = expr_to_string table e in
   let opstr = 
     match op, et with
-      Not, ValType(Bool) -> "not ("
+      Not, ValType(Bool) -> "not ( "
     | Neg, ValType(Int)
-    | Neg, ValType(Float) -> "(-"
+    | Neg, ValType(Float) -> "(- "
     | _ -> raise (Error("Type mismatch with unary operator"))
   in
-     opstr ^ s ^ ")", et
+     opstr ^ s ^ " )", et
 
 and if_to_string table pred e1 e2 =
     let (pred_str, pt) = expr_to_string table pred in
@@ -252,7 +253,7 @@ and list_to_string table l =
              (* Need type t to construct a list type from the enumerated type *) 
              match (vt) with
               (ValType ty) -> let t = ty in
-     	           ("[" ^ (String.concat ";" (List.rev sl)) ^ "]"), ValType(List(t))  
+     	           ("[ " ^ (String.concat " ; " (List.rev sl)) ^ " ]"), ValType(List(t))  
              |_ -> raise (Error("Functions not allowed in lists."))
 
 and string_at_index table s e = 
@@ -262,7 +263,7 @@ and string_at_index table s e =
       if (et <> ValType(Int)) then
         raise(Error("Invalid index. Must be integer."))
       else
-        ("(List.nth yappl_" ^ s ^ " (" ^ es ^ "))" ), (listtype_to_single_type vt)  
+        ("(List.nth " ^ (id_to_ocaml_id s) ^ " ( " ^ es ^ " ))" ), (listtype_to_single_type vt)  
      with No_such_symbol_found id ->
         raise (Error("Unbound symbol " ^ id ^ " referenced"))  
 
@@ -271,7 +272,7 @@ and match_to_string table e p =
     let es,mt = expr_to_string table e in
     let match_table = { table = StringMap.empty; parent = Some(table) } in
     let (pls,pmt) = pattlist_to_string match_table p mt in  
-    " match (" ^ es ^ ") with " ^ pls, pmt
+    " match ( " ^ es ^ " ) with " ^ pls, pmt
 
 (* mt = match type, for type inference *) 
 and pattlist_to_string table pl mt =
@@ -301,13 +302,13 @@ and patid_to_string table s mt =
       raise (Error("Type mismatch in concatenation")) 
       with  No_such_symbol_found _ ->
         let new_table = { table with table = StringMap.add s mt table.table } in
-        "yappl_" ^ s, new_table     
+        id_to_ocaml_id s, new_table     
        
      
 and val_bindings_to_string table bindings e =
   let proc (tabl, s) vb =
     let (new_tabl, new_s) = val_bind_to_string tabl vb in
-    new_tabl, s ^ "\n" ^ new_s 
+    new_tabl, s ^ " \n " ^ new_s 
   in
   let (new_table, bstr) = List.fold_left proc (table, "") (List.rev bindings) in
   let (s, et) = expr_to_string new_table e in 
@@ -356,30 +357,20 @@ and func_bind_to_string table fb =
        let arg_str = String.concat " " arg_names in
        match fb.op with
 	 Assign ->
-	   new_table, "let rec " ^ oid  ^ " " ^ arg_str ^ " unit = \n " ^ body_s ^ "\nin\n"
+	   new_table, "let rec " ^ oid  ^ " " ^ arg_str ^ " unit = \n " ^ body_s ^ " \nin\n"
        | MemoAssign ->
 	   let t_oid  = "table_" ^ oid and nm_oid = "no_mem_" ^ oid 
-	   and tbl_name = "hash_table_for_" ^ oid and arg_tpl = String.concat ", " arg_names
+	   and tbl_name = "hash_table_for_" ^ oid and arg_tpl = String.concat ", " arg_names 
+	   in
+	   let body_s_fix = Str.global_replace (Str.regexp (" " ^ oid ^ " ")) (" " ^ t_oid  ^ " tabl ") body_s
 	   in
 	   new_table, "let rec " ^ t_oid ^ " tabl " ^ arg_str ^ " unit = \n " ^
-	   "let rec " ^ nm_oid  ^ " " ^ arg_str ^ " unit = \n " ^ body_s ^ "\nin\n" ^
-	   "try Hashtbl.find tabl (" ^ arg_tpl ^ ") with Not_found ->\n" ^
+	   "let rec " ^ nm_oid  ^ " " ^ arg_str ^ " unit = \n " ^ body_s_fix ^ "\nin\n" ^
+	   "try Hashtbl.find tabl ( " ^ arg_tpl ^ " ) with Not_found ->\n" ^
 	   "let result = " ^ nm_oid ^ " " ^ arg_str ^ " () in \n" ^
 	   "Hashtbl.add tabl " ^ arg_tpl ^ " result; result\nin\n" ^
 	   "let " ^ tbl_name ^ " = Hashtbl.create 50 in\n" ^
 	   "let " ^ oid ^ " = " ^ t_oid ^ " " ^ tbl_name ^ " in\n"
-							
-												  
-										       
-(*and tabl_yappl_my_func tabl arg1 arg2 =
-  let no_mem_my_func arg1 arg2 = 
-    arg1 + arg2
-  in
-  try 
-    Hashtbl.find tabl (arg1, arg2) 
-  with Not_found ->
-    let result = no_mem_my_func arg1 arg2 in
-    Hashtbl.add tabl (arg1, arg2) result;*)
   
 and expr_to_string table = function
     IntLiteral(i) -> string_of_int i, ValType(Int)
