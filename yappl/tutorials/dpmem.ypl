@@ -33,7 +33,7 @@ let (fun (fun int) float):geom_dps = ~DPmem 1.0 geom in
 # this is a DP with geometric base measure with q = .2
 let (fun int):mydp = ~geom_dps .2 in
 
-# use a tail-recurive loop to generate some samples from the Dirichlet Process
+# use a tail-recursive loop to generate some samples from the Dirichlet Process
 fun bool:loop int:i =
     ~print ~mydp;
     if i > 0 then ~loop i - 1 else true
