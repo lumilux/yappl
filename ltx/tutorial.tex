@@ -32,7 +32,7 @@ Function declaration and definition looks similar to its value counterparts. Sco
 fun int:add int:a int:b = 
    a + b
 in 
-  {\midtilde}print\_line {\midtilde}add 1 2
+  ~print\_line ~add 1 2
 \end{alltt}
 \caption{A simple function.}
 \end{floatbox}
@@ -51,9 +51,9 @@ Function and value declarations and definitions are expressions, and so are func
 \begin{floatbox}
 \begin{alltt}
 if x < 10 then
-  {\midtilde}print\_line x
+  ~print\_line x
 else
-  {\midtilde}print\_line 10
+  ~print\_line 10
 \end{alltt}
 \caption{An \texttt{if} statement.}
 \end{floatbox}
@@ -69,10 +69,10 @@ Our approach will generate a random number for a number of iterations. Each time
 \begin{floatbox}
 \begin{alltt}
 fun int:geom float:p int:i =
-    if {\midtilde}rand < p then
+    if ~rand < p then
       i
     else
-      {\midtilde}geom p (i+1)
+      ~geom p (i+1)
 \end{alltt}
 \caption{The basics of sampling from a geometric distribution.}
 \end{floatbox}
@@ -81,17 +81,17 @@ This is a good start, except we now mention a nuance of YAPPL. For \texttt{rand}
 
 \begin{floatbox}
 \begin{alltt}
- {\midtilde}seed;
+ ~seed;
  fun int:geom float:p =
    fun int:geom_helper float:orig_p int:i =
-     if {\midtilde}rand < orig_p then
+     if ~rand < orig_p then
        i
      else
-       {\midtilde}geom_helper orig_p (i+1)
+       ~geom_helper orig_p (i+1)
    in 
-     {\midtilde}geom_helper p 1
+     ~geom_helper p 1
  in
-   {\midtilde}print_line {\midtilde}geom 0.1
+   ~print_line ~geom 0.1
 \end{alltt}
 \caption{The full \texttt{geom.ypl}.}
 \end{floatbox}
@@ -115,13 +115,13 @@ With the basics of the language covered, we now give an overview of special cons
 
 Below we explain conditionals, which can be specified after any function evaluation. The \texttt{given} keyword specifies a condition that must be met. The special symbol \texttt{\$} references the return value of a function within the context of \texttt{given}.
 
-Below is a line of code that returns a random number less than .5 and the last line of \texttt{geom.ypl} after modifying it to say we want \texttt{geom} to return a value great than some other variable \texttt{a}.
+Below is a line of code that returns a random number less than .5 and the last line of \texttt{geom.ypl} after modifying it to say we want \texttt{geom} to return a value great than some other value \texttt{a}.
 
 \begin{floatbox}
 \begin{alltt}
- {\midtilde}rand given \$ < .5
+ ~rand given \$ < .5
  
- {\midtilde}geom 0.1 given \$ > a
+ ~geom 0.1 given \$ > a
 \end{alltt}
 \caption{Two conditionals with \texttt{given}.}
 \end{floatbox}
@@ -130,36 +130,36 @@ Below is a line of code that returns a random number less than .5 and the last l
 
 You can create a memoized function using the \texttt{:=} operator instead of the \texttt{=} operator during function definition. A memoized function will remember the value it returned for previously evaluated parameter values, and it will always return this same value. Below we give a memoized version of our geometric sampler. 
 
-The code below also highlights another useful feature of YAPPL: the ability pass around and return functions. The notation \texttt{(fun int int):geom\_list\_gen} indicates that the return type of \texttt{geom\_list\_gen} is a function that returns an integer value and takes a single integer value as a parameter.
+The code below also highlights another useful feature of YAPPL: the ability to pass around and return functions. The notation \texttt{(fun int int):geom\_list\_gen} indicates that the return type of \texttt{geom\_list\_gen} is a function that returns an integer value and takes a single integer value as a parameter.
 
 \begin{floatbox}
 \caption{A memoized \texttt{geom.ypl}.}
 \begin{alltt}
  fun int:geom float:q =
    fun int:geom_helper float:orig_q int:i =
-     if {\midtilde}rand < orig_q then
+     if ~rand < orig_q then
        i
      else
-       {\midtilde}geom_helper orig_q (i+1)
+       ~geom_helper orig_q (i+1)
    in 
-     {\midtilde}geom_helper q 1
+     ~geom_helper q 1
  in
  fun (fun int int):geom_list_gen float:p = 
      fun int:geom_list int:n :=
-     	{\midtilde}geom p
+     	~geom p
      in
      geom_list
  in
- {\midtilde}seed;
- let (fun int int):g = {\midtilde}geom_list_gen 0.5 in
- {\midtilde}print_line [{\midtilde}g 1, {\midtilde}g 1,{\midtilde}g 3, {\midtilde}g 3]
+ ~seed;
+ let (fun int int):g = ~geom_list_gen 0.5 in
+ ~print_line [~g 1, ~g 1,~g 3, ~g 3]
  
 \end{alltt}
 
 Sample output: \texttt{[4, 4, 2, 2]}
 \end{floatbox}
 
-Note that \texttt{geom} is the same as before; however, we define a \texttt{geom\_list\_gen} function that creates a returns a memoized version of  \texttt{geom}. \texttt{g} is an instance of \texttt{geom\_list\_gen}. Although we are taking four different samples, because of memoization, the first two elements of the printed list will always have the same value, as well as the last two elements.
+Note that \texttt{geom} is the same as before; however, we define a \texttt{geom\_list\_gen} function that creates and returns a memoized version of  \texttt{geom}. \texttt{g} is an instance of \texttt{geom\_list\_gen}. Although we are taking four different samples, because of memoization, the first two elements of the printed list will always have the same value, as well as the last two elements.
 \newpage
 \subsection{Pattern matching}
 
@@ -168,10 +168,10 @@ YAPPL also supports pattern matching. The following code uses the standard libra
 \begin{floatbox}
 \caption{Basic pattern matching.}
 \begin{alltt}
- {\midtilde}seed;
- match {\midtilde}fflip with
-     true -> {\midtilde}print_line 1
-   | false -> {\midtilde}print_line 0
+ ~seed;
+ match ~fflip with
+     true -> ~print_line 1
+   | false -> ~print_line 0
 \end{alltt}
 \end{floatbox}
 
@@ -179,12 +179,12 @@ Another example of pattern matching is this function which calculates the sum of
 \begin{floatbox}
 \caption{Pattern matching with lists.}
 \begin{alltt}
- fun int:add int[]:nums =
+ fun int:sum int[]:nums =
     match nums with 
-        n :: rest -> n + {\midtilde}add rest
+        n :: rest -> n + ~sum rest
       | []        -> 0
  in
- {\midtilde}print_line {\midtilde}add [1,2,3,4,5]
+ ~print_line ~sum [1,2,3,4,5]
 \end{alltt}
 \end{floatbox}
 

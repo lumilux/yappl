@@ -1,5 +1,11 @@
 \subsection{Example Programs}
-Todo. Show two sample programs with .ml output.\\
+\lstyappllisting{tutorials/dpmem.ypl}
+\lstinputlisting[title=tutorials/dpmem.ml, language={[Objective]Caml}]{../yappl/tutorials/dpmem.ml}
+
+\lstyappllisting{tutorials/fib.ypl}
+\lstinputlisting[title=tutorials/fib.ml, language={[Objective]Caml}]{../yappl/tutorials/fib.ml}
 
 \subsection{Test Suites}
-Todo. Show tests. Explain how and why they were chosen. Explain what kind of automation was used. Say who did what.\\
+Our testing strategy was ``bottom-up'': we began by writing tests for the simplest functionality possible, namely printing an integer literal. We increased the complexity of our tests as more of the grammar was implemented. We tried to ensure that each language feature--such as data types, functions, pattern matching, and memoization--was covered by at least one test. Testing the builtin \texttt{rand}, however, can only be done manually, as random numbers have no guarantees. As bugs were found, regression tests for those bugs were written so they would not crop up again. Once most of the language was indeed implemented, we wrote slightly more involved tests, such as creating toy functions.\\
+The testing script was based on the MICROC test suite's \texttt{testall.sh} script provided to the class. Our tests work rather simply; the printed output is compared to the expected output file's contents.\\
+Additional ``testing'' was performed via writing and running several examples programs for the tutorial (Section 2) and test plan (Section 6.1). We also added several tests for errors; we expect each error example to fail to compile, and check if an error was produced. This is important so that we know if the grammar is too inclusive.
