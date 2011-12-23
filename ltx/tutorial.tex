@@ -115,7 +115,7 @@ With the basics of the language covered, we now give an overview of special cons
 
 Below we explain conditionals, which can be specified after any function evaluation. The \texttt{given} keyword specifies a condition that must be met. The special symbol \texttt{\$} references the return value of a function within the context of \texttt{given}.
 
-Below is a line of code that returns a random number less than .5 and the last line of \texttt{geom.ypl} after modifying it to say we want \texttt{geom} to return a value great than some other variable \texttt{a}.
+Below is a line of code that returns a random number less than .5 and the last line of \texttt{geom.ypl} after modifying it to say we want \texttt{geom} to return a value great than some other value \texttt{a}.
 
 \begin{floatbox}
 \begin{alltt}
@@ -130,7 +130,7 @@ Below is a line of code that returns a random number less than .5 and the last l
 
 You can create a memoized function using the \texttt{:=} operator instead of the \texttt{=} operator during function definition. A memoized function will remember the value it returned for previously evaluated parameter values, and it will always return this same value. Below we give a memoized version of our geometric sampler. 
 
-The code below also highlights another useful feature of YAPPL: the ability pass around and return functions. The notation \texttt{(fun int int):geom\_list\_gen} indicates that the return type of \texttt{geom\_list\_gen} is a function that returns an integer value and takes a single integer value as a parameter.
+The code below also highlights another useful feature of YAPPL: the ability to pass around and return functions. The notation \texttt{(fun int int):geom\_list\_gen} indicates that the return type of \texttt{geom\_list\_gen} is a function that returns an integer value and takes a single integer value as a parameter.
 
 \begin{floatbox}
 \caption{A memoized \texttt{geom.ypl}.}
@@ -159,7 +159,7 @@ The code below also highlights another useful feature of YAPPL: the ability pass
 Sample output: \texttt{[4, 4, 2, 2]}
 \end{floatbox}
 
-Note that \texttt{geom} is the same as before; however, we define a \texttt{geom\_list\_gen} function that creates a returns a memoized version of  \texttt{geom}. \texttt{g} is an instance of \texttt{geom\_list\_gen}. Although we are taking four different samples, because of memoization, the first two elements of the printed list will always have the same value, as well as the last two elements.
+Note that \texttt{geom} is the same as before; however, we define a \texttt{geom\_list\_gen} function that creates and returns a memoized version of  \texttt{geom}. \texttt{g} is an instance of \texttt{geom\_list\_gen}. Although we are taking four different samples, because of memoization, the first two elements of the printed list will always have the same value, as well as the last two elements.
 \newpage
 \subsection{Pattern matching}
 
@@ -179,12 +179,12 @@ Another example of pattern matching is this function which calculates the sum of
 \begin{floatbox}
 \caption{Pattern matching with lists.}
 \begin{alltt}
- fun int:add int[]:nums =
+ fun int:sum int[]:nums =
     match nums with 
-        n :: rest -> n + {\midtilde}add rest
+        n :: rest -> n + {\midtilde}sum rest
       | []        -> 0
  in
- {\midtilde}print_line {\midtilde}add [1,2,3,4,5]
+ {\midtilde}print_line {\midtilde}sum [1,2,3,4,5]
 \end{alltt}
 \end{floatbox}
 

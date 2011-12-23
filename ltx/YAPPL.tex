@@ -11,10 +11,14 @@
 \usepackage{graphicx}
 \usepackage[usenames,dvipsnames]{color}
 \usepackage[T1]{fontenc}
+\usepackage{listings}
 
 \newcommand\midtilde{{\lower.50ex\hbox{\texttt{\char`\~}}}}
 \newcommand{\term}[1]{\texttt{\color{Cyan}#1}}
 \newcommand{\nterm}[1]{\textnormal{\em\color{Brown}#1}}
+
+\newcommand{\lstyappllisting}[1]{\lstinputlisting[title=#1]{../yappl/#1}}
+\newcommand{\lstyappltestlisting}[1]{\lstinputlisting[title=tests/#1.ypl, language=YAPPL]{../yappl/tests/#1.ypl} \lstinputlisting[title=tests/#1.out, language={}]{../yappl/tests/#1.out}}
 
 \usepackage{float}
  
@@ -86,7 +90,7 @@
 \newpage
 
 \section{Appendix}
-%\input{appendix}
+\input{appendix}
 \newpage
 
 \end{document}
