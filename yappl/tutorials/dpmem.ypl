@@ -12,7 +12,7 @@ fun int:pickastick (fun float int):sticks int:j =
     if ~rand < ~sticks j then j else ~pickastick sticks j+1
 in
 
-# generi Dirichlet process code
+# generic Dirichlet process code
 fun (fun int):DP float:alpha (fun int):proc =
     fun float:sticks int:x := ~beta 1.0 alpha in
     fun int:atoms  int:x := ~proc in

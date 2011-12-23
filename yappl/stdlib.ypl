@@ -1,6 +1,11 @@
-# Flip based on supplied probability  ~flip .5 is a fair coin toss
+# START STDLIB
+
+# flip based on supplied probability
+# ~flip .5 is a fair coin toss
 fun bool:flip float:bias = ~rand <= bias in 
 fun bool:fflip = ~flip .5 in
+
+# geometric distribution
 fun int:geom float:q =
   fun int:geom_helper float:orig_q int:i =
     if ~rand < orig_q then i
@@ -8,4 +13,6 @@ fun int:geom float:q =
   in 
     ~geom_helper q 1
 in
- 
+
+# END STDLIB
+

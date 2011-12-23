@@ -1,19 +1,27 @@
 ### Calculate Fibonacci numbers  ###
 
+# recursive implementation of calculating the nth number
+# in the Fibonacci sequence.
 fun int:fib int:n =
     if n <= 1 then n
     else (~fib n-1) + (~fib n-2)
 in
+
+# memoized version of the above.
 fun int:fib_memo int:n :=
     if n <= 1 then n
     else (~fib_memo n-1) + (~fib_memo n-2)
 in
+
+# inefficient, since each recursive call recomputes all the previous numbers.
 ~print_line ~fib 5;
 ~print_line ~fib 20;
 ~print_line ~fib 35;
-~print_line ~fib 40;o
+~print_line ~fib 40;
 
+# the memoized version is much faster, as lookups are performed instead.
 ~print_line ~fib_memo 5;
 ~print_line ~fib_memo 20;
 ~print_line ~fib_memo 35;
-~print_line ~fib_memo 40;
+~print_line ~fib_memo 40
+
