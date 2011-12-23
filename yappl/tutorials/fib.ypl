@@ -11,11 +11,9 @@ in
 ~print_line ~fib 5;
 ~print_line ~fib 20;
 ~print_line ~fib 35;
-~print_line ~fib 40;
+~print_line ~fib 40;o
 
 ~print_line ~fib_memo 5;
 ~print_line ~fib_memo 20;
 ~print_line ~fib_memo 35;
 ~print_line ~fib_memo 40;
-
-    
