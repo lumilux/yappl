@@ -12,8 +12,9 @@
 \usepackage[usenames,dvipsnames]{color}
 \usepackage[T1]{fontenc}
 \usepackage{listings}
+\usepackage[scaled=0.85]{beramono}
 
-\newcommand\midtilde{{\lower.50ex\hbox{\texttt{\char`\~}}}}
+\newcommand\midtilde{{\hbox{\texttt{\char`\~}}}}
 \newcommand{\term}[1]{\texttt{\color{Cyan}#1}}
 \newcommand{\nterm}[1]{\textnormal{\em\color{Brown}#1}}
 
@@ -25,7 +26,7 @@
 	morecomment=[l][\itshape]{\#},
 	morecomment=[s][\itshape]{\#\#\#}{\#\#\#}
 }
-\lstset{basicstyle=\small, numbers=left, numberstyle=\tiny, numberfirstline=false, stepnumber=1, numbersep=10pt, tabsize=2, belowcaptionskip=2em, abovecaptionskip=3em, breaklines=true, breakatwhitespace=true}
+\lstset{basicstyle=\ttfamily, numbers=left, numberstyle=\tiny, numberfirstline=false, stepnumber=1, numbersep=10pt, tabsize=2, belowcaptionskip=2em, abovecaptionskip=3em, breaklines=true, breakatwhitespace=true}
 
 \usepackage{float}
  

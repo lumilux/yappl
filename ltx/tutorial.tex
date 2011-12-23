@@ -32,7 +32,7 @@ Function declaration and definition looks similar to its value counterparts. Sco
 fun int:add int:a int:b = 
    a + b
 in 
-  {\midtilde}print\_line {\midtilde}add 1 2
+  ~print\_line ~add 1 2
 \end{alltt}
 \caption{A simple function.}
 \end{floatbox}
@@ -51,9 +51,9 @@ Function and value declarations and definitions are expressions, and so are func
 \begin{floatbox}
 \begin{alltt}
 if x < 10 then
-  {\midtilde}print\_line x
+  ~print\_line x
 else
-  {\midtilde}print\_line 10
+  ~print\_line 10
 \end{alltt}
 \caption{An \texttt{if} statement.}
 \end{floatbox}
@@ -69,10 +69,10 @@ Our approach will generate a random number for a number of iterations. Each time
 \begin{floatbox}
 \begin{alltt}
 fun int:geom float:p int:i =
-    if {\midtilde}rand < p then
+    if ~rand < p then
       i
     else
-      {\midtilde}geom p (i+1)
+      ~geom p (i+1)
 \end{alltt}
 \caption{The basics of sampling from a geometric distribution.}
 \end{floatbox}
@@ -81,17 +81,17 @@ This is a good start, except we now mention a nuance of YAPPL. For \texttt{rand}
 
 \begin{floatbox}
 \begin{alltt}
- {\midtilde}seed;
+ ~seed;
  fun int:geom float:p =
    fun int:geom_helper float:orig_p int:i =
-     if {\midtilde}rand < orig_p then
+     if ~rand < orig_p then
        i
      else
-       {\midtilde}geom_helper orig_p (i+1)
+       ~geom_helper orig_p (i+1)
    in 
-     {\midtilde}geom_helper p 1
+     ~geom_helper p 1
  in
-   {\midtilde}print_line {\midtilde}geom 0.1
+   ~print_line ~geom 0.1
 \end{alltt}
 \caption{The full \texttt{geom.ypl}.}
 \end{floatbox}
@@ -119,9 +119,9 @@ Below is a line of code that returns a random number less than .5 and the last l
 
 \begin{floatbox}
 \begin{alltt}
- {\midtilde}rand given \$ < .5
+ ~rand given \$ < .5
  
- {\midtilde}geom 0.1 given \$ > a
+ ~geom 0.1 given \$ > a
 \end{alltt}
 \caption{Two conditionals with \texttt{given}.}
 \end{floatbox}
@@ -137,22 +137,22 @@ The code below also highlights another useful feature of YAPPL: the ability to p
 \begin{alltt}
  fun int:geom float:q =
    fun int:geom_helper float:orig_q int:i =
-     if {\midtilde}rand < orig_q then
+     if ~rand < orig_q then
        i
      else
-       {\midtilde}geom_helper orig_q (i+1)
+       ~geom_helper orig_q (i+1)
    in 
-     {\midtilde}geom_helper q 1
+     ~geom_helper q 1
  in
  fun (fun int int):geom_list_gen float:p = 
      fun int:geom_list int:n :=
-     	{\midtilde}geom p
+     	~geom p
      in
      geom_list
  in
- {\midtilde}seed;
- let (fun int int):g = {\midtilde}geom_list_gen 0.5 in
- {\midtilde}print_line [{\midtilde}g 1, {\midtilde}g 1,{\midtilde}g 3, {\midtilde}g 3]
+ ~seed;
+ let (fun int int):g = ~geom_list_gen 0.5 in
+ ~print_line [~g 1, ~g 1,~g 3, ~g 3]
  
 \end{alltt}
 
@@ -168,10 +168,10 @@ YAPPL also supports pattern matching. The following code uses the standard libra
 \begin{floatbox}
 \caption{Basic pattern matching.}
 \begin{alltt}
- {\midtilde}seed;
- match {\midtilde}fflip with
-     true -> {\midtilde}print_line 1
-   | false -> {\midtilde}print_line 0
+ ~seed;
+ match ~fflip with
+     true -> ~print_line 1
+   | false -> ~print_line 0
 \end{alltt}
 \end{floatbox}
 
@@ -181,10 +181,10 @@ Another example of pattern matching is this function which calculates the sum of
 \begin{alltt}
  fun int:sum int[]:nums =
     match nums with 
-        n :: rest -> n + {\midtilde}sum rest
+        n :: rest -> n + ~sum rest
       | []        -> 0
  in
- {\midtilde}print_line {\midtilde}sum [1,2,3,4,5]
+ ~print_line ~sum [1,2,3,4,5]
 \end{alltt}
 \end{floatbox}
 
