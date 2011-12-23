@@ -1,3 +1,7 @@
+fun (fun int int):geom_list_gen float:p =
+	fun int:geom_list int:n := ~geom p
+	in geom_list
+in
 ~seed;
 let (fun int int):g = ~geom_list_gen 0.5 in
 ~print_line [1, ~g 1, ~g 1];

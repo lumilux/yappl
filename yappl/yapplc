@@ -11,7 +11,7 @@ then
 		./yappl < $FILE > ${name}.ml
 	fi
 	
-	ocamlc -w -26 -c ${name}.ml
+	ocamlc -w -24-26 -c ${name}.ml
 	ocamlc -o ${name} unix.cma builtin.cmo ${name}.cmo
 	echo "run with ./${name}"
 else

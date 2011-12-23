@@ -1,11 +1,12 @@
 ~seed;
-fun int:geom float:q =
-  fun int:geom_helper float:orig_q int:i =
+# named geom1 so as not to conflict with stdlib geom.
+fun int:geom1 float:q =
+  fun int:geom1_helper float:orig_q int:i =
     if ~rand < orig_q then
       i
     else
-      ~geom_helper orig_q (i+1)
+      ~geom1_helper orig_q (i+1)
   in 
-    ~geom_helper q 1
+    ~geom1_helper q 1
 in
-  ~print_line ~geom 0.1 given $ > 10
+  ~print_line ~geom1 0.1 given $ > 10
